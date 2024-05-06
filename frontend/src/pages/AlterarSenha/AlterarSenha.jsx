@@ -11,21 +11,17 @@ import {
   MDBIcon
 }
 from 'mdb-react-ui-kit';
-import './Login.css';
+import './AlterarSenha.css';
 
-function Login() {
+function EsqueceuSenha() {
   return (
     <MDBContainer fluid className='p-4 background-radial-gradient overflow-hidden d-flex align-items-center justify-content-center'  style={{ minHeight: '100vh', marginTop: '-100px' }}>
 
           <MDBCard className='my-5 bg-glass max-width-card'>
-            <MDBCardBody className='p-5 text-center'>
+            <MDBCardBody className='p-5'>
 
-              <MDBInput className='mb-4' label='Email' id='form3' type='email'/>
-              <MDBInput className='mb-4' label='Password' id='form4' type='password'/>
-
-              <MDBBtn className='mx-2' color='tertiary' rippleColor='light'>
-              Entrar como convidado
-              </MDBBtn>
+              <MDBInput className='mb-4' label='Senha' id='form4' type='password'/>
+              <MDBInput className='mb-4' label='Confirmar Senha' id='form4' type='password'/>
 
               <MDBBtn className='w-100 mb-4' size='md'>ENVIAR</MDBBtn>
 
@@ -36,4 +32,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default EsqueceuSenha;
