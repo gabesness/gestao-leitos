@@ -25,12 +25,12 @@ import {
   MDBDropdownMenu,
   MDBDropdownItem,
   MDBDropdownToggle,
-
-
-
+  MDBCardTitle,
+  MDBCardText,
 }
 from 'mdb-react-ui-kit';
 import './HomeMedico.css';
+import Pagination from '../../components/Pagination/Pagination';
 
 function ModalComponent({ isOpen, toggleModal }) {
   return (
@@ -66,6 +66,15 @@ function HomeMedico() {
   const [activeTab, setActiveTab] = useState('pendentes');
   const [selectedUser, setSelectedUser] = useState(null);
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const [postsPerPage] = useState(5); // Quantidade de usuários por página
+
+  const indexOfLastPost = currentPage * postsPerPage;
+  const indexOfFirstPost = indexOfLastPost - postsPerPage;
+  const currentUsers = usuarios.slice(indexOfFirstPost, indexOfLastPost);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
   const handleUserClick = (user) => {
     setSelectedUser(user);
   };
@@ -80,53 +89,176 @@ function HomeMedico() {
       <hr style={{ marginBottom: '10px' }} />
         <MDBCardBody className='p-5'>
           <MDBRow>
+
+            
             <MDBCol md='4'>
-              <MDBCard className='mb-4'>
-                <MDBCardBody>
-                <div className="text-center mb-4">
-                 <MDBBtn color={activeTab === 'pendentes' ? 'primary' : 'light'} rippleColor='dark' onClick={() => setActiveTab('pendentes')}>
+              <MDBCard className='mb-4' style={{ borderTopLeftRadius: '30px', borderTopRightRadius: '30px', borderBottomLeftRadius: '20px', borderBottomRightRadius: '20px'}}>
+              <div className="text-center mb-4">
+                 <MDBBtn   className="w-50" style={{ borderTopLeftRadius: '20px', borderTopRightRadius: '0px', borderBottomRightRadius: '0px', borderBottomLeftRadius: '0px' }} color={activeTab === 'pendentes' ? 'light' : 'dark'} rippleColor='dark' onClick={() => setActiveTab('pendentes')}>
                  Pendentes
                  </MDBBtn>
-                 <MDBBtn color={activeTab === 'internados' ? 'primary' : 'light'} onClick={() => setActiveTab('internados')}>
+                 <MDBBtn  className="w-50" style={{ borderTopLeftRadius: '0px', borderTopRightRadius: '20px', borderBottomLeftRadius: '0px', borderBottomRightRadius: '0px' }} color={activeTab === 'internados' ? 'light' : 'dark'} onClick={() => setActiveTab('internados')}>
                   Internados
                  </MDBBtn>
                  </div>
+              <MDBCardBody>
                  <MDBInput type="text" label="Pesquisar" />
                  <MDBBtn onClick={toggleOpen}>Abrir Modal</MDBBtn>
-                  <MDBListGroup light numbered>
-                    {usuarios.map((usuario, index) => (
-                      <MDBListGroupItem key={index} 
-                      className={`list-item d-flex justify-content-between align-items-start ${selectedUser === usuario ? 'clicked' : ''}`}
-                      onClick={() => handleUserClick(usuario)}
-                      >
-                      <div className='ms-2 me-auto'>
-                      <div className='fw-bold'>{usuario.nome}</div>Prontuário: {usuario.prontuario}
-                      </div>
-                      </MDBListGroupItem>
-                   ))}
-                  </MDBListGroup>
+                 
+                 <>
+      <MDBListGroup light numbered>
+        {currentUsers.map((usuario, index) => (
+          <MDBListGroupItem
+            key={index}
+            className={`list-item d-flex justify-content-between align-items-start ${
+              selectedUser === usuario ? 'clicked' : ''
+            }`}
+            onClick={() => handleUserClick(usuario)}
+          >
+            <div className='ms-2 me-auto'>
+              <div className='fw-bold'>{usuario.nome}</div>Prontuário: {usuario.prontuario}
+            </div>
+          </MDBListGroupItem>
+        ))}
+      </MDBListGroup>
+      {usuarios.length > postsPerPage && (
+        <div className="pag">
+          <Pagination
+            postsPerPage={postsPerPage}
+            totalPosts={usuarios.length}
+            paginate={paginate}
+          />
+        </div>
+      )}
+    </>
                 </MDBCardBody>
               </MDBCard>
             </MDBCol>
+
             <MDBCol md='8'>
-              <MDBCard>
-                <MDBCardBody>
-                {selectedUser && (
-                    <div>
-                      <h3>Detalhes do Usuário</h3>
-                      <p><strong>Nome:</strong> {selectedUser.nome}</p>
-                      <p><strong>Prontuário:</strong> {selectedUser.prontuario}</p>
-                      <h4>Dados da Solicitação</h4>
-                      <p><strong>Medicamentos:</strong></p>
-                      <MDBTextArea label="Medicamentos" id="textAreaExample" rows="{4}" />
-                      <p><strong>Plano terapêutico:</strong></p>
-                      <p><strong>Observações:</strong></p>
-                      <MDBTextArea label="Observações" id="textAreaExample" rows="{4}" />
-                    </div>
-                  )}
-                </MDBCardBody>
-              </MDBCard>
-            </MDBCol>
+  <MDBCard style={{ borderTopLeftRadius: '20px', borderTopRightRadius: '20px', borderBottomLeftRadius: '20px', borderBottomRightRadius: '20px'}}>
+    {/* Cabeçalho */}
+    <div style={{ padding: '5px' }}>
+    {selectedUser && (
+  <div style={{ padding: '10px' }}>
+    <h3 style={{ marginBottom: '0px' }}>Detalhes do Usuário</h3>
+    <p style={{ marginBottom: '0px' }}><strong>Nome:</strong> {selectedUser.nome}</p>
+    <p style={{ marginBottom: '0px' }}><strong>Prontuário:</strong> {selectedUser.prontuario}</p>
+    {/* Conteúdo do cabeçalho (se necessário) */}
+  </div>
+)}
+    </div>
+    {/* Conteúdo principal */}
+    <MDBCardBody style={{ padding: '20px' }}>
+      <MDBRow>
+      <div className="col-md-6">
+      <h4>Histórico</h4>
+      <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
+
+        <MDBCard style={{ marginBottom: '10px' }}>
+        <MDBCardBody style={{ padding: '10px' }}>
+        <MDBCardTitle style={{ fontSize: '1rem' }}>
+        Paciente Internado
+        <span style={{ float: 'right', fontSize: '0.7rem' }}>Ontem</span>
+        <br />
+        <span style={{ float: 'right', fontSize: '0.7rem' }}>10:00</span>
+        </MDBCardTitle>
+        <MDBCardText style={{ fontSize: '0.8rem' }}>
+        Aguardando registro de alta pelo médico, Escrevendo texto longo.
+        </MDBCardText>
+        </MDBCardBody>
+        </MDBCard>
+
+        <MDBCard style={{ marginBottom: '10px' }}>
+        <MDBCardBody style={{ padding: '10px' }}>
+        <MDBCardTitle style={{ fontSize: '1rem' }}>
+        Paciente Internado
+        <span style={{ float: 'right', fontSize: '0.7rem' }}>Ontem</span>
+        <br />
+        <span style={{ float: 'right', fontSize: '0.7rem' }}>10:00</span>
+        </MDBCardTitle>
+        <MDBCardText style={{ fontSize: '0.8rem' }}>
+        Aguardando registro de alta pelo médico, Escrevendo texto longo.
+        </MDBCardText>
+        </MDBCardBody>
+        </MDBCard>
+
+        <MDBCard style={{ marginBottom: '10px' }}>
+        <MDBCardBody style={{ padding: '10px' }}>
+        <MDBCardTitle style={{ fontSize: '1rem' }}>
+        Paciente Internado
+        <span style={{ float: 'right', fontSize: '0.7rem' }}>Ontem</span>
+        <br />
+        <span style={{ float: 'right', fontSize: '0.7rem' }}>10:00</span>
+        </MDBCardTitle>
+        <MDBCardText style={{ fontSize: '0.8rem' }}>
+        Aguardando registro de alta pelo médico, Escrevendo texto longo.
+        </MDBCardText>
+        </MDBCardBody>
+        </MDBCard>
+
+        <MDBCard style={{ marginBottom: '10px' }}>
+        <MDBCardBody style={{ padding: '10px' }}>
+        <MDBCardTitle style={{ fontSize: '1rem' }}>
+        Paciente Internado
+        <span style={{ float: 'right', fontSize: '0.7rem' }}>Ontem</span>
+        <br />
+        <span style={{ float: 'right', fontSize: '0.7rem' }}>10:00</span>
+        </MDBCardTitle>
+        <MDBCardText style={{ fontSize: '0.8rem' }}>
+        Aguardando registro de alta pelo médico, Escrevendo texto longo.
+        </MDBCardText>
+        </MDBCardBody>
+        </MDBCard>
+
+        <MDBCard style={{ marginBottom: '10px' }}>
+        <MDBCardBody style={{ padding: '10px' }}>
+        <MDBCardTitle style={{ fontSize: '1rem' }}>
+        Paciente Internado
+        <span style={{ float: 'right', fontSize: '0.7rem' }}>Ontem</span>
+        <br />
+        <span style={{ float: 'right', fontSize: '0.7rem' }}>10:00</span>
+        </MDBCardTitle>
+        <MDBCardText style={{ fontSize: '0.8rem' }}>
+        Aguardando registro de alta pelo médico, Escrevendo texto longo.
+        </MDBCardText>
+        </MDBCardBody>
+        </MDBCard>
+
+
+ 
+
+        </div>
+        </div>
+        <div className="col-md-6">
+          {selectedUser && (
+            <div>
+              <h4>Dados da Solicitação</h4>
+              <p><strong>Medicamentos:</strong></p>
+              <MDBTextArea label="Medicamentos" id="textAreaExample" rows={4} />
+              <p><strong>Plano terapêutico:</strong></p>
+              <p><strong>Observações:</strong></p>
+              <MDBTextArea label="Observações" id="textAreaExample" rows={4} />
+            </div>
+          )}
+        </div>
+      </MDBRow>
+    </MDBCardBody>
+    {/* Botões */}
+    <div style={{ padding: '20px', marginTop: '10px', display: 'flex', justifyContent: 'space-between', borderTop: '1px solid rgba(0,0,0,.125)' }}>
+            <div>
+              <MDBBtn color='danger' >DELETAR</MDBBtn>
+              <MDBBtn color='success' style={{ marginLeft: '10px' }}>SALVAR RASCUNHO</MDBBtn>
+            </div>
+            <div>
+              <MDBBtn>REGULAÇÃO</MDBBtn>
+              <MDBBtn style={{ marginLeft: '10px' }}>ENVIAR</MDBBtn>
+            </div>
+    </div>
+  </MDBCard>
+</MDBCol>
+
+
           </MDBRow>
         </MDBCardBody>
       </MDBCard>
