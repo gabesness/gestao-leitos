@@ -49,6 +49,22 @@ function ModalComponent({ isOpen, toggleModal }) {
   );
 }
 
+function Histórico() {
+
+}
+
+function DadosFicha() {
+
+}
+
+function QuadroLista() {
+
+}
+
+function QuadroFicha() {
+
+}
+
 function HomeMedico() {
   const usuarios = [
     { id: 1, nome: 'João Ferreira de Mendonça', prontuario: 123456 },
@@ -75,6 +91,7 @@ function HomeMedico() {
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
+
   const handleUserClick = (user) => {
     setSelectedUser(user);
   };
@@ -87,7 +104,7 @@ function HomeMedico() {
       <MDBCard className='my-5 bg-glass max-width-card' style={{ width: '100%', maxWidth: '1200px' }}>
       <h2 style={{ marginTop: '10px', marginLeft: '10px', marginBottom: '-8px' }}>Acompanhamento</h2>
       <hr style={{ marginBottom: '10px' }} />
-        <MDBCardBody className='p-5'>
+      <MDBCardBody className='p-5'>
           <MDBRow>
 
             
@@ -135,8 +152,10 @@ function HomeMedico() {
               </MDBCard>
             </MDBCol>
 
+
             <MDBCol md='8'>
-  <MDBCard style={{ borderTopLeftRadius: '20px', borderTopRightRadius: '20px', borderBottomLeftRadius: '20px', borderBottomRightRadius: '20px'}}>
+            {selectedUser && (
+              <MDBCard style={{ borderTopLeftRadius: '20px', borderTopRightRadius: '20px', borderBottomLeftRadius: '20px', borderBottomRightRadius: '20px'}}>
     {/* Cabeçalho */}
     <div style={{ padding: '5px' }}>
     {selectedUser && (
@@ -255,8 +274,15 @@ function HomeMedico() {
               <MDBBtn style={{ marginLeft: '10px' }}>ENVIAR</MDBBtn>
             </div>
     </div>
-  </MDBCard>
-</MDBCol>
+              </MDBCard>
+ )}
+ {!selectedUser && (
+   <div className="text-center">
+     <p style={{ fontSize: '1.5rem' }}> Selecione um Usuário</p>
+   </div>
+ )}
+
+            </MDBCol>
 
 
           </MDBRow>
