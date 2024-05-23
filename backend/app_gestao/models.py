@@ -1,4 +1,5 @@
 from django.db import models
+from datetime import datetime
 
 # Enumerator para os estagios que o paciente pode ter no sistema
 # Verificar se essas classes podem ficar no escopo local de cada classe que vai utilizar
@@ -11,16 +12,19 @@ class Cargo(models.TextChoices):
     RECEPCIONISTA = "Recepcionista"
 
 class Estagio(models.TextChoices):
-    CADASTRADO = "Paciente cadastrado"
-    PRESCRICAO_CRIADA = "Prescricao criada"
-    PRESCRICAO_DEVOLVIDA = "Prescricao devolvida ao medico"
-    ENC_FARMACIA = "Encaminhado para a Farmacia"
-    ENC_REGULACAO = "Encaminhado para a Regulacao"
-    ENC_HOSPITAL = "Encaminhado para outro hospital"
-    INTERNADO = "Internado"
-    ALTA_OBITO = "Alta obito"
-    ALTA_NORMAL = "Alta normal"
-    ALTA_DEFINITIVA = "Alta definitiva"
+    CADASTRADO = "Paciente cadastrado" # Paciente cadastrado
+    PRESCRICAO_CRIADA = "Prescrição criada" # Prescricao criada
+    PRESCRICAO_DEVOLVIDA_PELA_FARMACIA = "Prescrição devolvida pela Farmácia para o médico" # Prescricao devolvida ao medico pela farmacia para alteracao de medicamentos
+    PRESCRICAO_DEVOLVIDA_PELA_REGULACAO = "Prescrição devolvida pela Regulação para o médico" # Prescricao devolvida ao medico pela regulacao para autorizacao de encaminhamento
+    ENCAMINHADO_PARA_FARMACIA = "Prescrição encaminhada para a Farmácia" # Paciente encaminhado para a farmacia
+    ENCAMINHADO_PARA_AGENDAMENTO = "Prescrição encaminhada para agendamento" # Encaminhado para a Regulacao agendar o paciente
+    AUTORIZADO_PARA_TRANSFERENCIA = "Paciente autorizado para transferência" # Paciente autorizado pelo medico para ser transferido para outro hospital, pendente conf. pela regulacao
+    TRANSFERIDO = "Paciente transferido para outro hospital" # Transferido para outro hospital
+    AGENDADO = "Internação agendada" # Paciente com internacao agendada
+    INTERNADO = "Paciente internado"
+    ALTA_OBITO = "Paciente falecido"
+    ALTA_NORMAL = "Paciente com alta registrada"
+    ALTA_DEFINITIVA = "Paciente com alta definitiva registrada"
 
 
 class Usuario(models.Model):
@@ -35,37 +39,53 @@ class Usuario(models.Model):
 
 
 class Paciente(models.Model):
-    prontuario = models.CharField(max_length=15)
+    prontuario = models.CharField(max_length=15, unique=True)
     nome = models.CharField(max_length=256)
-    internacao_atual = models.ForeignKey("Internacao", on_delete=models.CASCADE)
-    estagio_atual = models.CharField(max_length=32, choices=Estagio.choices, default=Estagio.CADASTRADO)
-    prescricao_atual = models.ForeignKey("Plano_terapeutico", on_delete=models.CASCADE)
+    estagio_atual = models.CharField(max_length=128, choices=Estagio.choices, default=Estagio.CADASTRADO)
+    #prescricao_atual = models.ForeignKey("Plano_terapeutico", on_delete=models.CASCADE, null=True)
+
+    def __str__(self):
+        return f"Paciente [nome={self.nome}]"
 
 class Leito(models.Model):
-    numero = models.CharField(max_length=5)
+    numero = models.CharField(max_length=16)
     ocupado = models.BooleanField()
-    paciente = models.ForeignKey("Paciente", on_delete=models.CASCADE)
+    paciente = models.ForeignKey("Paciente", on_delete=models.CASCADE, null=True)
+
+    def __str__(self):
+        return f"Leito [numero={self.numero}]"
 
 #class Prescricao(models.Model):
 
 
-class Internacao(models.Model):
-    #paciente = models.ForeignKey("Paciente", on_delete=models.CASCADE)
-    leito = models.ForeignKey("Leito", on_delete=models.CASCADE)
+class Sessao(models.Model):
+    leito = models.ForeignKey("Leito", on_delete=models.CASCADE, null=True)
+    paciente = models.ForeignKey("Paciente", on_delete=models.CASCADE)
     data_internacao = models.DateTimeField()
-    data_alta = models.DateTimeField()
+    data_alta = models.DateTimeField(null=True)
 
 class Registro(models.Model):
     # Quem eh o paciente?
-    id_paciente = models.ForeignKey("Paciente", on_delete=models.CASCADE)
+    paciente = models.ForeignKey("Paciente", on_delete=models.CASCADE)
     # Quem fez o registro?
-    id_usuario = models.ForeignKey("Usuario", on_delete=models.CASCADE)
+    usuario = models.ForeignKey("Usuario", on_delete=models.CASCADE)
     # De qual internacao estamos falando?
-    id_internacao = models.ForeignKey("Internacao", on_delete=models.CASCADE)
+    sessao = models.ForeignKey("Sessao", on_delete=models.CASCADE)
+    # Qual eh o estagio atual do paciente?
+    estagio_atual = models.CharField(max_length=128, choices=Estagio.choices)
     # Qual eh a mensagem?
-    mensagem = models.CharField(max_length=10)
+    mensagem = models.TextField()
+
+    def agora():
+        return datetime.now()
+    
+    criado_em = models.DateTimeField(editable=False, default=agora)
+
+    def __str__(self):
+        return f"Registro [estagio={self.estagio_atual}], [mensagem={self.mensagem}]"
 
 class Plano_terapeutico(models.Model):
+    paciente = models.ForeignKey("Paciente", on_delete=models.CASCADE)
     dias_internado = models.IntegerField()
     dias_intervalo = models.IntegerField()
     numero_sessoes = models.IntegerField()
