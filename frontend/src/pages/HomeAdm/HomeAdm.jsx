@@ -30,11 +30,11 @@ import {
   UserListItem,
 }
 from 'mdb-react-ui-kit';
-import './HomeMedico.css';
+import './HomeAdm.css';
 import Pagination from '../../components/Pagination/Pagination';
 import PacienteCard from '../../components/Cards/PacienteCard';
 import HistoricoCard from '../../components/Cards/HistoricoCard';
-import CabecalhoPaciente from '../../components/Ficha/CabecalhoPaciente';
+import CabecalhoUsuario from '../../components/Ficha/CabecalhoUsuario';
 
 
 function QuadroLista({ usuarios, activeTab, selectedUser, handleUserClick, setActiveTab }) {
@@ -96,6 +96,12 @@ function QuadroLista({ usuarios, activeTab, selectedUser, handleUserClick, setAc
 }
 
 function QuadroFicha({ selectedUser }) {
+  const [selectedLeito, setSelectedLeito] = useState(null);
+
+  const handleSelectLeito = (index) => {
+    setSelectedLeito(index + 1);
+  };
+
   return (
   <MDBCol md='8'>
   {selectedUser && (
@@ -103,50 +109,21 @@ function QuadroFicha({ selectedUser }) {
 
     {/* Cabeçalho */}
 
-    <CabecalhoPaciente selectedUser={selectedUser} />
+    <CabecalhoUsuario selectedUser={selectedUser} />
 
     {/* Conteúdo */}
 
     <MDBCardBody style={{ padding: '20px' }}>
       <MDBRow>
 
-      {/* histórico */}
-
-      <div className="col-md-6">
-      <h4>Histórico</h4>
-      <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
-          <HistoricoCard
-                title="Paciente Internado"
-                date="Ontem"
-                time="10:00"
-                text="Aguardando registro de alta pelo médico. Escrevendo texto longo."
-          />
-          
-        </div>
-        </div>
-
-        {/* Dados da Solicitação */}
-
-        <div className="col-md-6">
           <div>
-            <h4>Dados da Solicitação</h4>
-            <MDBTextArea label="Medicamentos" id="textAreaExample" rows={4} className="mb-3" />
-            <MDBInput label="Data de Entrada" id="textAreaExample" type="date" className="mb-3"/>
-
-            <div className="d-flex align-items-center mb-3">
-              <div className="me-2">
-                <MDBInput label="Nº de Sessões" id="sessoes" />
-              </div>
-              <div>
-                <MDBInput label="Dias de intervalo" id="intervaloDias" />
-              </div>
-            </div>
-
-            <hr />
-
-            <MDBTextArea label="Observações" id="textAreaExample" rows={4}/>
+            <h4>Informações do Usuário</h4>
+            <MDBInput label="E-mail" id="senha" className="mb-2"/>
+            <MDBInput label="Telefone" id="senha" className="mb-2"/>
+            <h4>Alterar Senha</h4>
+            <MDBInput label="Nova Senha" id="senha" className="mb-2"/>
+            <MDBInput label="Confirmar Nova Senha" id="senha" className="mb-2"/>
           </div>
-        </div>
       </MDBRow>
     </MDBCardBody>
 
@@ -154,11 +131,10 @@ function QuadroFicha({ selectedUser }) {
 
     <div style={{ padding: '20px', marginTop: '10px', display: 'flex', justifyContent: 'space-between', borderTop: '1px solid rgba(0,0,0,.125)' }}>
       <div>
-        <MDBBtn color='danger' >DELETAR</MDBBtn>
-        <MDBBtn color='success' style={{ marginLeft: '10px' }}>SALVAR RASCUNHO</MDBBtn>
+        <MDBBtn style={{ marginLeft: '10px' }} color='danger' >DESATIVAR USUÁRIO</MDBBtn>
       </div>
       <div>
-        <MDBBtn style={{ marginLeft: '10px' }}>ENVIAR</MDBBtn>
+        <MDBBtn style={{ marginLeft: '10px' }}>SALVAR ALTERAÇÕES</MDBBtn>
       </div>
     </div>
         </MDBCard>
@@ -173,7 +149,7 @@ function QuadroFicha({ selectedUser }) {
   )
 }
 
-function HomeMedico() {
+function HomeAdm() {
   const usuarios = [
     { id: 1, nome: 'João Ferreira de Mendonça', prontuario: 123456 },
     { id: 2, nome: 'Maria Aparecida da Consceição', prontuario: 234567 },
@@ -221,4 +197,4 @@ function HomeMedico() {
   );
 }
 
-export default HomeMedico;
+export default HomeAdm;

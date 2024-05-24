@@ -30,7 +30,7 @@ import {
   UserListItem,
 }
 from 'mdb-react-ui-kit';
-import './HomeMedico.css';
+import './HomeRegulacao.css';
 import Pagination from '../../components/Pagination/Pagination';
 import PacienteCard from '../../components/Cards/PacienteCard';
 import HistoricoCard from '../../components/Cards/HistoricoCard';
@@ -96,6 +96,12 @@ function QuadroLista({ usuarios, activeTab, selectedUser, handleUserClick, setAc
 }
 
 function QuadroFicha({ selectedUser }) {
+  const [selectedLeito, setSelectedLeito] = useState(null);
+
+  const handleSelectLeito = (index) => {
+    setSelectedLeito(index + 1);
+  };
+
   return (
   <MDBCol md='8'>
   {selectedUser && (
@@ -130,17 +136,30 @@ function QuadroFicha({ selectedUser }) {
         <div className="col-md-6">
           <div>
             <h4>Dados da Solicitação</h4>
-            <MDBTextArea label="Medicamentos" id="textAreaExample" rows={4} className="mb-3" />
-            <MDBInput label="Data de Entrada" id="textAreaExample" type="date" className="mb-3"/>
+            <MDBInput label="Data de Entrada" id="textAreaExample" type="date" className="mb-3" disabled/>
 
             <div className="d-flex align-items-center mb-3">
               <div className="me-2">
-                <MDBInput label="Nº de Sessões" id="sessoes" />
+                <MDBInput label="Nº de Sessões" id="sessoes" disabled/>
               </div>
               <div>
-                <MDBInput label="Dias de intervalo" id="intervaloDias" />
+                <MDBInput label="Dias de intervalo" id="intervaloDias" disabled/>
               </div>
             </div>
+
+            <h5>Leitos para amanhã</h5>
+
+            <div className="row mt-3">
+              {[...Array(18)].map((_, index) => (
+                <div key={index} className="col-md-2 mb-1">
+                  <MDBIcon fas icon="bed" style={{fontSize: '28px', cursor: 'pointer', color: '#14A44D'}} onClick={() => handleSelectLeito(index)} />
+                  <p style={{textAlign: 'center', fontSize: '8px'}}>Leito {index + 1}</p>
+                </div>
+              ))}
+            </div>
+
+            <p>Reservar: {selectedLeito !== null ? `Leito ${selectedLeito}` : ''}</p>
+
 
             <hr />
 
@@ -154,11 +173,10 @@ function QuadroFicha({ selectedUser }) {
 
     <div style={{ padding: '20px', marginTop: '10px', display: 'flex', justifyContent: 'space-between', borderTop: '1px solid rgba(0,0,0,.125)' }}>
       <div>
-        <MDBBtn color='danger' >DELETAR</MDBBtn>
-        <MDBBtn color='success' style={{ marginLeft: '10px' }}>SALVAR RASCUNHO</MDBBtn>
+        <MDBBtn style={{ marginLeft: '10px' }}>ENCAMINHAR</MDBBtn>
       </div>
       <div>
-        <MDBBtn style={{ marginLeft: '10px' }}>ENVIAR</MDBBtn>
+        <MDBBtn style={{ marginLeft: '10px' }}>RESERVAR</MDBBtn>
       </div>
     </div>
         </MDBCard>
@@ -173,7 +191,7 @@ function QuadroFicha({ selectedUser }) {
   )
 }
 
-function HomeMedico() {
+function HomeRegulacao() {
   const usuarios = [
     { id: 1, nome: 'João Ferreira de Mendonça', prontuario: 123456 },
     { id: 2, nome: 'Maria Aparecida da Consceição', prontuario: 234567 },
@@ -221,4 +239,4 @@ function HomeMedico() {
   );
 }
 
-export default HomeMedico;
+export default HomeRegulacao;
