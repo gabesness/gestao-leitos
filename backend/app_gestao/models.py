@@ -1,15 +1,6 @@
 from django.db import models
 from datetime import datetime
-
-# Enumerator para os estagios que o paciente pode ter no sistema
-# Verificar se essas classes podem ficar no escopo local de cada classe que vai utilizar
-
-class Cargo(models.TextChoices):
-    ADMIN = "Administrador"
-    MEDICO = "Medico"
-    FARMACIA = "Farmacia"
-    REGULACAO = "Regulacao"
-    RECEPCIONISTA = "Recepcionista"
+from django.contrib.auth.models import User
 
 class Estagio(models.TextChoices):
     CADASTRADO = "Paciente cadastrado" # Paciente cadastrado
@@ -25,18 +16,6 @@ class Estagio(models.TextChoices):
     ALTA_OBITO = "Paciente falecido"
     ALTA_NORMAL = "Paciente com alta registrada"
     ALTA_DEFINITIVA = "Paciente com alta definitiva registrada"
-
-
-class Usuario(models.Model):
-    matricula = models.CharField(max_length=4, unique=True)
-    senha = models.CharField(max_length=6)
-    email = models.EmailField()
-    telefone = models.CharField(max_length=11, blank=True)  
-    cargo = models.CharField(max_length=16, choices=Cargo.choices)
-
-# class Administrador(Usuario):
-
-
 
 class Paciente(models.Model):
     prontuario = models.CharField(max_length=15, unique=True)
@@ -68,7 +47,7 @@ class Registro(models.Model):
     # Quem eh o paciente?
     paciente = models.ForeignKey("Paciente", on_delete=models.CASCADE)
     # Quem fez o registro?
-    usuario = models.ForeignKey("Usuario", on_delete=models.CASCADE)
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
     # De qual internacao estamos falando?
     sessao = models.ForeignKey("Sessao", on_delete=models.CASCADE)
     # Qual eh o estagio atual do paciente?
