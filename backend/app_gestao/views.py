@@ -16,9 +16,6 @@ def login(request):
 
     if user is not None:
         login(request, user)
-    else:
-        html = "<h1>Usuário não encontrado :("
-        return HttpResponse(html)
 
 def esqueceu_senha(request):
     pass
