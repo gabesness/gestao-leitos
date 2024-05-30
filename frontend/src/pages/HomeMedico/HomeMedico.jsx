@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import {
   MDBBtn,
   MDBContainer,
@@ -174,18 +175,20 @@ function QuadroFicha({ selectedUser }) {
 }
 
 function HomeMedico() {
-  const usuarios = [
-    { id: 1, nome: 'João Ferreira de Mendonça', prontuario: 123456 },
-    { id: 2, nome: 'Maria Aparecida da Consceição', prontuario: 234567 },
-    { id: 3, nome: 'Pedro Alcântara de Limões', prontuario: 345678 },
-    { id: 4, nome: 'Ana Maria das Graças', prontuario: 456789 },
-    { id: 5, nome: 'Lucas Ferreira', prontuario: 567890 },
-    { id: 6, nome: 'Laura Flores do Jardim', prontuario: 678901 },
-    { id: 7, nome: 'Mariana Ferreira de Mendonça', prontuario: 789012 },
-    { id: 8, nome: 'Rafael Aparecida da Consceição', prontuario: 890123 },
-    { id: 9, nome: 'Juliana Maria das Graças', prontuario: 901234 },
-    { id: 10, nome: 'Felipe Alcântara de Limões', prontuario: 123987 },
-  ];
+  const [usuarios, setUsuarios] = useState([]);
+
+  useEffect(() => {
+    const fetchUsuarios = async () => {
+      try {
+        const response = await axios.get('http://localhost:8000/lista_pacientes/');
+        setUsuarios(response.data);
+      } catch (error) {
+        console.error("Erro ao buscar os usuários:", error);
+      }
+    };
+    fetchUsuarios();
+  }, []);
+
   
   const [activeTab, setActiveTab] = useState('pendentes');
   const [selectedUser, setSelectedUser] = useState(null);
