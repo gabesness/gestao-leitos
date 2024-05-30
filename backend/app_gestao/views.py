@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from app_gestao.models import Paciente
 from django.contrib.auth import authenticate, login
 
@@ -43,5 +43,5 @@ def minha_conta(request, id):
     return HttpResponse(paciente)
 
 def lista_pacientes(request):
-    pacientes = Paciente.objects.all()
-    return HttpResponse(pacientes)
+    pacientes = Paciente.objects.all().values()
+    return JsonResponse(list(pacientes))
