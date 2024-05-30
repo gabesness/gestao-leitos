@@ -19,9 +19,9 @@ from django.urls import path, include
 from app_gestao import views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
     path('accounts/', include("django.contrib.auth.urls")),
-    path('', views.home),
     path('minha_conta/<int:id>', views.minha_conta),
-    path('lista_pacientes/', views.lista_pacientes)
+    path('lista_pacientes/', views.lista_pacientes),
+    path('admin/', admin.site.urls),
+    path('api/csrf_token', views.csrf_token, name='csrf_token')
 ]

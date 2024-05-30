@@ -2,12 +2,12 @@ from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from app_gestao.models import Paciente
 from django.contrib.auth import authenticate, login
+from django.middleware.csrf import get_token
 
 # Create your views here.
 
-def home(request):
-    html = "<h1>Sistema<h1>"
-    return HttpResponse(html)
+def csrf_token(request):
+    return JsonResponse({'csrfToken': get_token(request)})
 
 def login(request):
     username = request.POST["username"]
