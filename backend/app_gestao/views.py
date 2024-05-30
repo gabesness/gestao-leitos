@@ -41,3 +41,7 @@ def pacientes(request):
 def minha_conta(request, id):
     paciente = Paciente.objects.filter(id=id)
     return HttpResponse(paciente)
+
+def lista_pacientes(request):
+    pacientes = Paciente.objects.all()
+    return HttpResponse(pacientes)
