@@ -56,7 +56,7 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    'corsheaders.middleware.CorsMiddleware'
+    'http://localhost:3000'
 ]
 
 ROOT_URLCONF = 'gestaoleitos.urls'
