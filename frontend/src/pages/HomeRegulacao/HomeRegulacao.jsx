@@ -32,7 +32,7 @@ import {
 from 'mdb-react-ui-kit';
 import './HomeRegulacao.css';
 import Pagination from '../../components/Pagination/Pagination';
-import PacienteCard from '../../components/Cards/PacienteCard';
+import PacienteRegulacaoCard from '../../components/Cards/PacienteRegulacaoCard';
 import HistoricoCard from '../../components/Cards/HistoricoCard';
 import CabecalhoPaciente from '../../components/Ficha/CabecalhoPaciente';
 
@@ -75,7 +75,7 @@ function QuadroLista({ usuarios, activeTab, selectedUser, handleUserClick, setAc
           {/* Listagem */}
 
           {currentUsers.map((usuario, index) => (
-              <PacienteCard key={index} user={usuario} selectedUser={selectedUser} handleUserClick={handleUserClick} />
+              <PacienteRegulacaoCard key={index} user={usuario} selectedUser={selectedUser} handleUserClick={handleUserClick} />
             ))}
 
           </MDBListGroup>
