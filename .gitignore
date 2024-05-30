@@ -1,4 +1,4 @@
-*.png
+docs
 *.pdf
 
 # Created by https://www.toptal.com/developers/gitignore/api/django
