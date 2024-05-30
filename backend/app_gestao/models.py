@@ -45,24 +45,24 @@ class Paciente(models.Model):
     #prescricao_atual = models.ForeignKey("Plano_terapeutico", on_delete=models.CASCADE, null=True)
 
     def __str__(self):
-        return f"Paciente [nome={self.nome}]"
+        return f"Paciente {self.nome}"
 
 class Leito(models.Model):
     numero = models.CharField(max_length=16)
-    ocupado = models.BooleanField()
-    paciente = models.ForeignKey("Paciente", on_delete=models.CASCADE, null=True)
+    ocupado = models.BooleanField(default=False)
+    paciente = models.ForeignKey("Paciente", on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
-        return f"Leito [numero={self.numero}]"
+        return f"Leito {self.numero}"
 
 #class Prescricao(models.Model):
 
 
 class Sessao(models.Model):
-    leito = models.ForeignKey("Leito", on_delete=models.CASCADE, null=True)
+    leito = models.ForeignKey("Leito", on_delete=models.CASCADE, null=True, blank=True)
     paciente = models.ForeignKey("Paciente", on_delete=models.CASCADE)
-    data_internacao = models.DateTimeField()
-    data_alta = models.DateTimeField(null=True)
+    data_internacao = models.DateTimeField(null=True, blank=True)
+    data_alta = models.DateTimeField(null=True, blank=True)
 
 class Registro(models.Model):
     # Quem eh o paciente?
@@ -82,7 +82,7 @@ class Registro(models.Model):
     criado_em = models.DateTimeField(editable=False, default=agora)
 
     def __str__(self):
-        return f"Registro [estagio={self.estagio_atual}], [mensagem={self.mensagem}]"
+        return f"Registro de {self.estagio_atual} por {self.usuario}"
 
 class Plano_terapeutico(models.Model):
     paciente = models.ForeignKey("Paciente", on_delete=models.CASCADE)
