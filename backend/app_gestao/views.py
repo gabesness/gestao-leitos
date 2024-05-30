@@ -44,4 +44,4 @@ def minha_conta(request, id):
 
 def lista_pacientes(request):
     pacientes = Paciente.objects.all().values()
-    return JsonResponse(list(pacientes))
+    return JsonResponse(list(pacientes), safe=False)
