@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import {
   MDBBtn,
   MDBContainer,
@@ -47,6 +48,33 @@ function QuadroLista({ usuarios, activeTab, selectedUser, handleUserClick, setAc
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
+  const [formValue, setFormValue] = useState({
+    nome: '',
+    prontuario: '',
+  });
+
+  const onChange = (e) => {
+    setFormValue({ ...formValue, [e.target.name]: e.target.value });
+  };
+
+  async function CriarPaciente(event) {
+    event.preventDefault();
+    const formData = new FormData();
+    formData.append('nome', formValue.nome);
+    formData.append('prontuario', formValue.prontuario);
+    
+    try {
+      const response = await axios.post('http://localhost:8000/criar_paciente/', formData);
+      if (response.status === 200) {
+        // Aqui você pode lidar com a resposta, se necessário
+      }
+    } catch (error) {
+      console.error('Erro ao criar paciente:', error);
+    }
+  }
+
+  
+
   return (
     <MDBCol md='4'>
       <MDBCard className='mb-4' style={{ borderTopLeftRadius: '30px', borderTopRightRadius: '30px', borderBottomLeftRadius: '20px', borderBottomRightRadius: '20px'}}>
@@ -71,6 +99,36 @@ function QuadroLista({ usuarios, activeTab, selectedUser, handleUserClick, setAc
           <MDBInput type="text" label="Pesquisar" />
           <MDBBtn >Abrir Modal</MDBBtn>
           <MDBListGroup light numbered>
+
+          <form onSubmit={CriarPaciente}>
+            <MDBInput 
+              className="mb-4" 
+              name="nome" 
+              id="nome" 
+              label="Nome" 
+              type="text"
+              value={formValue.nome} 
+              onChange={onChange} 
+            />
+
+            <MDBInput 
+              className="mb-4" 
+              name="prontuario" 
+              id="prontuario" 
+              label="prontuario" 
+              type="text"
+              value={formValue.prontuario} 
+              onChange={onChange} 
+            />  
+
+            <MDBBtn
+              className='w-100 mb-4'
+              size='md'
+              type="submit"
+            >
+              CRIAR
+            </MDBBtn>
+          </form>
 
           {/* Listagem */}
 
