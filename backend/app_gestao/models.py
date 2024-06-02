@@ -34,9 +34,6 @@ class Leito(models.Model):
     def __str__(self):
         return f"Leito {self.numero}"
 
-#class Prescricao(models.Model):
-
-
 class Sessao(models.Model):
     leito = models.ForeignKey("Leito", on_delete=models.CASCADE, null=True, blank=True)
     paciente = models.ForeignKey("Paciente", on_delete=models.CASCADE)

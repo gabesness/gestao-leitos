@@ -25,5 +25,6 @@ urlpatterns = [
     path('lista_pacientes/', views.lista_pacientes),
     path('admin/', admin.site.urls),
     #path('api/csrf_token', views.csrf_token, name='csrf_token')
-    path('criar_paciente/', views.criar_paciente)
+    path('criar_paciente/', views.criar_paciente),
+    path('alterar_usuario/<int:id>', views.alterar_dados_do_usuario)
 ]
