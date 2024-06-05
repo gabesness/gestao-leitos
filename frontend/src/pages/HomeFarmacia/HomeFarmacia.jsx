@@ -36,6 +36,65 @@ import PacienteCard from '../../components/Cards/PacienteCard';
 import HistoricoCard from '../../components/Cards/HistoricoCard';
 import CabecalhoPaciente from '../../components/Ficha/CabecalhoPaciente';
 
+function ModalDevolverMedico({ isOpen, onClose }) {
+  const handleClose = () => {
+    if (isOpen) {
+      onClose();
+    }
+  };
+
+  return (
+    <MDBModal open={isOpen} onClose={handleClose} tabIndex='-1' appendToBody>
+      <MDBModalDialog>
+        <MDBModalContent>
+          <MDBModalHeader>
+            <MDBModalTitle>Confirmação de retorno ao médico</MDBModalTitle>
+            <MDBBtn className='btn-close' color='none' onClick={handleClose}></MDBBtn>
+          </MDBModalHeader>
+          <MDBModalBody>
+
+          A prescrição será retornada ao médico
+
+          </MDBModalBody>
+          <MDBModalFooter>
+            <MDBBtn color='danger'>Cancelar</MDBBtn>
+            <MDBBtn>Devolver</MDBBtn>
+          </MDBModalFooter>
+        </MDBModalContent>
+      </MDBModalDialog>
+    </MDBModal>
+  );
+}
+
+function ModalEnviarRegulaçao({ isOpen, onClose }) {
+  const handleClose = () => {
+    if (isOpen) {
+      onClose();
+    }
+  };
+
+  return (
+    <MDBModal open={isOpen} onClose={handleClose} tabIndex='-1' appendToBody>
+      <MDBModalDialog>
+        <MDBModalContent>
+          <MDBModalHeader>
+            <MDBModalTitle>Confirmação de envio para regulação</MDBModalTitle>
+            <MDBBtn className='btn-close' color='none' onClick={handleClose}></MDBBtn>
+          </MDBModalHeader>
+          <MDBModalBody>
+
+          A prescrição será enviada a regulação para que possa ser feita a reserva dos leitos
+
+          </MDBModalBody>
+          <MDBModalFooter>
+            <MDBBtn color='danger'>Cancelar</MDBBtn>
+            <MDBBtn>Enviar</MDBBtn>
+          </MDBModalFooter>
+        </MDBModalContent>
+      </MDBModalDialog>
+    </MDBModal>
+  );
+}
 
 function QuadroLista({ usuarios, activeTab, selectedUser, handleUserClick, setActiveTab }) {
   const [currentPage, setCurrentPage] = useState(1);
@@ -47,6 +106,12 @@ function QuadroLista({ usuarios, activeTab, selectedUser, handleUserClick, setAc
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
+  // Modal
+  const [basicModal, setBasicModal] = useState(false);
+
+  const toggleOpen = () => setBasicModal(!basicModal);
+
+  
   return (
     <MDBCol md='4'>
       <MDBCard className='mb-4' style={{ borderTopLeftRadius: '30px', borderTopRightRadius: '30px', borderBottomLeftRadius: '20px', borderBottomRightRadius: '20px'}}>
@@ -69,7 +134,9 @@ function QuadroLista({ usuarios, activeTab, selectedUser, handleUserClick, setAc
           {/* Cabeçalho */}
 
           <MDBInput type="text" label="Pesquisar" />
-          <MDBBtn >Abrir Modal</MDBBtn>
+          <MDBBtn onClick={toggleOpen} className="ms-2 d-flex justify-content-center align-items-center" style={{ borderRadius: '50%', width: '40px', height: '40px', padding: '0', margin: '0' }} color="dark">
+              <MDBIcon fas icon="plus" />
+            </MDBBtn>
           <MDBListGroup light numbered>
 
           {/* Listagem */}
@@ -90,7 +157,7 @@ function QuadroLista({ usuarios, activeTab, selectedUser, handleUserClick, setAc
           )}
         </MDBCardBody>
       </MDBCard>
-
+      <ModalDevolverMedico isOpen={basicModal} onClose={toggleOpen} />
     </MDBCol>
   );
 }

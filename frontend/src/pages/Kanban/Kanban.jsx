@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import {
   MDBBtn,
   MDBContainer,
@@ -16,8 +17,30 @@ import {
 }
 from 'mdb-react-ui-kit';
 import './Kanban.css';
+import PacienteCard from '../../components/Cards/PacienteCard';
 
 function Kanban() {
+  const [usuarios, setUsuarios] = useState([]);
+  const [selectedUser, setSelectedUser] = useState(null);
+
+  useEffect(() => {
+    const fetchUsuarios = async () => {
+      try {
+        const response = await axios.get('http://localhost:8000/lista_pacientes/');
+        setUsuarios(response.data);
+      } catch (error) {
+        console.error("Erro ao buscar os usuários:", error);
+      }
+    };
+    fetchUsuarios();
+  }, []);
+
+  const handleUserClick = (user) => {
+    setSelectedUser(user);
+  };
+
+
+
   return (
     <MDBContainer fluid className='p-4 background-radial-gradient overflow-hidden d-flex justify-content-center'  style={{ minHeight: '100vh' }}>
       <MDBCard className='my-5 bg-glass max-width-card' style={{ width: '100%', maxWidth: '1200px' }}>
@@ -28,7 +51,14 @@ function Kanban() {
             <MDBCol md='2'>
               <MDBCard>
                 <MDBCardBody>
-                  {/* Conteúdo do segundo card */}
+                {usuarios.map((usuario, index) => (
+                    <PacienteCard
+                      key={index}
+                      user={usuario}
+                      selectedUser={selectedUser}
+                      handleUserClick={handleUserClick}
+                    />
+                  ))}
                 </MDBCardBody>
               </MDBCard>
             </MDBCol>
