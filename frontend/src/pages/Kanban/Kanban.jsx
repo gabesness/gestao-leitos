@@ -7,6 +7,7 @@ import {
   MDBCol,
   MDBCard,
   MDBCardBody,
+  MDBCardHeader,
   MDBInput,
   MDBCheckbox,
   MDBIcon,
@@ -46,11 +47,17 @@ function Kanban() {
       <MDBCard className='my-5 bg-glass max-width-card' style={{ width: '100%', maxWidth: '1200px' }}>
       <h2 style={{ marginTop: '10px', marginLeft: '10px', marginBottom: '-8px' }}>Acompanhamento</h2>
       <hr style={{ marginBottom: '10px' }} />
-        <MDBCardBody className='p-5'>
-          <MDBRow>
+        <MDBCardBody className='p-3'>
+        <MDBRow className='g-2'>
             <MDBCol md='2'>
               <MDBCard>
-                <MDBCardBody>
+              <MDBCardHeader className="text-center" style={{ fontSize: "22px", padding: "5px 15px", backgroundColor: "#b4c5e4" }}>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <MDBIcon fas icon="user-md" style={{ marginRight: "8px" }}/>
+                  <strong>Médico</strong>
+                </div>
+              </MDBCardHeader>
+                <MDBCardBody className='p-2'>
                 {usuarios.map((usuario, index) => (
                     <PacienteCard
                       key={index}
@@ -63,6 +70,25 @@ function Kanban() {
               </MDBCard>
             </MDBCol>
             <MDBCol md='2'>
+            <MDBCardHeader className="text-center" style={{ fontSize: "22px", padding: "5px 15px", backgroundColor: "#b4c5e4" }}>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <MDBIcon fas icon="pills" style={{ marginRight: "8px" }}/>
+                  <strong>Farmácia</strong>
+                </div>
+              </MDBCardHeader>
+              <MDBCard>
+                <MDBCardBody>
+                  {/* Conteúdo do segundo card */}
+                </MDBCardBody>
+              </MDBCard>
+            </MDBCol>
+            <MDBCol md='2'>
+            <MDBCardHeader className="text-center" style={{ fontSize: "22px", padding: "5px 15px", backgroundColor: "#b4c5e4" }}>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <MDBIcon far icon="calendar-alt" style={{ marginRight: "8px" }}/>
+                  <strong>Regulação</strong>
+                </div>
+              </MDBCardHeader>
               <MDBCard>
                 <MDBCardBody>
                   {/* Conteúdo do segundo card */}
@@ -71,6 +97,12 @@ function Kanban() {
             </MDBCol>
             <MDBCol md='2'>
               <MDBCard>
+              <MDBCardHeader className="text-center" style={{ fontSize: "22px", padding: "5px 15px", backgroundColor: "#b4c5e4" }}>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <MDBIcon fas icon="bed" style={{ marginRight: "8px" }}/>
+                  <strong>Internação</strong>
+                </div>
+              </MDBCardHeader>
                 <MDBCardBody>
                   {/* Conteúdo do segundo card */}
                 </MDBCardBody>
@@ -78,6 +110,12 @@ function Kanban() {
             </MDBCol>
             <MDBCol md='2'>
               <MDBCard>
+              <MDBCardHeader className="text-center" style={{ fontSize: "22px", padding: "5px 15px", backgroundColor: "#b4c5e4" }}>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <MDBIcon fas icon="check-circle" style={{ marginRight: "8px" }}/>
+                  <strong>Alta</strong>
+                </div>
+              </MDBCardHeader>
                 <MDBCardBody>
                   {/* Conteúdo do segundo card */}
                 </MDBCardBody>
@@ -85,13 +123,12 @@ function Kanban() {
             </MDBCol>
             <MDBCol md='2'>
               <MDBCard>
-                <MDBCardBody>
-                  {/* Conteúdo do segundo card */}
-                </MDBCardBody>
-              </MDBCard>
-            </MDBCol>
-            <MDBCol md='2'>
-              <MDBCard>
+              <MDBCardHeader className="text-center" style={{ fontSize: "22px", padding: "5px 15px", backgroundColor: "#b4c5e4" }}>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <MDBIcon fas icon="hospital-alt" style={{ marginRight: "8px" }}/>
+                  <strong>Transferido</strong>
+                </div>
+              </MDBCardHeader>
                 <MDBCardBody>
                   {/* Conteúdo do segundo card */}
                 </MDBCardBody>

@@ -35,7 +35,7 @@ import './Pacientes.css';
 import Pagination from '../../components/Pagination/Pagination';
 import PacienteCard from '../../components/Cards/PacienteCard';
 import HistoricoCard from '../../components/Cards/HistoricoCard';
-import CabecalhoPaciente from '../../components/Ficha/CabecalhoPaciente';
+import CabecalhoHistorico from '../../components/Ficha/CabecalhoHistorico';
 
 function ModalNovaPrescricao({ isOpen, onClose }) {
   const handleClose = () => {
@@ -254,62 +254,60 @@ function QuadroLista({ usuarios, activeTab, selectedUser, handleUserClick, setAc
 
 function QuadroFicha({ selectedUser }) {
   return (
-  <MDBCol md='8'>
-  {selectedUser && (
-  <MDBCard style={{ borderTopLeftRadius: '20px', borderTopRightRadius: '20px', borderBottomLeftRadius: '20px', borderBottomRightRadius: '20px'}}>
-
-    {/* Cabeçalho */}
-
-    <CabecalhoPaciente selectedUser={selectedUser} />
-
-    {/* Conteúdo */}
-
-    <MDBCardBody style={{ padding: '20px' }}>
-      <MDBRow>
-
-      {/* histórico */}
-
-      <div className="col-md-6">
-      <h4>Histórico</h4>
-      <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
-          <HistoricoCard
+    <MDBCol md='8'>
+      {selectedUser && (
+        <MDBCard style={{ borderTopLeftRadius: '20px', borderTopRightRadius: '20px', borderBottomLeftRadius: '20px', borderBottomRightRadius: '20px' }}>
+  
+          {/* Cabeçalho */}
+          <CabecalhoHistorico selectedUser={selectedUser} />
+  
+          {/* Conteúdo */}
+          <MDBCardBody style={{ padding: '10px' }}>
+          <MDBRow style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <MDBBtn className='mx-2' color='tertiary' rippleColor='light'>
+                <MDBIcon fas icon="file-download" className='me-2' />
+                Sessão Atual
+              </MDBBtn>
+              <MDBBtn className='mx-2' color='tertiary' rippleColor='light'>
+                <MDBIcon fas icon="file-download" className='me-2' />
+                Todas as Sessões
+              </MDBBtn>
+              <MDBDropdown style={{ marginLeft: 'auto' }}>
+                <MDBDropdownToggle tag='a' className='btn btn-primary'>
+                  Sessões
+                </MDBDropdownToggle>
+                <MDBDropdownMenu>
+                  <MDBDropdownItem link>1</MDBDropdownItem>
+                  <MDBDropdownItem link>2</MDBDropdownItem>
+                  <MDBDropdownItem link>3</MDBDropdownItem>
+                </MDBDropdownMenu>
+              </MDBDropdown>
+            </div>
+          </MDBRow>
+  
+            {/* Histórico */}
+            <h4 style={{ textAlign: 'center' }}>Histórico</h4>
+            <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
+              <HistoricoCard
                 title="Paciente Internado"
                 date="Ontem"
                 time="10:00"
                 text="Aguardando registro de alta pelo médico. Escrevendo texto longo."
-          />
-          
-        </div>
-        </div>
-
-        {/* Dados da Solicitação */}
-
-        <div className="col-md-6">
-        </div>
-      </MDBRow>
-    </MDBCardBody>
-
-    {/* Botões */}
-
-    <div style={{ padding: '20px', marginTop: '10px', display: 'flex', justifyContent: 'space-between', borderTop: '1px solid rgba(0,0,0,.125)' }}>
-      <div>
-        <MDBBtn color='danger' >DELETAR</MDBBtn>
-        <MDBBtn color='success' style={{ marginLeft: '10px' }}>SALVAR RASCUNHO</MDBBtn>
-      </div>
-      <div>
-        <MDBBtn style={{ marginLeft: '10px' }}>ENVIAR</MDBBtn>
-      </div>
-    </div>
+              />
+            </div>
+          </MDBCardBody>
+  
         </MDBCard>
- )}
-    {!selectedUser && (
-      <div className="text-center">
-        <p style={{ fontSize: '1.5rem' }}> Selecione um Usuário</p>
-      </div>
-    )}
-
-      </MDBCol>
+      )}
+      {!selectedUser && (
+        <div className="text-center">
+          <p style={{ fontSize: '1.5rem' }}>Selecione um Usuário</p>
+        </div>
+      )}
+    </MDBCol>
   )
+  
 }
 
 function Pacientes() {
