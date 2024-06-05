@@ -37,6 +37,155 @@ import PacienteCard from '../../components/Cards/PacienteCard';
 import HistoricoCard from '../../components/Cards/HistoricoCard';
 import CabecalhoPaciente from '../../components/Ficha/CabecalhoPaciente';
 
+function ModalNovaPrescricao({ isOpen, onClose }) {
+  const handleClose = () => {
+    if (isOpen) {
+      onClose();
+    }
+  };
+
+  return (
+    <MDBModal open={isOpen} onClose={handleClose} tabIndex='-1' appendToBody>
+      <MDBModalDialog>
+        <MDBModalContent>
+          <MDBModalHeader>
+            <MDBModalTitle>Nova Prescrição</MDBModalTitle>
+            <MDBBtn className='btn-close' color='none' onClick={handleClose}></MDBBtn>
+          </MDBModalHeader>
+          <MDBModalBody>
+
+          <MDBInput label="Prontuário do Paciente" id="prontuario" type="text"/>
+
+          </MDBModalBody>
+          <MDBModalFooter>
+            <MDBBtn>Criar</MDBBtn>
+          </MDBModalFooter>
+        </MDBModalContent>
+      </MDBModalDialog>
+    </MDBModal>
+  );
+}
+
+function ModalConfirmarAlta({ isOpen, onClose }) {
+  const handleClose = () => {
+    if (isOpen) {
+      onClose();
+    }
+  };
+
+  return (
+    <MDBModal open={isOpen} onClose={handleClose} tabIndex='-1' appendToBody>
+      <MDBModalDialog>
+        <MDBModalContent>
+          <MDBModalHeader>
+            <MDBModalTitle>Confirmação de Alta</MDBModalTitle>
+            <MDBBtn className='btn-close' color='none' onClick={handleClose}></MDBBtn>
+          </MDBModalHeader>
+          <MDBModalBody>
+
+          Confirme que o paciente está recebendo alta
+
+          </MDBModalBody>
+          <MDBModalFooter>
+            <MDBBtn color='danger'>Cancelar</MDBBtn>
+            <MDBBtn>Confirmar Alta</MDBBtn>
+          </MDBModalFooter>
+        </MDBModalContent>
+      </MDBModalDialog>
+    </MDBModal>
+  );
+}
+
+function ModalConfirmarFacelimento({ isOpen, onClose }) {
+  const handleClose = () => {
+    if (isOpen) {
+      onClose();
+    }
+  };
+
+  return (
+    <MDBModal open={isOpen} onClose={handleClose} tabIndex='-1' appendToBody>
+      <MDBModalDialog>
+        <MDBModalContent>
+          <MDBModalHeader>
+            <MDBModalTitle>Confirmação de Falecimento</MDBModalTitle>
+            <MDBBtn className='btn-close' color='none' onClick={handleClose}></MDBBtn>
+          </MDBModalHeader>
+          <MDBModalBody>
+
+          Confirme que o paciente faleceu
+
+          </MDBModalBody>
+          <MDBModalFooter>
+            <MDBBtn color='danger'>Cancelar</MDBBtn>
+            <MDBBtn>Confirmar Alta</MDBBtn>
+          </MDBModalFooter>
+        </MDBModalContent>
+      </MDBModalDialog>
+    </MDBModal>
+  );
+}
+
+function ModalEnviarFarmacia({ isOpen, onClose }) {
+  const handleClose = () => {
+    if (isOpen) {
+      onClose();
+    }
+  };
+
+  return (
+    <MDBModal open={isOpen} onClose={handleClose} tabIndex='-1' appendToBody>
+      <MDBModalDialog>
+        <MDBModalContent>
+          <MDBModalHeader>
+            <MDBModalTitle>Confirmação envio para farmácia</MDBModalTitle>
+            <MDBBtn className='btn-close' color='none' onClick={handleClose}></MDBBtn>
+          </MDBModalHeader>
+          <MDBModalBody>
+
+          A prescrição será encaminhada para a farmácia
+
+          </MDBModalBody>
+          <MDBModalFooter>
+            <MDBBtn color='danger'>Cancelar</MDBBtn>
+            <MDBBtn>Encaminhar</MDBBtn>
+          </MDBModalFooter>
+        </MDBModalContent>
+      </MDBModalDialog>
+    </MDBModal>
+  );
+}
+
+function ModalConfirmarTransferencia({ isOpen, onClose }) {
+  const handleClose = () => {
+    if (isOpen) {
+      onClose();
+    }
+  };
+
+  return (
+    <MDBModal open={isOpen} onClose={handleClose} tabIndex='-1' appendToBody>
+      <MDBModalDialog>
+        <MDBModalContent>
+          <MDBModalHeader>
+            <MDBModalTitle>Confirmação de Transferência</MDBModalTitle>
+            <MDBBtn className='btn-close' color='none' onClick={handleClose}></MDBBtn>
+          </MDBModalHeader>
+          <MDBModalBody>
+
+          Autorização para a regulação confirmar transferência
+
+          </MDBModalBody>
+          <MDBModalFooter>
+            <MDBBtn color='danger'>Cancelar</MDBBtn>
+            <MDBBtn>Autorizar transferência</MDBBtn>
+          </MDBModalFooter>
+        </MDBModalContent>
+      </MDBModalDialog>
+    </MDBModal>
+  );
+}
+
 
 function QuadroLista({ usuarios, activeTab, selectedUser, handleUserClick, setActiveTab }) {
   const [currentPage, setCurrentPage] = useState(1);
@@ -48,12 +197,16 @@ function QuadroLista({ usuarios, activeTab, selectedUser, handleUserClick, setAc
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
+
+  // Modal
+  const [basicModal, setBasicModal] = useState(false);
+
+  const toggleOpen = () => setBasicModal(!basicModal);
+
   return (
     <MDBCol md='4'>
       <MDBCard className='mb-4' style={{ borderTopLeftRadius: '30px', borderTopRightRadius: '30px', borderBottomLeftRadius: '20px', borderBottomRightRadius: '20px'}}>
-         
          {/* Botões das Abas */}
-
         <div className="text-center mb-4">
           <MDBBtn className="w-50" style={{ borderTopLeftRadius: '20px', borderTopRightRadius: '0px', borderBottomRightRadius: '0px', borderBottomLeftRadius: '0px' }} color={activeTab === 'pendentes' ? 'light' : 'dark'} rippleColor='dark' onClick={() => setActiveTab('pendentes')}>
             Pendentes
@@ -64,13 +217,16 @@ function QuadroLista({ usuarios, activeTab, selectedUser, handleUserClick, setAc
         </div>
 
         {/* Conteúdo */}
-
         <MDBCardBody>
-
           {/* Cabeçalho */}
 
-          <MDBInput type="text" label="Pesquisar" />
-          <MDBBtn >Abrir Modal</MDBBtn>
+          <div className="d-flex align-items-center mb-3">
+            <MDBInput type="text" label="Pesquisar" className="flex-grow-1" style={{ height: '40px' }} />
+            <MDBBtn onClick={toggleOpen} className="ms-2 d-flex justify-content-center align-items-center" style={{ borderRadius: '50%', width: '40px', height: '40px', padding: '0', margin: '0' }} color="dark">
+              <MDBIcon fas icon="plus" />
+            </MDBBtn>
+          </div>
+          
           <MDBListGroup light numbered>
 
           {/* Listagem */}
@@ -91,7 +247,7 @@ function QuadroLista({ usuarios, activeTab, selectedUser, handleUserClick, setAc
           )}
         </MDBCardBody>
       </MDBCard>
-
+      <ModalNovaPrescricao isOpen={basicModal} onClose={toggleOpen} />
     </MDBCol>
   );
 }
