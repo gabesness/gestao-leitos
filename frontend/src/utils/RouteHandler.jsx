@@ -9,6 +9,7 @@ import HomeRegulacao from '../pages/HomeRegulacao/HomeRegulacao';
 import HomeAdm from '../pages/HomeAdm/HomeAdm';
 import Kanban from '../pages/Kanban/Kanban';
 import Pacientes from '../pages/Pacientes/Pacientes';
+import MinhaConta from '../pages/MinhaConta/MinhaConta';
 
 function RouteHandler() {
   return (
@@ -22,6 +23,7 @@ function RouteHandler() {
       <Route path="/HomeAdm" element={<HomeAdm />} />
       <Route path="/Kanban" element={<Kanban />} />
       <Route path="/Pacientes" element={<Pacientes />} />
+      <Route path="/MinhaConta" element={<MinhaConta />} />
     </Routes>
   );
 }

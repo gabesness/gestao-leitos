@@ -29,7 +29,34 @@ function Login() {
     try {
       const response = await axios.post('http://localhost:8000/login/', formData);
       if (response.status === 200) {
-        // Aqui você pode lidar com a resposta, se necessário
+      localStorage.setItem('idUser', response.data.id);
+      localStorage.setItem('nome', response.data.nome);
+      localStorage.setItem('sobrenome', response.data.sobrenome);
+      localStorage.setItem('username', response.data.username);
+      localStorage.setItem('cargo', response.data.groups[0]);
+      
+      console.log(localStorage.getItem('idUser'));
+      console.log(localStorage.getItem('nome'));
+      console.log(localStorage.getItem('sobrenome'));
+      console.log(localStorage.getItem('username'));
+      console.log(localStorage.getItem('cargo'));
+
+      if (response.data.groups[0] === "Administrador") {
+        window.location.href = '/homeadm';
+      }
+      if (response.data.groups[0] === "Médico") {
+        window.location.href = '/homemedico';
+      }
+      if (response.data.groups[0] === "Farmácia") {
+        window.location.href = '/homefarmacia';
+      }
+      if (response.data.groups[0] === "Regulação") {
+        window.location.href = '/homeregulacao';
+      }
+      if (response.data.groups[0] === "Recepção") {
+        window.location.href = '/pacientes';
+      }
+
       }
     } catch (error) {
       console.error('Erro ao logar:', error);
