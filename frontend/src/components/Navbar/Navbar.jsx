@@ -11,14 +11,15 @@ import {
   MDBIcon,
   MDBCollapse,
   MDBDropdown,
-  MDBDropdownMenu, 
-  MDBDropdownToggle, 
+  MDBDropdownMenu,
+  MDBDropdownToggle,
   MDBDropdownItem
 } from 'mdb-react-ui-kit';
 
 export default function Navbar() {
   const [openNavSecond, setOpenNavSecond] = useState(false);
   const [nome, setNome] = useState('');
+  const location = useLocation(); // Use the useLocation hook
 
   useEffect(() => {
     const nomeArmazenado = localStorage.getItem('nome');
@@ -35,8 +36,6 @@ export default function Navbar() {
     localStorage.clear();
     window.location.href = '/';
   };
-
-  const isHomePage = location.pathname === '/';
 
   const handleKanbanClick = () => {
     window.location.href = '/kanban';
@@ -71,6 +70,8 @@ export default function Navbar() {
     }
   };
 
+  const isHomePage = location.pathname === '/';
+
   return (
     <MDBNavbar expand='lg' light bgColor='light'>
       <MDBContainer fluid>
@@ -86,20 +87,35 @@ export default function Navbar() {
             </MDBNavbarToggler>
             <MDBCollapse navbar show={openNavSecond}>
               <MDBNavbarNav>
-
-                <MDBNavbarLink active aria-current='page' href='#' onClick={handleHomeClick}>
+                <MDBNavbarLink
+                  href='#'
+                  onClick={handleHomeClick}
+                  className={location.pathname.includes('/home') ? 'active' : ''}
+                >
                   <MDBIcon icon='home' fas style={{ fontSize: '1.2rem' }} />
                 </MDBNavbarLink>
 
-                <MDBNavbarLink href='#' onClick={handleKanbanClick}>
+                <MDBNavbarLink
+                  href='#'
+                  onClick={handleKanbanClick}
+                  className={location.pathname === '/kanban' ? 'active' : ''}
+                >
                   <MDBIcon icon='columns' fas style={{ fontSize: '1.2rem' }} />
                 </MDBNavbarLink>
-                
-                <MDBNavbarLink href='#' onClick={handlePacientesClick}>
+
+                <MDBNavbarLink
+                  href='#'
+                  onClick={handlePacientesClick}
+                  className={location.pathname === '/pacientes' ? 'active' : ''}
+                >
                   <MDBIcon icon="user-friends" fas style={{ fontSize: '1.2rem' }} />
                 </MDBNavbarLink>
 
-                <MDBNavbarLink href='#' onClick={handleDashboardClick}>
+                <MDBNavbarLink
+                  href='#'
+                  onClick={handleDashboardClick}
+                  className={location.pathname === '/dashboard' ? 'active' : ''}
+                >
                   <MDBIcon icon='chart-area' fas style={{ fontSize: '1.2rem' }} />
                 </MDBNavbarLink>
               </MDBNavbarNav>

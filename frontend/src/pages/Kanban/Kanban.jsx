@@ -15,10 +15,84 @@ import {
   MDBListGroup, 
   MDBListGroupItem,
   MDBRipple,
+  MDBTextArea,
+  MDBModal,
+  MDBModalHeader,
+  MDBModalBody,
+  MDBModalFooter,
+  MDBModalDialog,
+  MDBModalContent,
+  MDBModalTitle,
 }
 from 'mdb-react-ui-kit';
 import './Kanban.css';
 import PacienteCard from '../../components/Cards/PacienteCard';
+import HistoricoCard from '../../components/Cards/HistoricoCard';
+import CabecalhoPacienteModal from '../../components/Ficha/CabecalhoPacienteModal';
+
+function ModalFicha({ isOpen, onClose, selectedUser}) {
+  const handleClose = () => {
+    if (isOpen) {
+      onClose();
+    }
+  };
+
+  return (
+    <MDBModal open={isOpen} onClose={handleClose} tabIndex='-1' appendToBody> 
+      <MDBModalDialog style={{ maxWidth: '55%' }}>  
+        <MDBModalContent >
+          <MDBCard>
+            {/* Cabeçalho */}
+            <CabecalhoPacienteModal selectedUser={selectedUser} />
+            {/* Conteúdo */}
+
+            <MDBCardBody style={{ padding: '20px' }}>
+              <MDBRow>
+
+              {/* histórico */}
+
+              <div className="col-md-6">
+              <h4>Histórico</h4>
+              <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
+                  <HistoricoCard
+                        title="Paciente Internado"
+                        date="Ontem"
+                        time="10:00"
+                        text="Aguardando registro de alta pelo médico. Escrevendo texto longo."
+                  />
+                  
+                </div>
+                </div>
+
+                {/* Dados da Solicitação */}
+
+                <div className="col-md-6">
+                  <div>
+                    <h4>Dados da Solicitação</h4>
+                    <MDBTextArea label="Medicamentos" id="textAreaExample" rows={4} className="mb-3" disabled/>
+                    <MDBInput label="Data de Entrada" id="textAreaExample" type="date" className="mb-3" disabled/>
+
+                    <div className="d-flex align-items-center mb-3">
+                      <div className="me-2">
+                        <MDBInput label="Nº de Sessões" id="sessoes" disabled/>
+                      </div>
+                      <div>
+                        <MDBInput label="Dias de intervalo" id="intervaloDias" disabled/>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </MDBRow>
+            </MDBCardBody>
+
+                </MDBCard>
+
+        </MDBModalContent>
+      </MDBModalDialog>
+    </MDBModal>
+  );
+}
+
 
 function Kanban() {
   const [usuarios, setUsuarios] = useState([]);
@@ -38,9 +112,13 @@ function Kanban() {
 
   const handleUserClick = (user) => {
     setSelectedUser(user);
+    toggleOpen();
   };
 
+  // Modal
+  const [basicModal, setBasicModal] = useState(false);
 
+  const toggleOpen = () => setBasicModal(!basicModal);
 
   return (
     <MDBContainer fluid className='p-4 background-radial-gradient overflow-hidden d-flex justify-content-center'  style={{ minHeight: '100vh' }}>
@@ -137,6 +215,7 @@ function Kanban() {
           </MDBRow>
         </MDBCardBody>
       </MDBCard>
+      <ModalFicha isOpen={basicModal} onClose={toggleOpen} selectedUser={selectedUser} />
     </MDBContainer>
   );
 }
