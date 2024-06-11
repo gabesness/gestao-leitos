@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
-from app_gestao.models import Paciente, Registro, Plano_terapeutico
+from app_gestao.models import Paciente, Registro, Sessao
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 #from django.middleware.csrf import get_token
@@ -53,10 +53,17 @@ def alterar_senha(request, id):
     pass
 
 def consultar_prescricao_atual_do_paciente(request, id_paciente):
-    # VERIFICAR ESTRUTURA DO BANCO DE DADOS 
-    p = Paciente.objects.get(id=id_paciente)
-    historico = [r for r in Registro.objects.get(paciente=p)]
-    pt = Plano_terapeutico.objects.get(paciente=p)
+    # PRESCRICAO -> HISTORICO DA SESSAO ATUAL DO PACIENTE + PLANO TERAPEUTICO
+    try:
+        p = Paciente.objects.get(id=id_paciente)
+        plano = Paciente.objects.get(id=id_paciente).plano_terapeutico
+        #sessao_atual = Sessao.objects.filter(id=id_paciente).order_by('creation_time').first()
+        historico = [r for r in Registro.objects.get(paciente=p)]
+
+        return JsonResponse([p, historico])
+
+    except Exception as e:
+        return JsonResponse({'erro': str(e)})
     pass
 
 def dashboard(request):
@@ -72,6 +79,42 @@ def minha_conta(request, id):
 def lista_pacientes(request):
     pacientes = Paciente.objects.all().values()
     return JsonResponse(list(pacientes), safe=False)
+
+def lista_pacientes_medico(request):
+    try:
+        estagios = [
+            'CADASTRADO',
+            'PRESCRICAO_CRIADA',
+            'PRESCRICAO_DEVOLVIDA_PELA_FARMACIA',
+            'PRESCRICAO_DEVOLVIDA_PELA_REGULACAO',
+            'INTERNADO',
+            ]
+        pacientes = Paciente.objects.filter(estagio_atual__in=estagios)
+
+        return JsonResponse(list(pacientes), safe=False)
+    except Exception as e:
+        return JsonResponse({'erro': str(e)})
+    
+def lista_pacientes_farmacia(request):
+    try:
+        pacientes = Paciente.objects.filter(estagio_atual='ENCAMINHADO_PARA_FARMACIA')
+
+        return JsonResponse(list(pacientes), safe=False)
+    except Exception as e:
+        return JsonResponse({'erro': str(e)})
+    
+def lista_pacientes_regulacao(request):
+    try:
+        estagios = [
+            'ENCAMINHADO_PARA_AGENDAMENTO',
+            'AGENDADO',
+            'AUTORIZADO_PARA_TRANSFERENCIA',
+            ]
+        pacientes = Paciente.objects.filter(estagio_atual__in=estagios)
+
+        return JsonResponse(list(pacientes), safe=False)
+    except Exception as e:
+        return JsonResponse({'erro': str(e)})
 
 @csrf_exempt
 def criar_paciente(request):
