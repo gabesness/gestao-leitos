@@ -89,7 +89,7 @@ def lista_pacientes_medico(request):
             'PRESCRICAO_DEVOLVIDA_PELA_REGULACAO',
             'INTERNADO',
             ]
-        pacientes = Paciente.objects.filter(estagio_atual__in=estagios)
+        pacientes = Paciente.objects.filter(estagio_atual__in=estagios).values()
 
         return JsonResponse(list(pacientes), safe=False)
     except Exception as e:
@@ -97,7 +97,7 @@ def lista_pacientes_medico(request):
     
 def lista_pacientes_farmacia(request):
     try:
-        pacientes = Paciente.objects.filter(estagio_atual='ENCAMINHADO_PARA_FARMACIA')
+        pacientes = Paciente.objects.filter(estagio_atual='ENCAMINHADO_PARA_FARMACIA').values()
 
         return JsonResponse(list(pacientes), safe=False)
     except Exception as e:
@@ -110,7 +110,7 @@ def lista_pacientes_regulacao(request):
             'AGENDADO',
             'AUTORIZADO_PARA_TRANSFERENCIA',
             ]
-        pacientes = Paciente.objects.filter(estagio_atual__in=estagios)
+        pacientes = Paciente.objects.filter(estagio_atual__in=estagios).values()
 
         return JsonResponse(list(pacientes), safe=False)
     except Exception as e:

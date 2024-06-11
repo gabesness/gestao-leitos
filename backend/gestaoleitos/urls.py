@@ -23,9 +23,9 @@ urlpatterns = [
     path('login/', views.fazer_login),
     path('minha_conta/<int:id>', views.minha_conta),
     path('lista_pacientes/', views.lista_pacientes),
-    path('lista_pacientes_medico', views.lista_pacientes_medico),
-    path('lista_pacientes_farmacia', views.lista_pacientes_farmacia),
-    path('lista_pacientes_regulacao', views.lista_pacientes_regulacao),    
+    path('lista_pacientes_medico/', views.lista_pacientes_medico),
+    path('lista_pacientes_farmacia/', views.lista_pacientes_farmacia),
+    path('lista_pacientes_regulacao/', views.lista_pacientes_regulacao),    
     path('admin/', admin.site.urls),
     #path('api/csrf_token', views.csrf_token, name='csrf_token')
     path('criar_paciente/', views.criar_paciente),
