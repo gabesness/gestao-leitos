@@ -30,7 +30,7 @@ import PacienteCard from '../../components/Cards/PacienteCard';
 import HistoricoCard from '../../components/Cards/HistoricoCard';
 import CabecalhoPacienteModal from '../../components/Ficha/CabecalhoPacienteModal';
 
-function ModalFicha({ isOpen, onClose, selectedUser}) {
+function ModalFicha({ isOpen, onClose, selectedPaciente}) {
   const handleClose = () => {
     if (isOpen) {
       onClose();
@@ -43,7 +43,7 @@ function ModalFicha({ isOpen, onClose, selectedUser}) {
         <MDBModalContent >
           <MDBCard>
             {/* Cabeçalho */}
-            <CabecalhoPacienteModal selectedUser={selectedUser} />
+            <CabecalhoPacienteModal selectedPaciente={selectedPaciente} />
             {/* Conteúdo */}
 
             <MDBCardBody style={{ padding: '20px' }}>
@@ -95,23 +95,23 @@ function ModalFicha({ isOpen, onClose, selectedUser}) {
 
 
 function Kanban() {
-  const [usuarios, setUsuarios] = useState([]);
-  const [selectedUser, setSelectedUser] = useState(null);
+  const [pacientes, setPacientes] = useState([]);
+  const [selectedPaciente, setSelectedPaciente] = useState(null);
 
   useEffect(() => {
-    const fetchUsuarios = async () => {
+    const fetchPacientes = async () => {
       try {
         const response = await axios.get('http://localhost:8000/lista_pacientes/');
-        setUsuarios(response.data);
+        setPacientes(response.data);
       } catch (error) {
         console.error("Erro ao buscar os usuários:", error);
       }
     };
-    fetchUsuarios();
+    fetchPacientes();
   }, []);
 
-  const handleUserClick = (user) => {
-    setSelectedUser(user);
+  const handlePacienteClick = (paciente) => {
+    setSelectedPaciente(paciente);
     toggleOpen();
   };
 
@@ -136,12 +136,12 @@ function Kanban() {
                 </div>
               </MDBCardHeader>
                 <MDBCardBody className='p-2'>
-                {usuarios.map((usuario, index) => (
+                {pacientes.map((paciente, index) => (
                     <PacienteCard
                       key={index}
-                      user={usuario}
-                      selectedUser={selectedUser}
-                      handleUserClick={handleUserClick}
+                      paciente={paciente}
+                      selectedPaciente={selectedPaciente}
+                      handlePacienteClick={handlePacienteClick}
                     />
                   ))}
                 </MDBCardBody>
@@ -215,7 +215,7 @@ function Kanban() {
           </MDBRow>
         </MDBCardBody>
       </MDBCard>
-      <ModalFicha isOpen={basicModal} onClose={toggleOpen} selectedUser={selectedUser} />
+      <ModalFicha isOpen={basicModal} onClose={toggleOpen} selectedPaciente={selectedPaciente} />
     </MDBContainer>
   );
 }

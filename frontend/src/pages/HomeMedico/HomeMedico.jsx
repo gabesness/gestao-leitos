@@ -187,13 +187,13 @@ function ModalConfirmarTransferencia({ isOpen, onClose }) {
 }
 
 
-function QuadroLista({ usuarios, activeTab, selectedUser, handleUserClick, setActiveTab }) {
+function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteClick, setActiveTab }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [postsPerPage] = useState(5); // Quantidade de usuários por página
 
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
-  const currentUsers = usuarios.slice(indexOfFirstPost, indexOfLastPost);
+  const currentPacientes = pacientes.slice(indexOfFirstPost, indexOfLastPost);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
@@ -231,16 +231,16 @@ function QuadroLista({ usuarios, activeTab, selectedUser, handleUserClick, setAc
 
           {/* Listagem */}
 
-          {currentUsers.map((usuario, index) => (
-              <PacienteCard key={index} user={usuario} selectedUser={selectedUser} handleUserClick={handleUserClick} />
+          {currentPacientes.map((paciente, index) => (
+              <PacienteCard key={index} paciente={paciente} selectedPaciente={selectedPaciente} handlePacienteClick={handlePacienteClick} />
             ))}
 
           </MDBListGroup>
-          {usuarios.length > postsPerPage && (
+          {pacientes.length > postsPerPage && (
             <div className="pag">
               <Pagination
                 postsPerPage={postsPerPage}
-                totalPosts={usuarios.length}
+                totalPosts={pacientes.length}
                 paginate={paginate}
               />
             </div>
@@ -252,15 +252,15 @@ function QuadroLista({ usuarios, activeTab, selectedUser, handleUserClick, setAc
   );
 }
 
-function QuadroFicha({ selectedUser }) {
+function QuadroFicha({ selectedPaciente }) {
   return (
   <MDBCol md='8'>
-  {selectedUser && (
+  {selectedPaciente && (
   <MDBCard style={{ borderTopLeftRadius: '20px', borderTopRightRadius: '20px', borderBottomLeftRadius: '20px', borderBottomRightRadius: '20px'}}>
 
     {/* Cabeçalho */}
 
-    <CabecalhoPaciente selectedUser={selectedUser} />
+    <CabecalhoPaciente selectedPaciente={selectedPaciente} />
 
     {/* Conteúdo */}
 
@@ -278,6 +278,25 @@ function QuadroFicha({ selectedUser }) {
                 time="10:00"
                 text="Aguardando registro de alta pelo médico. Escrevendo texto longo."
           />
+                    <HistoricoCard
+                title="Paciente Internado"
+                date="Ontem"
+                time="10:00"
+                text="Aguardando registro de alta pelo médico. Escrevendo texto longo."
+          />
+                    <HistoricoCard
+                title="Paciente Internado"
+                date="Ontem"
+                time="10:00"
+                text="Aguardando registro de alta pelo médico. Escrevendo texto longo."
+          />
+                    <HistoricoCard
+                title="Paciente Internado"
+                date="Ontem"
+                time="10:00"
+                text="Aguardando registro de alta pelo médico. Escrevendo texto longo."
+          />
+          
           
         </div>
         </div>
@@ -320,7 +339,7 @@ function QuadroFicha({ selectedUser }) {
     </div>
         </MDBCard>
  )}
-    {!selectedUser && (
+    {!selectedPaciente && (
       <div className="text-center">
         <p style={{ fontSize: '1.5rem' }}> Selecione um Usuário</p>
       </div>
@@ -331,27 +350,36 @@ function QuadroFicha({ selectedUser }) {
 }
 
 function HomeMedico() {
-  const [usuarios, setUsuarios] = useState([]);
+  const [pacientes, setPacientes] = useState([]);
 
   useEffect(() => {
-    const fetchUsuarios = async () => {
+    const fetchPacientes = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/lista_pacientes/');
-        setUsuarios(response.data);
+        const response = await axios.get('http://localhost:8000/lista_pacientes_medico/');
+        setPacientes(response.data);
       } catch (error) {
         console.error("Erro ao buscar os usuários:", error);
       }
     };
-    fetchUsuarios();
+    fetchPacientes();
   }, []);
 
   
   const [activeTab, setActiveTab] = useState('pendentes');
-  const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedPaciente, setSelectedPaciente] = useState(null);
 
-  const handleUserClick = (user) => {
-    setSelectedUser(user);
-  };
+   const handlePacienteClick = (paciente) => {
+     setSelectedPaciente(paciente);
+   };
+
+  // const handlePacienteClick = async (paciente) => {
+  //   try {
+  //     const response = await axios.get(`http://localhost:8000/paciente_ficha_/${paciente.id}`);
+  //     setSelectedPaciente(response.data);
+  //   } catch (error) {
+  //     console.error("Erro ao buscar a ficha do paciente:", error);
+  //   }
+  // };
 
   return (
     <MDBContainer fluid className='p-1 background-radial-gradient overflow-hidden d-flex justify-content-center'  style={{ minHeight: '100vh' }}>
@@ -361,15 +389,15 @@ function HomeMedico() {
       <MDBCardBody className='p-5'>
           <MDBRow>
           <QuadroLista
-              usuarios={usuarios}
+              pacientes={pacientes}
               activeTab={activeTab}
-              selectedUser={selectedUser}
-              handleUserClick={handleUserClick}
+              selectedPaciente={selectedPaciente}
+              handlePacienteClick={handlePacienteClick}
               setActiveTab={setActiveTab}
             />
 
           <QuadroFicha 
-          selectedUser={selectedUser} 
+          selectedPaciente={selectedPaciente} 
           />
 
           </MDBRow>

@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import {
   MDBBtn,
   MDBContainer,
@@ -96,13 +97,13 @@ function ModalEnviarRegulaçao({ isOpen, onClose }) {
   );
 }
 
-function QuadroLista({ usuarios, activeTab, selectedUser, handleUserClick, setActiveTab }) {
+function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteClick, setActiveTab }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [postsPerPage] = useState(5); // Quantidade de usuários por página
 
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
-  const currentUsers = usuarios.slice(indexOfFirstPost, indexOfLastPost);
+  const currentPacientes = pacientes.slice(indexOfFirstPost, indexOfLastPost);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
@@ -141,16 +142,16 @@ function QuadroLista({ usuarios, activeTab, selectedUser, handleUserClick, setAc
 
           {/* Listagem */}
 
-          {currentUsers.map((usuario, index) => (
-              <PacienteCard key={index} user={usuario} selectedUser={selectedUser} handleUserClick={handleUserClick} />
+          {currentPacientes.map((paciente, index) => (
+              <PacienteCard key={index} paciente={paciente} selectedPaciente={selectedPaciente} handlePacienteClick={handlePacienteClick} />
             ))}
 
           </MDBListGroup>
-          {usuarios.length > postsPerPage && (
+          {pacientes.length > postsPerPage && (
             <div className="pag">
               <Pagination
                 postsPerPage={postsPerPage}
-                totalPosts={usuarios.length}
+                totalPosts={pacientes.length}
                 paginate={paginate}
               />
             </div>
@@ -162,15 +163,15 @@ function QuadroLista({ usuarios, activeTab, selectedUser, handleUserClick, setAc
   );
 }
 
-function QuadroFicha({ selectedUser }) {
+function QuadroFicha({ selectedPaciente }) {
   return (
   <MDBCol md='8'>
-  {selectedUser && (
+  {selectedPaciente && (
   <MDBCard style={{ borderTopLeftRadius: '20px', borderTopRightRadius: '20px', borderBottomLeftRadius: '20px', borderBottomRightRadius: '20px'}}>
 
     {/* Cabeçalho */}
 
-    <CabecalhoPaciente selectedUser={selectedUser} />
+    <CabecalhoPaciente selectedPaciente={selectedPaciente} />
 
     {/* Conteúdo */}
 
@@ -229,7 +230,7 @@ function QuadroFicha({ selectedUser }) {
     </div>
         </MDBCard>
  )}
-    {!selectedUser && (
+    {!selectedPaciente && (
       <div className="text-center">
         <p style={{ fontSize: '1.5rem' }}> Selecione um Usuário</p>
       </div>
@@ -240,24 +241,27 @@ function QuadroFicha({ selectedUser }) {
 }
 
 function HomeFarmacia() {
-  const usuarios = [
-    { id: 1, nome: 'João Ferreira de Mendonça', prontuario: 123456 },
-    { id: 2, nome: 'Maria Aparecida da Consceição', prontuario: 234567 },
-    { id: 3, nome: 'Pedro Alcântara de Limões', prontuario: 345678 },
-    { id: 4, nome: 'Ana Maria das Graças', prontuario: 456789 },
-    { id: 5, nome: 'Lucas Ferreira', prontuario: 567890 },
-    { id: 6, nome: 'Laura Flores do Jardim', prontuario: 678901 },
-    { id: 7, nome: 'Mariana Ferreira de Mendonça', prontuario: 789012 },
-    { id: 8, nome: 'Rafael Aparecida da Consceição', prontuario: 890123 },
-    { id: 9, nome: 'Juliana Maria das Graças', prontuario: 901234 },
-    { id: 10, nome: 'Felipe Alcântara de Limões', prontuario: 123987 },
-  ];
+  const [pacientes, setPacientes] = useState([]);
+
+  useEffect(() => {
+    const fetchPacientes = async () => {
+      try {
+        const response = await axios.get('http://localhost:8000/lista_pacientes_farmacia/');
+        setPacientes(response.data);
+      } catch (error) {
+        console.error("Erro ao buscar os usuários:", error);
+      }
+    };
+    fetchPacientes();
+  }, []);
+
+  
   
   const [activeTab, setActiveTab] = useState('pendentes');
-  const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedPaciente, setSelectedPaciente] = useState(null);
 
-  const handleUserClick = (user) => {
-    setSelectedUser(user);
+  const handlePacienteClick = (paciente) => {
+    setSelectedPaciente(paciente);
   };
 
   return (
@@ -268,15 +272,15 @@ function HomeFarmacia() {
       <MDBCardBody className='p-5'>
           <MDBRow>
           <QuadroLista
-              usuarios={usuarios}
+              pacientes={pacientes}
               activeTab={activeTab}
-              selectedUser={selectedUser}
-              handleUserClick={handleUserClick}
+              selectedPaciente={selectedPaciente}
+              handlePacienteClick={handlePacienteClick}
               setActiveTab={setActiveTab}
             />
 
           <QuadroFicha 
-          selectedUser={selectedUser} 
+          selectedPaciente={selectedPaciente} 
           />
 
           </MDBRow>
