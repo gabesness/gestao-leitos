@@ -42,6 +42,9 @@ class Sessao(models.Model):
     paciente = models.ForeignKey("Paciente", on_delete=models.CASCADE)
     data_internacao = models.DateTimeField(null=True, blank=True)
     data_alta = models.DateTimeField(null=True, blank=True)
+    def agora():
+        return datetime.now()
+    criada_em = models.DateTimeField(editable=False, default=agora)
 
     def __str__(self):
         return f"Sessao do {self.paciente}"
@@ -72,3 +75,6 @@ class Plano_terapeutico(models.Model):
     dias_intervalo = models.IntegerField()
     data_sugerida = models.DateField()
     medicamentos = models.CharField(max_length=280)
+
+    def __str__(self):
+        return f"{self.sessoes_prescritas} sessoes a cada {self.dias_intervalo} dia(s)"

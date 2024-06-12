@@ -2,7 +2,7 @@ from django.contrib import admin
 from app_gestao.models import Paciente, Leito, Sessao, Registro, Plano_terapeutico
 
 class ListaPaciente(admin.ModelAdmin):
-    list_display = ("id", "prontuario", "nome", "estagio_atual")
+    list_display = ("id", "prontuario", "nome", "estagio_atual", "plano_terapeutico")
     list_display_links = ("id", "prontuario", "nome")
 
 class ListaLeito(admin.ModelAdmin):
