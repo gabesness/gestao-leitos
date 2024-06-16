@@ -25,7 +25,10 @@ urlpatterns = [
     path('lista_pacientes/', views.lista_pacientes),
     path('lista_pacientes_medico/', views.lista_pacientes_medico),
     path('lista_pacientes_farmacia/', views.lista_pacientes_farmacia),
-    path('lista_pacientes_regulacao/', views.lista_pacientes_regulacao),    
+    path('lista_pacientes_regulacao/', views.lista_pacientes_regulacao), 
+
+    path('criar_prescricao/', views.criar_prescricao),
+    path('encaminhar_farmacia', views.encaminhar_farmacia),   
     path('admin/', admin.site.urls),
     #path('api/csrf_token', views.csrf_token, name='csrf_token')
     path('criar_paciente/', views.criar_paciente),
