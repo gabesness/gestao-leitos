@@ -41,8 +41,23 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'app_gestao',
-    'corsheaders'
+    'corsheaders',
+    'rest_framework',
+    'drf_spectacular',
 ]
+
+# Configuracoes do Rest Framework
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+# Configuracoes do DRF Spectacular - gerador de esquema de OpenAPI
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'API Gestao Leitos',
+    'DESCRIPTION': 'Rotas do sistema de gestão de leitos',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

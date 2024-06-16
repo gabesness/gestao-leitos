@@ -16,21 +16,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from app_gestao import views
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
 
-urlpatterns = [
-    path('accounts/', include("django.contrib.auth.urls")),
-    path('login/', views.fazer_login),
-    path('minha_conta/<int:id>', views.minha_conta),
-    path('lista_pacientes/', views.lista_pacientes),
-    path('lista_pacientes_medico/', views.lista_pacientes_medico),
-    path('lista_pacientes_farmacia/', views.lista_pacientes_farmacia),
-    path('lista_pacientes_regulacao/', views.lista_pacientes_regulacao), 
-
-    path('criar_prescricao/', views.criar_prescricao),
-    path('encaminhar_farmacia', views.encaminhar_farmacia),   
-    path('admin/', admin.site.urls),
-    #path('api/csrf_token', views.csrf_token, name='csrf_token')
-    path('criar_paciente/', views.criar_paciente),
-    path('alterar_usuario/<int:id>', views.alterar_dados_do_usuario),
+urlpatterns = [ 
+    path('admin/', admin.site.urls), # rotas do Django Admin
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('api/schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+    path('api/schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
+    path('', include('app_gestao.urls')) # redireciona as demais rotas para o app_gestao
 ]

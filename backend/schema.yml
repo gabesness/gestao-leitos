@@ -1,0 +1,286 @@
+openapi: 3.0.3
+info:
+  title: API Gestao Leitos
+  version: 1.0.0
+  description: Rotas do sistema de gestão de leitos
+paths:
+  /pacientes/:
+    get:
+      operationId: pacientes_list
+      tags:
+      - pacientes
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Paciente'
+          description: ''
+    post:
+      operationId: pacientes_create
+      tags:
+      - pacientes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Paciente'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Paciente'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Paciente'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Paciente'
+          description: ''
+  /pacientes/{id}/:
+    get:
+      operationId: pacientes_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this paciente.
+        required: true
+      tags:
+      - pacientes
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Paciente'
+          description: ''
+    put:
+      operationId: pacientes_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this paciente.
+        required: true
+      tags:
+      - pacientes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Paciente'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Paciente'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Paciente'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Paciente'
+          description: ''
+    patch:
+      operationId: pacientes_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this paciente.
+        required: true
+      tags:
+      - pacientes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedPaciente'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedPaciente'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedPaciente'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Paciente'
+          description: ''
+    delete:
+      operationId: pacientes_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this paciente.
+        required: true
+      tags:
+      - pacientes
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /pacientes/lista_farmacia/:
+    get:
+      operationId: pacientes_lista_farmacia_retrieve
+      tags:
+      - pacientes
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Paciente'
+          description: ''
+  /pacientes/lista_medico/:
+    get:
+      operationId: pacientes_lista_medico_retrieve
+      tags:
+      - pacientes
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Paciente'
+          description: ''
+  /pacientes/lista_regulacao/:
+    get:
+      operationId: pacientes_lista_regulacao_retrieve
+      tags:
+      - pacientes
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Paciente'
+          description: ''
+components:
+  schemas:
+    EstagioAtualEnum:
+      enum:
+      - CADASTRADO
+      - PRESCRICAO_CRIADA
+      - DEVOLVIDA_PELA_FARMACIA
+      - DEVOLVIDA_PELA_REGULACAO
+      - ENCAMINHADO_PARA_FARMACIA
+      - ENCAMINHADO_PARA_AGENDAMENTO
+      - AUTORIZADO_PARA_TRANSFERENCIA
+      - TRANSFERIDO
+      - AGENDADO
+      - INTERNADO
+      - ALTA_OBITO
+      - ALTA_NORMAL
+      - ALTA_DEFINITIVA
+      type: string
+      description: |-
+        * `CADASTRADO` - Cadastrado
+        * `PRESCRICAO_CRIADA` - Prescricao Criada
+        * `DEVOLVIDA_PELA_FARMACIA` - Prescricao Devolvida Pela Farmacia
+        * `DEVOLVIDA_PELA_REGULACAO` - Prescricao Devolvida Pela Regulacao
+        * `ENCAMINHADO_PARA_FARMACIA` - Encaminhado Para Farmacia
+        * `ENCAMINHADO_PARA_AGENDAMENTO` - Encaminhado Para Agendamento
+        * `AUTORIZADO_PARA_TRANSFERENCIA` - Autorizado Para Transferencia
+        * `TRANSFERIDO` - Transferido
+        * `AGENDADO` - Agendado
+        * `INTERNADO` - Internado
+        * `ALTA_OBITO` - Alta Obito
+        * `ALTA_NORMAL` - Alta Normal
+        * `ALTA_DEFINITIVA` - Alta Definitiva
+    Paciente:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        nome:
+          type: string
+          maxLength: 256
+        prontuario:
+          type: string
+          maxLength: 15
+        estagio_atual:
+          $ref: '#/components/schemas/EstagioAtualEnum'
+        plano_terapeutico:
+          type: integer
+          nullable: true
+      required:
+      - estagio_atual
+      - id
+      - nome
+      - prontuario
+    PatchedPaciente:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        nome:
+          type: string
+          maxLength: 256
+        prontuario:
+          type: string
+          maxLength: 15
+        estagio_atual:
+          $ref: '#/components/schemas/EstagioAtualEnum'
+        plano_terapeutico:
+          type: integer
+          nullable: true
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: sessionid

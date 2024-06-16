@@ -5,18 +5,118 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 #from django.middleware.csrf import get_token
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
-from django.core import serializers
-from django.forms.models import model_to_dict
+from rest_framework.viewsets import ModelViewSet, GenericViewSet
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.decorators import action
+from drf_spectacular.utils import extend_schema
+from .serializers import *
 
 # Create your views here.
 
-# def csrf_token(request):
-#     return JsonResponse({'csrfToken': get_token(request)})
+class PacienteViewSet(GenericViewSet):
+    queryset = Paciente.objects.all()
+    serializer_class = PacienteSerializer
+
+    @extend_schema(
+            summary="Cadastro de paciente",
+            description="Cria o paciente no sistema. Obs.: O estágio atual de pacientes criados sempre é CADASTRADO"
+    )
+    @action(detail=False, methods=['POST'])
+    def cadastrar_paciente(self, request):
+        try:
+            serializer = self.get_serializer(data=request.data)
+            if serializer.is_valid(raise_exception=True):
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            else:
+                return Response(status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({'error': str(e)})
+
+    @extend_schema(
+            summary="Todos os pacientes",
+            description="Lista de todos os pacientes, incluindo os falecidos, transferidos e com alta definitiva"
+        )
+    @action(detail=False, methods=['GET'], url_path='lista')
+    def todos(self, request):
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+    @extend_schema(
+        summary="Pacientes do médico",
+        description="Pacientes com os estágios de prescrição criada, devolvido (pela farmácia ou regulação) e internado",
+    )
+    @action(detail=False, methods=['GET'])
+    def lista_medico(self, request):
+        estagios = [
+            'PRESCRICAO_CRIADA',
+            'PRESCRICAO_DEVOLVIDA_PELA_FARMACIA',
+            'PRESCRICAO_DEVOLVIDA_PELA_REGULACAO',
+            'INTERNADO',
+            ]
+        queryset = self.get_queryset().filter(estagio_atual__in=estagios)
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+    
+    @extend_schema(
+        summary="Pacientes da farmácia",
+        description="Pacientes com o estágio de encaminhado para a farmácia",
+    )
+    @action(detail=False, methods=['GET'])
+    def lista_farmacia(self, request):
+        queryset = self.get_queryset().filter(estagio_atual='ENCAMINHADO_PARA_FARMACIA')
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+    
+    @extend_schema(
+        summary="Pacientes da regulação",
+        description="Pacientes com os estágios de encaminhado para agendamento, agendado e autorizado para transferência",
+    )
+    @action(detail=False, methods=['GET'])
+    def lista_regulacao(self, request):
+        estagios = [
+            'ENCAMINHADO_PARA_AGENDAMENTO',
+            'AGENDADO',
+            'AUTORIZADO_PARA_TRANSFERENCIA',
+            ]
+        queryset = self.get_queryset().filter(estagio_atual__in=estagios)
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class UserViewSet(GenericViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+    @extend_schema(
+        summary="Todos os usuários",
+        description="Lista todos os usuários no sistema"
+    )
+    @action(detail=False, methods=['GET'], url_path='')
+    def lista(self, request):
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+    
+    # @extend_schema(
+    #         summary="Cadastrar usuário",
+    #         description="Realiza o cadastro do usuário (Falta implementar envio de senha por e-mail)"
+    # )
+    # @action(detail=False, methods=['POST'])
+    # def criar_usuario(self, request):
+    #     serializer = self.get_serializer(data=request.data)
+    #     if serializer.is_valid(raise_exception=True):
+    #         serializer.save()
+    #         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
 
 def sessao_atual(id_paciente):
     return Sessao.objects.filter(id=id_paciente).order_by('criada_em').first()
 
 ### ROTAS DE LOGIN / AUTENTICACAO
+
+
 @csrf_exempt
 def fazer_login(request):
     try:
@@ -55,43 +155,6 @@ def alterar_senha(request, id):
         # alterar a senha do usuario
         pass
     pass
-
-### ROTAS DE LISTAGEM DE PACIENTES ###
-def lista_pacientes(request):
-    pacientes = Paciente.objects.all().values()
-    return JsonResponse(list(pacientes), safe=False)
-def lista_pacientes_medico(request):
-    try:
-        estagios = [
-            'PRESCRICAO_CRIADA',
-            'PRESCRICAO_DEVOLVIDA_PELA_FARMACIA',
-            'PRESCRICAO_DEVOLVIDA_PELA_REGULACAO',
-            'INTERNADO',
-            ]
-        pacientes = Paciente.objects.filter(estagio_atual__in=estagios).values()
-
-        return JsonResponse(list(pacientes), safe=False)
-    except Exception as e:
-        return JsonResponse({'erro': str(e)})   
-def lista_pacientes_farmacia(request):
-    try:
-        pacientes = Paciente.objects.filter(estagio_atual='ENCAMINHADO_PARA_FARMACIA').values()
-
-        return JsonResponse(list(pacientes), safe=False)
-    except Exception as e:
-        return JsonResponse({'erro': str(e)})    
-def lista_pacientes_regulacao(request):
-    try:
-        estagios = [
-            'ENCAMINHADO_PARA_AGENDAMENTO',
-            'AGENDADO',
-            'AUTORIZADO_PARA_TRANSFERENCIA',
-            ]
-        pacientes = Paciente.objects.filter(estagio_atual__in=estagios).values()
-
-        return JsonResponse(list(pacientes), safe=False)
-    except Exception as e:
-        return JsonResponse({'erro': str(e)})
 
 # ROTAS DO MEDICO
 def criar_prescricao(request):
@@ -190,12 +253,15 @@ def criar_paciente(request):
     nome = request.POST.get('nome', '')
     prontuario = request.POST.get('prontuario', '')
     try:
-        if Paciente.objects.get(prontuario=prontuario).exists():
-            p = Paciente(prontuario=prontuario, nome=nome, estagio_atual="Paciente cadastrado")
+        p = Paciente.objects.get(prontuario=prontuario)
+        return JsonResponse({"ERRO": "já existe paciente cadastrado com este prontuário"})
+    except Paciente.DoesNotExist as e:
+        if prontuario and nome:
+            p = Paciente(prontuario=prontuario, nome=nome, estagio_atual="CADASTRADO")
             p.save()
             return JsonResponse({"OK": "paciente criado com sucesso!"})
         else:
-            return JsonResponse({"ERRO": "já existe paciente cadastrado com este prontuário"})
+            return JsonResponse({'erro': 'informe os dados do paciente corretamente'})
     except Exception as e:
         return JsonResponse({"erro": str(e)})
 
