@@ -33,7 +33,7 @@ import {
 from 'mdb-react-ui-kit';
 import './HomeMedico.css';
 import Pagination from '../../components/Pagination/Pagination';
-import PacienteCard from '../../components/Cards/PacienteCard';
+import PacienteCardMedico from '../../components/Cards/PacienteCardMedico';
 import HistoricoCard from '../../components/Cards/HistoricoCard';
 import CabecalhoPaciente from '../../components/Ficha/CabecalhoPaciente';
 
@@ -193,7 +193,18 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
 
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
-  const currentPacientes = pacientes.slice(indexOfFirstPost, indexOfLastPost);
+
+  const filteredPacientes = pacientes.filter(paciente => 
+    activeTab === 'pendentes' ? 
+      ['PRESCRICAO_CRIADA', 
+      'PRESCRICAO_DEVOLVIDA_REGULACAO', 
+      'PRESCRICAO_DEVOLVIDA_FARMACIA']
+      .includes(paciente.estagio_atual) 
+      : 
+      paciente.estagio_atual === 'INTERNADO'
+  );
+
+  const currentPacientes = filteredPacientes.slice(indexOfFirstPost, indexOfLastPost);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
@@ -227,20 +238,25 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
             </MDBBtn>
           </div>
           
-          <MDBListGroup light numbered>
+          <MDBListGroup light>
 
           {/* Listagem */}
 
-          {currentPacientes.map((paciente, index) => (
-              <PacienteCard key={index} paciente={paciente} selectedPaciente={selectedPaciente} handlePacienteClick={handlePacienteClick} />
+          {currentPacientes.map((paciente) => (
+              <PacienteCardMedico
+                key={paciente.id}
+                paciente={paciente}
+                selectedPaciente={selectedPaciente}
+                handlePacienteClick={handlePacienteClick}
+              />
             ))}
 
           </MDBListGroup>
-          {pacientes.length > postsPerPage && (
+          {filteredPacientes.length > postsPerPage && (
             <div className="pag">
               <Pagination
                 postsPerPage={postsPerPage}
-                totalPosts={pacientes.length}
+                totalPosts={filteredPacientes.length}
                 paginate={paginate}
               />
             </div>
@@ -355,8 +371,9 @@ function HomeMedico() {
   useEffect(() => {
     const fetchPacientes = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/lista_pacientes_medico/');
+        const response = await axios.get('http://localhost:8000/pacientes/lista_medico/');
         setPacientes(response.data);
+        console.log("Lista de pacientes:", response.data);
       } catch (error) {
         console.error("Erro ao buscar os usuários:", error);
       }
@@ -372,14 +389,6 @@ function HomeMedico() {
      setSelectedPaciente(paciente);
    };
 
-  // const handlePacienteClick = async (paciente) => {
-  //   try {
-  //     const response = await axios.get(`http://localhost:8000/paciente_ficha_/${paciente.id}`);
-  //     setSelectedPaciente(response.data);
-  //   } catch (error) {
-  //     console.error("Erro ao buscar a ficha do paciente:", error);
-  //   }
-  // };
 
   return (
     <MDBContainer fluid className='p-1 background-radial-gradient overflow-hidden d-flex justify-content-center'  style={{ minHeight: '100vh' }}>

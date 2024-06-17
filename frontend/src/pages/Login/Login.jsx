@@ -63,6 +63,11 @@ function Login() {
     }
   }
 
+  const handleConvidadoLogin = () => {
+    localStorage.setItem('cargo', 'Convidado');
+    window.location.href = '/pacientes';
+  };
+
   return (
     <MDBContainer fluid className='p-4 background-radial-gradient overflow-hidden d-flex align-items-center justify-content-center'  style={{ minHeight: '100vh', marginTop: '-100px' }}>
       <MDBCard className='my-5 bg-glass max-width-card'>
@@ -92,6 +97,7 @@ function Login() {
               type="button"
               color='tertiary'
               rippleColor='light'
+              onClick={handleConvidadoLogin}
             >
               Entrar como convidado
             </MDBBtn>

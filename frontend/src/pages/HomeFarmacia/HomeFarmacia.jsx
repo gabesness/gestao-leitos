@@ -120,12 +120,6 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
          {/* Botões das Abas */}
 
         <div className="text-center mb-4">
-          <MDBBtn className="w-50" style={{ borderTopLeftRadius: '20px', borderTopRightRadius: '0px', borderBottomRightRadius: '0px', borderBottomLeftRadius: '0px' }} color={activeTab === 'pendentes' ? 'light' : 'dark'} rippleColor='dark' onClick={() => setActiveTab('pendentes')}>
-            Pendentes
-          </MDBBtn>
-          <MDBBtn className="w-50" style={{ borderTopLeftRadius: '0px', borderTopRightRadius: '20px', borderBottomLeftRadius: '0px', borderBottomRightRadius: '0px' }} color={activeTab === 'internados' ? 'light' : 'dark'} onClick={() => setActiveTab('internados')}>
-            Internados
-          </MDBBtn>
         </div>
 
         {/* Conteúdo */}
@@ -135,10 +129,7 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
           {/* Cabeçalho */}
 
           <MDBInput type="text" label="Pesquisar" />
-          <MDBBtn onClick={toggleOpen} className="ms-2 d-flex justify-content-center align-items-center" style={{ borderRadius: '50%', width: '40px', height: '40px', padding: '0', margin: '0' }} color="dark">
-              <MDBIcon fas icon="plus" />
-            </MDBBtn>
-          <MDBListGroup light numbered>
+          <MDBListGroup light>
 
           {/* Listagem */}
 
@@ -246,7 +237,7 @@ function HomeFarmacia() {
   useEffect(() => {
     const fetchPacientes = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/lista_pacientes_farmacia/');
+        const response = await axios.get('http://localhost:8000/pacientes/lista_farmacia/');
         setPacientes(response.data);
       } catch (error) {
         console.error("Erro ao buscar os usuários:", error);
@@ -257,7 +248,6 @@ function HomeFarmacia() {
 
   
   
-  const [activeTab, setActiveTab] = useState('pendentes');
   const [selectedPaciente, setSelectedPaciente] = useState(null);
 
   const handlePacienteClick = (paciente) => {
@@ -273,10 +263,8 @@ function HomeFarmacia() {
           <MDBRow>
           <QuadroLista
               pacientes={pacientes}
-              activeTab={activeTab}
               selectedPaciente={selectedPaciente}
               handlePacienteClick={handlePacienteClick}
-              setActiveTab={setActiveTab}
             />
 
           <QuadroFicha 

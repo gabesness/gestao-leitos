@@ -277,7 +277,18 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
 
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
-  const currentPacientes = pacientes.slice(indexOfFirstPost, indexOfLastPost);
+
+  const filteredPacientes = pacientes.filter(paciente => 
+    activeTab === 'pendentes' ? 
+      ['ENCAMINHADO_PARA_AGENDAMENTO', 
+      'AUTORIZADO_PARA_TRANSFERENCIA']
+      .includes(paciente.estagio_atual) 
+      : 
+      paciente.estagio_atual === 'AGENDADO'
+  );
+
+  const currentPacientes = filteredPacientes.slice(indexOfFirstPost, indexOfLastPost);
+
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
@@ -297,8 +308,8 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
           <MDBBtn className="w-50" style={{ borderTopLeftRadius: '20px', borderTopRightRadius: '0px', borderBottomRightRadius: '0px', borderBottomLeftRadius: '0px' }} color={activeTab === 'pendentes' ? 'light' : 'dark'} rippleColor='dark' onClick={() => setActiveTab('pendentes')}>
             Pendentes
           </MDBBtn>
-          <MDBBtn className="w-50" style={{ borderTopLeftRadius: '0px', borderTopRightRadius: '20px', borderBottomLeftRadius: '0px', borderBottomRightRadius: '0px' }} color={activeTab === 'internados' ? 'light' : 'dark'} onClick={() => setActiveTab('internados')}>
-            Internados
+          <MDBBtn className="w-50" style={{ borderTopLeftRadius: '0px', borderTopRightRadius: '20px', borderBottomLeftRadius: '0px', borderBottomRightRadius: '0px' }} color={activeTab === 'agendados' ? 'light' : 'dark'} onClick={() => setActiveTab('agendados')}>
+            Agendados
           </MDBBtn>
         </div>
 
@@ -309,10 +320,8 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
           {/* Cabeçalho */}
 
           <MDBInput type="text" label="Pesquisar" />
-          <MDBBtn onClick={toggleOpen} className="ms-2 d-flex justify-content-center align-items-center" style={{ borderRadius: '50%', width: '40px', height: '40px', padding: '0', margin: '0' }} color="dark">
-              <MDBIcon fas icon="plus" />
-            </MDBBtn>
-          <MDBListGroup light numbered>
+
+          <MDBListGroup light>
 
           {/* Listagem */}
 
@@ -321,11 +330,11 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
             ))}
 
           </MDBListGroup>
-          {pacientes.length > postsPerPage && (
+          {filteredPacientes.length > postsPerPage && (
             <div className="pag">
               <Pagination
                 postsPerPage={postsPerPage}
-                totalPosts={pacientes.length}
+                totalPosts={filteredPacientes.length}
                 paginate={paginate}
               />
             </div>
@@ -439,7 +448,7 @@ function HomeRegulacao() {
   useEffect(() => {
     const fetchPacientes = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/lista_pacientes_regulacao/');
+        const response = await axios.get('http://localhost:8000/pacientes/lista_regulacao/');
         setPacientes(response.data);
       } catch (error) {
         console.error("Erro ao buscar os usuários:", error);

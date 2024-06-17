@@ -37,148 +37,83 @@ import PacienteCard from '../../components/Cards/PacienteCard';
 import HistoricoCard from '../../components/Cards/HistoricoCard';
 import CabecalhoHistorico from '../../components/Ficha/CabecalhoHistorico';
 
-function ModalNovaPrescricao({ isOpen, onClose }) {
+
+function ModalCriarPaciente({ isOpen, onClose }) {
   const handleClose = () => {
     if (isOpen) {
       onClose();
     }
   };
 
+  const [formValue, setFormValue] = useState({
+    nome: '',
+    prontuario: '',
+  });
+
+  const onChange = (e) => {
+    setFormValue({ ...formValue, [e.target.name]: e.target.value });
+  };
+
+  async function CriarPaciente(event) {
+    event.preventDefault();
+    const formData = new FormData();
+    formData.append('nome', formValue.nome);
+    formData.append('prontuario', formValue.prontuario);
+    
+    try {
+      const response = await axios.post('http://localhost:8000/criar_paciente/', formData);
+      if (response.status === 200) {
+      window.location.href = '/pacientes';
+      }
+    } catch (error) {
+      console.error('Erro ao criar paciente:', error);
+    }
+  }
+
+
   return (
     <MDBModal open={isOpen} onClose={handleClose} tabIndex='-1' appendToBody>
       <MDBModalDialog>
         <MDBModalContent>
           <MDBModalHeader>
-            <MDBModalTitle>Nova Prescrição</MDBModalTitle>
+            <MDBModalTitle>Adicionar Paciente Novo</MDBModalTitle>
             <MDBBtn className='btn-close' color='none' onClick={handleClose}></MDBBtn>
           </MDBModalHeader>
           <MDBModalBody>
+          <form onSubmit={CriarPaciente}>
+            <MDBInput 
+              className="mb-4" 
+              name="nome" 
+              id="nome" 
+              label="Nome" 
+              type="text"
+              value={formValue.nome} 
+              onChange={onChange} 
+            />
 
-          <MDBInput label="Prontuário do Paciente" id="prontuario" type="text"/>
+            <MDBInput 
+              className="mb-4" 
+              name="prontuario" 
+              id="prontuario" 
+              label="prontuario" 
+              type="text"
+              value={formValue.prontuario} 
+              onChange={onChange} 
+            />  
+
+            <MDBBtn
+              className='w-100 mb-4'
+              size='md'
+              type="submit"
+            >
+              Salvar
+            </MDBBtn>
+          </form>
 
           </MDBModalBody>
           <MDBModalFooter>
+            <MDBBtn color='danger'>Cancelar</MDBBtn>
             <MDBBtn>Criar</MDBBtn>
-          </MDBModalFooter>
-        </MDBModalContent>
-      </MDBModalDialog>
-    </MDBModal>
-  );
-}
-
-function ModalConfirmarAlta({ isOpen, onClose }) {
-  const handleClose = () => {
-    if (isOpen) {
-      onClose();
-    }
-  };
-
-  return (
-    <MDBModal open={isOpen} onClose={handleClose} tabIndex='-1' appendToBody>
-      <MDBModalDialog>
-        <MDBModalContent>
-          <MDBModalHeader>
-            <MDBModalTitle>Confirmação de Alta</MDBModalTitle>
-            <MDBBtn className='btn-close' color='none' onClick={handleClose}></MDBBtn>
-          </MDBModalHeader>
-          <MDBModalBody>
-
-          Confirme que o paciente está recebendo alta
-
-          </MDBModalBody>
-          <MDBModalFooter>
-            <MDBBtn color='danger'>Cancelar</MDBBtn>
-            <MDBBtn>Confirmar Alta</MDBBtn>
-          </MDBModalFooter>
-        </MDBModalContent>
-      </MDBModalDialog>
-    </MDBModal>
-  );
-}
-
-function ModalConfirmarFacelimento({ isOpen, onClose }) {
-  const handleClose = () => {
-    if (isOpen) {
-      onClose();
-    }
-  };
-
-  return (
-    <MDBModal open={isOpen} onClose={handleClose} tabIndex='-1' appendToBody>
-      <MDBModalDialog>
-        <MDBModalContent>
-          <MDBModalHeader>
-            <MDBModalTitle>Confirmação de Falecimento</MDBModalTitle>
-            <MDBBtn className='btn-close' color='none' onClick={handleClose}></MDBBtn>
-          </MDBModalHeader>
-          <MDBModalBody>
-
-          Confirme que o paciente faleceu
-
-          </MDBModalBody>
-          <MDBModalFooter>
-            <MDBBtn color='danger'>Cancelar</MDBBtn>
-            <MDBBtn>Confirmar Alta</MDBBtn>
-          </MDBModalFooter>
-        </MDBModalContent>
-      </MDBModalDialog>
-    </MDBModal>
-  );
-}
-
-function ModalEnviarFarmacia({ isOpen, onClose }) {
-  const handleClose = () => {
-    if (isOpen) {
-      onClose();
-    }
-  };
-
-  return (
-    <MDBModal open={isOpen} onClose={handleClose} tabIndex='-1' appendToBody>
-      <MDBModalDialog>
-        <MDBModalContent>
-          <MDBModalHeader>
-            <MDBModalTitle>Confirmação envio para farmácia</MDBModalTitle>
-            <MDBBtn className='btn-close' color='none' onClick={handleClose}></MDBBtn>
-          </MDBModalHeader>
-          <MDBModalBody>
-
-          A prescrição será encaminhada para a farmácia
-
-          </MDBModalBody>
-          <MDBModalFooter>
-            <MDBBtn color='danger'>Cancelar</MDBBtn>
-            <MDBBtn>Encaminhar</MDBBtn>
-          </MDBModalFooter>
-        </MDBModalContent>
-      </MDBModalDialog>
-    </MDBModal>
-  );
-}
-
-function ModalConfirmarTransferencia({ isOpen, onClose }) {
-  const handleClose = () => {
-    if (isOpen) {
-      onClose();
-    }
-  };
-
-  return (
-    <MDBModal open={isOpen} onClose={handleClose} tabIndex='-1' appendToBody>
-      <MDBModalDialog>
-        <MDBModalContent>
-          <MDBModalHeader>
-            <MDBModalTitle>Confirmação de Transferência</MDBModalTitle>
-            <MDBBtn className='btn-close' color='none' onClick={handleClose}></MDBBtn>
-          </MDBModalHeader>
-          <MDBModalBody>
-
-          Autorização para a regulação confirmar transferência
-
-          </MDBModalBody>
-          <MDBModalFooter>
-            <MDBBtn color='danger'>Cancelar</MDBBtn>
-            <MDBBtn>Autorizar transferência</MDBBtn>
           </MDBModalFooter>
         </MDBModalContent>
       </MDBModalDialog>
@@ -196,6 +131,8 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
   const currentPacientes = pacientes.slice(indexOfFirstPost, indexOfLastPost);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  const cargo = localStorage.getItem('cargo');
 
 
   // Modal
@@ -222,12 +159,14 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
 
           <div className="d-flex align-items-center mb-3">
             <MDBInput type="text" label="Pesquisar" className="flex-grow-1" style={{ height: '40px' }} />
-            <MDBBtn onClick={toggleOpen} className="ms-2 d-flex justify-content-center align-items-center" style={{ borderRadius: '50%', width: '40px', height: '40px', padding: '0', margin: '0' }} color="dark">
-              <MDBIcon fas icon="plus" />
-            </MDBBtn>
+            {cargo === 'Recepção' || cargo === 'Regulação' ? (
+              <MDBBtn onClick={toggleOpen} className="ms-2 d-flex justify-content-center align-items-center" style={{ borderRadius: '50%', width: '40px', height: '40px', padding: '0', margin: '0' }} color="dark">
+                <MDBIcon fas icon="plus" />
+              </MDBBtn>
+            ) : null}
           </div>
           
-          <MDBListGroup light numbered>
+          <MDBListGroup light>
 
           {/* Listagem */}
 
@@ -247,7 +186,7 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
           )}
         </MDBCardBody>
       </MDBCard>
-      <ModalConfirmarAlta isOpen={basicModal} onClose={toggleOpen} />
+      <ModalCriarPaciente isOpen={basicModal} onClose={toggleOpen} />
     </MDBCol>
   );
 }
@@ -316,7 +255,7 @@ function Pacientes() {
   useEffect(() => {
     const fetchPacientes = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/lista_pacientes/');
+        const response = await axios.get('http://localhost:8000/pacientes/lista/');
         setPacientes(response.data);
       } catch (error) {
         console.error("Erro ao buscar os usuários:", error);

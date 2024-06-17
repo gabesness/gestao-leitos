@@ -20,6 +20,7 @@ export default function Navbar() {
   const [openNavSecond, setOpenNavSecond] = useState(false);
   const [nome, setNome] = useState('');
   const location = useLocation(); // Use the useLocation hook
+  const permittedRoles = ['Administrador', 'Médico', 'Regulação', 'Farmacia'];
 
   useEffect(() => {
     const nomeArmazenado = localStorage.getItem('nome');
@@ -51,22 +52,26 @@ export default function Navbar() {
 
   const handleHomeClick = () => {
     const cargo = localStorage.getItem('cargo');
-    switch (cargo) {
-      case 'Administrador':
-        window.location.href = '/homeadm';
-        break;
-      case 'Médico':
-        window.location.href = '/homemedico';
-        break;
-      case 'Regulação':
-        window.location.href = '/homeregulacao';
-        break;
-      case 'Farmacia':
-        window.location.href = '/homefarmacia';
-        break;
-      default:
-        window.location.href = '/';
-        break;
+    if (permittedRoles.includes(cargo)) {
+      switch (cargo) {
+        case 'Administrador':
+          window.location.href = '/homeadm';
+          break;
+        case 'Médico':
+          window.location.href = '/homemedico';
+          break;
+        case 'Regulação':
+          window.location.href = '/homeregulacao';
+          break;
+        case 'Farmacia':
+          window.location.href = '/homefarmacia';
+          break;
+        default:
+          window.location.href = '/';
+          break;
+      }
+    } else {
+      window.location.href = '/';
     }
   };
 
@@ -75,7 +80,7 @@ export default function Navbar() {
   return (
     <MDBNavbar expand='lg' light bgColor='light'>
       <MDBContainer fluid>
-        <MDBNavbarBrand href='#'>Sistema</MDBNavbarBrand>
+      <MDBNavbarBrand href='#'>Sistema</MDBNavbarBrand>
         {!isHomePage && (
           <>
             <MDBNavbarToggler
@@ -87,13 +92,15 @@ export default function Navbar() {
             </MDBNavbarToggler>
             <MDBCollapse navbar show={openNavSecond}>
               <MDBNavbarNav>
-                <MDBNavbarLink
-                  href='#'
-                  onClick={handleHomeClick}
-                  className={location.pathname.includes('/home') ? 'active' : ''}
-                >
-                  <MDBIcon icon='home' fas style={{ fontSize: '1.2rem' }} />
-                </MDBNavbarLink>
+                {permittedRoles.includes(localStorage.getItem('cargo')) && (
+                  <MDBNavbarLink
+                    href='#'
+                    onClick={handleHomeClick}
+                    className={location.pathname.includes('/home') ? 'active' : ''}
+                  >
+                    <MDBIcon icon='home' fas style={{ fontSize: '1.2rem' }} />
+                  </MDBNavbarLink>
+                )}
 
                 <MDBNavbarLink
                   href='#'

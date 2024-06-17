@@ -6,7 +6,7 @@ const CabecalhoFicha = ({ selectedUser }) => {
     {selectedUser && (
       <div style={{ padding: '10px', color: 'black' }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'auto auto', justifyContent: 'space-between' }}>
-        <h3 style={{ marginBottom: '0px', fontSize: '1.5em' }}><strong>{selectedUser.Nome} {selectedUser.Sobrenome}</strong></h3>
+        <h3 style={{ marginBottom: '0px', fontSize: '1.5em' }}><strong>{selectedUser.first_name} {selectedUser.last_name}</strong></h3>
         <p style={{ marginBottom: '0px', textAlign: 'right', fontSize: '1.1em' }}>Tipo de conta: {selectedUser.Cargo}</p>
         </div>
         <p style={{ marginBottom: '0px', fontSize: '1.1em' }}>Matrícula</p>
