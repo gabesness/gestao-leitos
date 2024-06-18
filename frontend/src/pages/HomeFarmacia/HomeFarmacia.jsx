@@ -154,7 +154,7 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
   );
 }
 
-function QuadroFicha({ selectedPaciente }) {
+function QuadroFicha({ selectedPaciente, historico }) {
   return (
   <MDBCol md='8'>
   {selectedPaciente && (
@@ -174,12 +174,15 @@ function QuadroFicha({ selectedPaciente }) {
       <div className="col-md-6">
       <h4>Histórico</h4>
       <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
-          <HistoricoCard
-                title="Paciente Internado"
-                date="Ontem"
-                time="10:00"
-                text="Aguardando registro de alta pelo médico. Escrevendo texto longo."
-          />
+      {historico.map((registro, index) => (
+                <HistoricoCard
+                  key={index}
+                  title={registro.estagio_atual}
+                  date={registro.date}
+                  time={registro.time}
+                  text={registro.mensagem}
+                />
+              ))} 
           
         </div>
         </div>
@@ -233,6 +236,9 @@ function QuadroFicha({ selectedPaciente }) {
 
 function HomeFarmacia() {
   const [pacientes, setPacientes] = useState([]);
+  const [historico, setHistorico] = useState([]);
+  const [selectedPaciente, setSelectedPaciente] = useState(null);
+
 
   useEffect(() => {
     const fetchPacientes = async () => {
@@ -246,12 +252,15 @@ function HomeFarmacia() {
     fetchPacientes();
   }, []);
 
-  
-  
-  const [selectedPaciente, setSelectedPaciente] = useState(null);
-
-  const handlePacienteClick = (paciente) => {
+  const handlePacienteClick = async (paciente) => {
     setSelectedPaciente(paciente);
+    try {
+      const response = await axios.get(`http://localhost:8000/pacientes/${paciente.id}/historico_atual/`);
+      setHistorico(response.data);
+      console.log('Histórico do paciente:', response.data);
+    } catch (error) {
+      console.error('Erro ao buscar o histórico do paciente:', error);
+    }
   };
 
   return (
@@ -269,6 +278,7 @@ function HomeFarmacia() {
 
           <QuadroFicha 
           selectedPaciente={selectedPaciente} 
+          historico={historico}
           />
 
           </MDBRow>

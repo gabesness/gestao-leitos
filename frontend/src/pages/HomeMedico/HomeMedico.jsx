@@ -38,9 +38,30 @@ import HistoricoCard from '../../components/Cards/HistoricoCard';
 import CabecalhoPaciente from '../../components/Ficha/CabecalhoPaciente';
 
 function ModalNovaPrescricao({ isOpen, onClose }) {
+  const [prontuario, setProntuario] = useState('');
+
   const handleClose = () => {
     if (isOpen) {
       onClose();
+    }
+  };
+
+  const handleChange = (event) => {
+    setProntuario(event.target.value);
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const formData = new FormData();
+    formData.append('prontuario', prontuario);
+    
+    try {
+      const response = await axios.post('http://localhost:8000/criar_prescricao/', formData);
+      if (response.status === 200) {
+        window.location.href = '/prescricoes';
+      }
+    } catch (error) {
+      console.error('Erro ao criar prescrição:', error);
     }
   };
 
@@ -54,11 +75,11 @@ function ModalNovaPrescricao({ isOpen, onClose }) {
           </MDBModalHeader>
           <MDBModalBody>
 
-          <MDBInput label="Prontuário do Paciente" id="prontuario" type="text"/>
+          <MDBInput label="Prontuário do Paciente" id="prontuario" type="text" value={prontuario} onChange={handleChange} />
 
           </MDBModalBody>
           <MDBModalFooter>
-            <MDBBtn>Criar</MDBBtn>
+          <MDBBtn onClick={handleSubmit}>Criar</MDBBtn>
           </MDBModalFooter>
         </MDBModalContent>
       </MDBModalDialog>
@@ -197,8 +218,8 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
   const filteredPacientes = pacientes.filter(paciente => 
     activeTab === 'pendentes' ? 
       ['PRESCRICAO_CRIADA', 
-      'PRESCRICAO_DEVOLVIDA_REGULACAO', 
-      'PRESCRICAO_DEVOLVIDA_FARMACIA']
+      'DEVOLVIDA_PELA_FARMACIA', 
+      'DEVOLVIDA_PELA_REGULACAO']
       .includes(paciente.estagio_atual) 
       : 
       paciente.estagio_atual === 'INTERNADO'
@@ -233,8 +254,17 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
 
           <div className="d-flex align-items-center mb-3">
             <MDBInput type="text" label="Pesquisar" className="flex-grow-1" style={{ height: '40px' }} />
-            <MDBBtn onClick={toggleOpen} className="ms-2 d-flex justify-content-center align-items-center" style={{ borderRadius: '50%', width: '40px', height: '40px', padding: '0', margin: '0' }} color="dark">
-              <MDBIcon fas icon="plus" />
+            <MDBBtn
+              onClick={toggleOpen}
+              className="ms-2 d-flex justify-content-center align-items-center btn-sm"
+              style={{
+                minWidth: '40px',
+                height: '40px',
+                margin: '0',
+              }}
+              color="dark"
+            >
+               <MDBIcon fas icon="plus" />
             </MDBBtn>
           </div>
           
@@ -268,7 +298,7 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
   );
 }
 
-function QuadroFicha({ selectedPaciente }) {
+function QuadroFicha({ selectedPaciente, historico }) {
   return (
   <MDBCol md='8'>
   {selectedPaciente && (
@@ -288,32 +318,15 @@ function QuadroFicha({ selectedPaciente }) {
       <div className="col-md-6">
       <h4>Histórico</h4>
       <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
-          <HistoricoCard
-                title="Paciente Internado"
-                date="Ontem"
-                time="10:00"
-                text="Aguardando registro de alta pelo médico. Escrevendo texto longo."
-          />
-                    <HistoricoCard
-                title="Paciente Internado"
-                date="Ontem"
-                time="10:00"
-                text="Aguardando registro de alta pelo médico. Escrevendo texto longo."
-          />
-                    <HistoricoCard
-                title="Paciente Internado"
-                date="Ontem"
-                time="10:00"
-                text="Aguardando registro de alta pelo médico. Escrevendo texto longo."
-          />
-                    <HistoricoCard
-                title="Paciente Internado"
-                date="Ontem"
-                time="10:00"
-                text="Aguardando registro de alta pelo médico. Escrevendo texto longo."
-          />
-          
-          
+      {historico.map((registro, index) => (
+                <HistoricoCard
+                  key={index}
+                  title={registro.estagio_atual}
+                  date={registro.date}
+                  time={registro.time}
+                  text={registro.mensagem}
+                />
+              ))} 
         </div>
         </div>
 
@@ -367,11 +380,15 @@ function QuadroFicha({ selectedPaciente }) {
 
 function HomeMedico() {
   const [pacientes, setPacientes] = useState([]);
+  const [historico, setHistorico] = useState([]);
+  const [activeTab, setActiveTab] = useState('pendentes');
+  const [selectedPaciente, setSelectedPaciente] = useState(null);
+
 
   useEffect(() => {
     const fetchPacientes = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/pacientes/lista_medico/');
+        const response = await axios.get(`http://localhost:8000/pacientes/${paciente.id}/historico_atual/`);
         setPacientes(response.data);
         console.log("Lista de pacientes:", response.data);
       } catch (error) {
@@ -381,14 +398,16 @@ function HomeMedico() {
     fetchPacientes();
   }, []);
 
-  
-  const [activeTab, setActiveTab] = useState('pendentes');
-  const [selectedPaciente, setSelectedPaciente] = useState(null);
-
-   const handlePacienteClick = (paciente) => {
-     setSelectedPaciente(paciente);
-   };
-
+  const handlePacienteClick = async (paciente) => {
+    setSelectedPaciente(paciente);
+    try {
+      const response = await axios.get(`http://localhost:8000/pacientes/${paciente.id}/historico_completo/`);
+      setHistorico(response.data);
+      console.log('Histórico do paciente:', response.data);
+    } catch (error) {
+      console.error('Erro ao buscar o histórico do paciente:', error);
+    }
+  };
 
   return (
     <MDBContainer fluid className='p-1 background-radial-gradient overflow-hidden d-flex justify-content-center'  style={{ minHeight: '100vh' }}>
@@ -407,6 +426,7 @@ function HomeMedico() {
 
           <QuadroFicha 
           selectedPaciente={selectedPaciente} 
+          historico={historico}
           />
 
           </MDBRow>

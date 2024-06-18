@@ -191,7 +191,15 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
   );
 }
 
-function QuadroFicha({ selectedPaciente }) {
+function QuadroFicha({ selectedPaciente, historico }) {
+  const [selectedSession, setSelectedSession] = useState('Todas');
+
+  const uniqueSessions = ['Todas', ...new Set(historico.map(item => item.sessao))];
+
+  const filteredHistorico = selectedSession === 'Todas'
+    ? historico
+    : historico.filter(item => item.sessao === selectedSession);
+
   return (
     <MDBCol md='8'>
       {selectedPaciente && (
@@ -210,30 +218,35 @@ function QuadroFicha({ selectedPaciente }) {
               </MDBBtn>
               <MDBBtn className='mx-2' color='tertiary' rippleColor='light'>
                 <MDBIcon fas icon="file-download" className='me-2' />
-                Todas as Sessões
+                Todas
               </MDBBtn>
               <MDBDropdown style={{ marginLeft: 'auto' }}>
-                <MDBDropdownToggle tag='a' className='btn btn-primary'>
-                  Sessões
-                </MDBDropdownToggle>
-                <MDBDropdownMenu>
-                  <MDBDropdownItem link>1</MDBDropdownItem>
-                  <MDBDropdownItem link>2</MDBDropdownItem>
-                  <MDBDropdownItem link>3</MDBDropdownItem>
-                </MDBDropdownMenu>
-              </MDBDropdown>
+                  <MDBDropdownToggle tag='a' className='btn btn-primary'>
+                    {selectedSession === 'Todas' ? selectedSession : `Sessão ${selectedSession}`}
+                  </MDBDropdownToggle>
+                  <MDBDropdownMenu>
+                    {uniqueSessions.map((sessao, index) => (
+                      <MDBDropdownItem key={index} onClick={() => setSelectedSession(sessao)}>
+                        {sessao === 'Todas' ? sessao : `Sessão ${sessao}`}
+                      </MDBDropdownItem>
+                    ))}
+                  </MDBDropdownMenu>
+                </MDBDropdown>
             </div>
           </MDBRow>
   
             {/* Histórico */}
             <h4 style={{ textAlign: 'center' }}>Histórico</h4>
             <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
-              <HistoricoCard
-                title="Paciente Internado"
-                date="Ontem"
-                time="10:00"
-                text="Aguardando registro de alta pelo médico. Escrevendo texto longo."
-              />
+            {historico.map((registro, index) => (
+                <HistoricoCard
+                  key={index}
+                  title={registro.estagio_atual}
+                  date={registro.date}
+                  time={registro.time}
+                  text={registro.mensagem}
+                />
+              ))}
             </div>
           </MDBCardBody>
   
@@ -251,6 +264,10 @@ function QuadroFicha({ selectedPaciente }) {
 
 function Pacientes() {
   const [pacientes, setPacientes] = useState([]);
+  const [historico, setHistorico] = useState([]);
+  const [activeTab, setActiveTab] = useState('pendentes');
+  const [selectedPaciente, setselectedPaciente] = useState(null);
+
 
   useEffect(() => {
     const fetchPacientes = async () => {
@@ -264,12 +281,15 @@ function Pacientes() {
     fetchPacientes();
   }, []);
 
-  
-  const [activeTab, setActiveTab] = useState('pendentes');
-  const [selectedPaciente, setselectedPaciente] = useState(null);
-
-  const handlePacienteClick = (paciente) => {
+  const handlePacienteClick = async (paciente) => {
     setselectedPaciente(paciente);
+    try {
+      const response = await axios.get(`http://localhost:8000/pacientes/${paciente.id}/historico_completo/`);
+      setHistorico(response.data);
+      console.log('Histórico do paciente:', response.data);
+    } catch (error) {
+      console.error('Erro ao buscar o histórico do paciente:', error);
+    }
   };
 
   return (
@@ -289,6 +309,8 @@ function Pacientes() {
 
           <QuadroFicha 
           selectedPaciente={selectedPaciente} 
+          historico={historico}
+
           />
 
           </MDBRow>

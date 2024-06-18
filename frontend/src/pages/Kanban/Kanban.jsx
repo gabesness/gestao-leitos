@@ -30,7 +30,7 @@ import PacienteCard from '../../components/Cards/PacienteCard';
 import HistoricoCard from '../../components/Cards/HistoricoCard';
 import CabecalhoPacienteModal from '../../components/Ficha/CabecalhoPacienteModal';
 
-function ModalFicha({ isOpen, onClose, selectedPaciente}) {
+function ModalFicha({ isOpen, onClose, selectedPaciente, historico}) {
   const handleClose = () => {
     if (isOpen) {
       onClose();
@@ -54,13 +54,15 @@ function ModalFicha({ isOpen, onClose, selectedPaciente}) {
               <div className="col-md-6">
               <h4>Histórico</h4>
               <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
-                  <HistoricoCard
-                        title="Paciente Internado"
-                        date="Ontem"
-                        time="10:00"
-                        text="Aguardando registro de alta pelo médico. Escrevendo texto longo."
-                  />
-                  
+              {historico.map((registro, index) => (
+                <HistoricoCard
+                  key={index}
+                  title={registro.estagio_atual}
+                  date={registro.date}
+                  time={registro.time}
+                  text={registro.mensagem}
+                />
+              ))} 
                 </div>
                 </div>
 
@@ -96,6 +98,7 @@ function ModalFicha({ isOpen, onClose, selectedPaciente}) {
 
 function Kanban() {
   const [pacientes, setPacientes] = useState([]);
+  const [historico, setHistorico] = useState([]);
   const [selectedPaciente, setSelectedPaciente] = useState(null);
 
   useEffect(() => {
@@ -110,9 +113,16 @@ function Kanban() {
     fetchPacientes();
   }, []);
 
-  const handlePacienteClick = (paciente) => {
+  const handlePacienteClick = async (paciente) => {
     setSelectedPaciente(paciente);
     toggleOpen();
+    try {
+      const response = await axios.get(`http://localhost:8000/pacientes/${paciente.id}/historico_atual/`);
+      setHistorico(response.data);
+      console.log('Histórico do paciente:', response.data);
+    } catch (error) {
+      console.error('Erro ao buscar o histórico do paciente:', error);
+    }
   };
 
   // Modal
@@ -164,7 +174,7 @@ function Kanban() {
               </MDBCardHeader>
               <MDBCard>
                 <MDBCardBody>
-                  {pacientes.filter(paciente => paciente.estagio_atual === 'ENCAMINHADO_FARMACIA').map((paciente, index) => (
+                  {pacientes.filter(paciente => paciente.estagio_atual === 'ENCAMINHADO_PARA_FARMACIA').map((paciente, index) => (
                     <PacienteCard
                       key={index}
                       paciente={paciente}
@@ -274,7 +284,7 @@ function Kanban() {
           </MDBRow>
         </MDBCardBody>
       </MDBCard>
-      <ModalFicha isOpen={basicModal} onClose={toggleOpen} selectedPaciente={selectedPaciente} />
+      <ModalFicha isOpen={basicModal} onClose={toggleOpen} selectedPaciente={selectedPaciente} historico={historico}/>
     </MDBContainer>
   );
 }

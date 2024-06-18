@@ -20,7 +20,7 @@ export default function Navbar() {
   const [openNavSecond, setOpenNavSecond] = useState(false);
   const [nome, setNome] = useState('');
   const location = useLocation(); // Use the useLocation hook
-  const permittedRoles = ['Administrador', 'Médico', 'Regulação', 'Farmacia'];
+  const permittedRoles = ['Administrador', 'Médico', 'Regulação', 'Farmácia'];
 
   useEffect(() => {
     const nomeArmazenado = localStorage.getItem('nome');
@@ -63,7 +63,7 @@ export default function Navbar() {
         case 'Regulação':
           window.location.href = '/homeregulacao';
           break;
-        case 'Farmacia':
+        case 'Farmácia':
           window.location.href = '/homefarmacia';
           break;
         default:
