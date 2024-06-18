@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 #from django.middleware.csrf import get_token
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
+from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import action
@@ -13,26 +14,9 @@ from drf_spectacular.utils import extend_schema
 from .serializers import *
 
 # Create your views here.
-
 class PacienteViewSet(GenericViewSet):
     queryset = Paciente.objects.all()
     serializer_class = PacienteSerializer
-
-    @extend_schema(
-            summary="Cadastro de paciente",
-            description="Cria o paciente no sistema. Obs.: O estágio atual de pacientes criados sempre é CADASTRADO"
-    )
-    @action(detail=False, methods=['POST'])
-    def cadastrar_paciente(self, request):
-        try:
-            serializer = self.get_serializer(data=request.data)
-            if serializer.is_valid(raise_exception=True):
-                serializer.save()
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
-            else:
-                return Response(status=status.HTTP_400_BAD_REQUEST)
-        except Exception as e:
-            return Response({'error': str(e)})
 
     @extend_schema(
             summary="Todos os pacientes",
@@ -41,7 +25,11 @@ class PacienteViewSet(GenericViewSet):
     @action(detail=False, methods=['GET'], url_path='lista')
     def todos(self, request):
         queryset = self.get_queryset()
-        serializer = self.get_serializer(queryset, many=True)
+        fds = ['id', 'nome', 'prontuario', 'estagio_atual']
+        serializer = self.get_serializer(queryset, many=True, fields=fds)
+        return Response(serializer.data)
+        queryset = self.get_object()
+        serializer = self.get_serializer(queryset)
         return Response(serializer.data)
 
     @extend_schema(
@@ -52,8 +40,8 @@ class PacienteViewSet(GenericViewSet):
     def lista_medico(self, request):
         estagios = [
             'PRESCRICAO_CRIADA',
-            'PRESCRICAO_DEVOLVIDA_PELA_FARMACIA',
-            'PRESCRICAO_DEVOLVIDA_PELA_REGULACAO',
+            'DEVOLVIDA_PELA_FARMACIA',
+            'DEVOLVIDA_PELA_REGULACAO',
             'INTERNADO',
             ]
         queryset = self.get_queryset().filter(estagio_atual__in=estagios)
@@ -84,6 +72,68 @@ class PacienteViewSet(GenericViewSet):
         queryset = self.get_queryset().filter(estagio_atual__in=estagios)
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    @extend_schema(
+            summary="Cadastro de paciente",
+            description="Cria o paciente no sistema. Obs.: O estágio atual de pacientes criados sempre é CADASTRADO"
+    )
+    @action(detail=False, methods=['POST'])
+    def cadastrar_paciente(self, request):
+        try:
+            serializer = self.get_serializer(data=request.data)
+            if serializer.is_valid(raise_exception=True):
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            else:
+                return Response(status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({'error': str(e)})
+        
+    @extend_schema(
+        summary="***INCOMPLETA*** Alteração de paciente",
+        description="[INCOMPLETA] Permite editar o nome do paciente",
+    )
+    @action(detail=True, methods=['PUT'])
+    def editar_paciente(self, request, pk=None):
+        paciente = self.get_object()
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    @extend_schema(
+            summary="Histórico da sessão atual",
+            description="Busca pelos Registros de um paciente referentes à sua sessão mais recente",
+    )
+    @action(detail=True, methods=['GET'])
+    def historico_atual(self, request, pk=None):
+        paciente = self.get_object()
+        serializer = self.get_serializer(paciente)
+        return Response(serializer.data['historico_atual'])
+
+    @extend_schema(
+            summary="Histórico completo do paciente",
+            description="Retorna todos os Registros referentes a um paciente."
+    )
+    @action(detail=True, methods=['GET'])
+    def historico_completo(self, request, pk=None):
+        paciente = self.get_object()
+        serializer = self.get_serializer(paciente)
+        return Response(serializer.data['historico_completo'])
+    
+    @extend_schema(
+        summary="Prescrição do paciente",
+        description="Retorna a sessão atual, o histórico atual do paciente e também o seu plano terapêutico."
+    )
+    @action(detail=True, methods=['GET'])
+    def consultar_prescricao(self, request, pk=None):
+        fds = ['sessao_atual','historico_atual', 'plano_terapeutico']
+        paciente = self.get_object()
+        serializer = self.get_serializer(paciente, fields=fds)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 class UserViewSet(GenericViewSet):
     queryset = User.objects.all()
@@ -110,9 +160,8 @@ class UserViewSet(GenericViewSet):
     #         serializer.save()
     #         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-
 def sessao_atual(id_paciente):
-    return Sessao.objects.filter(id=id_paciente).order_by('criada_em').first()
+    return Sessao.objects.filter(paciente_id=id_paciente).order_by('-criada_em').first()
 
 ### ROTAS DE LOGIN / AUTENTICACAO
 

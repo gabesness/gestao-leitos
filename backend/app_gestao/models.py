@@ -17,47 +17,71 @@ class EstagioEnum(models.TextChoices):
     ALTA_NORMAL = "ALTA_NORMAL"
     ALTA_DEFINITIVA = "ALTA_DEFINITIVA"
 
-    def __str__(self):
-        return f"{self.codigo}"
-
 class Paciente(models.Model):
-    prontuario = models.CharField(max_length=15, unique=True)
     nome = models.CharField(max_length=256)
-    estagio_atual = models.CharField(max_length=128, choices=EstagioEnum.choices)
+    prontuario = models.CharField(max_length=15, unique=True)
+    estagio_atual = models.CharField(max_length=128, choices=EstagioEnum.choices, default=EstagioEnum.CADASTRADO)
+    leito = models.ForeignKey("Leito", on_delete=models.CASCADE, null=True, blank=True)
     plano_terapeutico = models.ForeignKey("Plano_terapeutico", on_delete=models.CASCADE, null=True, blank=True)
+
+    def sessao_atual(self):
+        return Sessao.objects.filter(paciente=self).order_by("-criada_em").first()
+    
+    # Sempre que alterar o estagio do paciente, criar o respectivo Registro
+    def atualizar(self, usuario, estagio, mensagem):
+        self.estagio_atual = estagio
+        self.save()
+        r = Registro(
+            paciente=self,
+            usuario=usuario,
+            sessao=self.sessao_atual(),
+            estagio_atual=estagio,
+            mensagem=mensagem,
+            )
+        r.save()
+
+    def historico_atual(self):
+        return Registro.objects.filter(
+            paciente=self,
+            sessao=self.sessao_atual()).order_by('-criado_em')
+    
+    def historico_completo(self):
+        # Obs.: verificar se não eh melhor ordenar por sessao ou por timestamp
+        return Registro.objects.filter(paciente=self).order_by('-criado_em')
+
 
     def __str__(self):
         return f"Paciente {self.nome}"
 
 class Leito(models.Model):
     numero = models.CharField(max_length=16)
-    ocupado = models.BooleanField(default=False)
-    paciente = models.ForeignKey("Paciente", on_delete=models.CASCADE, null=True, blank=True)
+    ocupado = models.BooleanField(default=False, editable=False)
 
     def __str__(self):
         return f"Leito {self.numero}"
 
 class Sessao(models.Model):
-    leito = models.ForeignKey("Leito", on_delete=models.CASCADE, null=True, blank=True)
-    paciente = models.ForeignKey("Paciente", on_delete=models.CASCADE)
+    paciente = models.ForeignKey("Paciente", on_delete=models.CASCADE, editable=False)
+    numero = models.IntegerField()
+    leito = models.ForeignKey("Leito", on_delete=models.CASCADE, null=True, blank=True, editable=False)
     data_internacao = models.DateTimeField(null=True, blank=True)
-    data_alta = models.DateTimeField(null=True, blank=True)
+    data_alta = models.DateTimeField(null=True, blank=True, editable=False)
     def agora():
         return datetime.now()
     criada_em = models.DateTimeField(editable=False, default=agora)
 
     def __str__(self):
-        return f"Sessao do {self.paciente}"
+        return f"Sessao criada em {self.criada_em}"
 
 class Registro(models.Model):
     # Quem eh o paciente?
-    paciente = models.ForeignKey("Paciente", on_delete=models.CASCADE)
+    paciente = models.ForeignKey("Paciente", on_delete=models.CASCADE, editable=False)
     # Quem fez o registro?
-    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE, editable=False)
     # De qual internacao estamos falando?
-    sessao = models.ForeignKey("Sessao", on_delete=models.CASCADE)
+    sessao = models.ForeignKey("Sessao", on_delete=models.CASCADE, editable=False)
     # Qual eh o estagio atual do paciente?
-    estagio_atual = models.CharField(max_length=128, choices=EstagioEnum.choices)
+    estagio_atual = models.CharField(max_length=128, choices=EstagioEnum.choices, editable=False)
     # Qual eh a mensagem?
     mensagem = models.TextField()
 

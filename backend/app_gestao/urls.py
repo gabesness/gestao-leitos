@@ -16,5 +16,7 @@ urlpatterns = [
     #path('api/csrf_token', views.csrf_token, name='csrf_token')
     path('criar_paciente/', views.criar_paciente),
     path('alterar_usuario/<int:id>', views.alterar_dados_do_usuario),
+    #path('historico_completo/<int:id_paciente>/', views.HistoricoCompleto.as_view(), name='historico-completo'),
+    #path('historico_atual/<int:id_paciente>/', views.HistoricoAtual.as_view(), name='historico-atual'),
     path('', include(router.urls))
 ]
