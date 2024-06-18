@@ -26,6 +26,15 @@ class Paciente(models.Model):
 
     def sessao_atual(self):
         return Sessao.objects.filter(paciente=self).order_by("-criada_em").first()
+
+    def historico_atual(self):
+        return Registro.objects.filter(
+            paciente=self,
+            sessao=self.sessao_atual()).order_by('-criado_em')
+    
+    def historico_completo(self):
+        # Obs.: verificar se não eh melhor ordenar por sessao ou por timestamp
+        return Registro.objects.filter(paciente=self).order_by('-criado_em')
     
     # Sempre que alterar o estagio do paciente, criar o respectivo Registro
     def atualizar(self, usuario, estagio, mensagem):
@@ -40,14 +49,10 @@ class Paciente(models.Model):
             )
         r.save()
 
-    def historico_atual(self):
-        return Registro.objects.filter(
-            paciente=self,
-            sessao=self.sessao_atual()).order_by('-criado_em')
-    
-    def historico_completo(self):
-        # Obs.: verificar se não eh melhor ordenar por sessao ou por timestamp
-        return Registro.objects.filter(paciente=self).order_by('-criado_em')
+    def criar_prescricao(self, usuario):
+        s = Sessao(paciente=self, numero=0)
+        s.save()
+        self.atualizar(usuario=usuario, estagio='PRESCRICAO_CRIADA', mensagem="Prescrição criada!")
 
 
     def __str__(self):

@@ -63,4 +63,25 @@ class PacienteSerializer(DynamicFieldsModelSerializer):
     def get_historico_completo(self, obj) -> list:
         historico = obj.historico_completo()
         return RegistroSerializer(historico, many=True).data
+    
+    # def get_plano_terapeutico(self, obj) -> dict:
+    #     pt = obj.plano_terapeutico()
+    #     if pt:
+    #         return Plano_terapeuticoSerializer(pt).data
+    #     else:
+    #         return None
+    
+    def atualizar(self, obj, usuario, estagio, mensagem):
+        obj.atualizar(usuario, estagio, mensagem)
 
+    def criar_prescricao(self, obj, usuario):
+        obj.criar_prescricao(usuario)
+
+class Plano_terapeuticoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Plano_terapeutico
+        fields = ('__all__')
+
+class PrescricaoSerializer(serializers.Serializer):
+    plano_terapeutico = Plano_terapeuticoSerializer()
+    mensagem = serializers.CharField()

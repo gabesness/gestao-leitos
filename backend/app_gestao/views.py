@@ -10,7 +10,7 @@ from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import action
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import extend_schema, PolymorphicProxySerializer
 from .serializers import *
 
 # Create your views here.
@@ -134,6 +134,64 @@ class PacienteViewSet(GenericViewSet):
         serializer = self.get_serializer(paciente, fields=fds)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+class PrescricaoViewSet(GenericViewSet):
+    queryset = Paciente.objects.all()
+    serializer_class = PacienteSerializer
+
+    @extend_schema(
+        summary="Criar prescrição do paciente",
+        description="""Altera o estado do paciente para PRESCRICAO_CRIADA (APENAS se o estagio_atual for CADASTRADO ou ALTA_NORMAL);
+                       cria uma sessao nova para ele;
+                       cria um Registro""",
+        request=None
+    )
+    @action(detail=True, methods=['PATCH'])
+    def criar_prescricao(self, request, pk=None):
+        paciente = self.get_object()
+        serializer = self.get_serializer(paciente)
+        estagios_aceitos = ['CADASTRADO', 'ALTA_NORMAL']
+        if serializer.data['estagio_atual'] in estagios_aceitos:
+            serializer.criar_prescricao(obj=paciente, usuario=request.user)
+            return Response(serializer.data['historico_atual'], status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response({'erro': 'estagio_atual inválido'},status=status.HTTP_400_BAD_REQUEST)
+
+    @extend_schema(
+        summary="*WIP* Enviar prescrição do médico para a Farmácia",
+        description="""O médico encaminha a prescrição para a farmácia, tanto faz se é a primeira vez ou se é depois de uma devolução.""",
+        request=PrescricaoSerializer
+        )
+    @action(detail=True, methods=['PATCH'])
+    def encaminhar_farmacia(self, request, pk=None):
+        paciente = self.get_object()
+        serializer = self.get_serializer(paciente)
+        estagios_aceitos = ['PRESCRICAO_CRIADA', 'DEVOLVIDA_PELA_FARMACIA']
+        if serializer.data['estagio_atual'] in estagios_aceitos:
+            serializer.atualizar(obj=paciente, usuario=request.user, estagio='ENCAMINHADO_PARA_FARMACIA', mensagem=request.data['mensagem'])
+            return Response({'OK': 'enviado com sucesso'}, status=status.HTTP_200_OK)
+        else:
+            return Response({'erro': 'estagio_atual invalido'}, status=status.HTTP_400_BAD_REQUEST)
+
+    @extend_schema(
+        summary="*WIP* Devolução da prescrição pela Farmácia",
+        description="""Farmácia devolve para o médico corrigir e reenviar;
+                       Altera o estágio do paciente para DEVOLVIDA_PELA_FARMACIA;
+                       Cria o registro."""
+    )
+    @action(detail=True, methods=['PUT'])
+    def devolver_farmacia(self, request, pk=None):
+        pass
+
+    @extend_schema(
+        summary="*WIP* Devolução da prescrição pela Regulação",
+        description="""A Regulação devolve a prescrição para o médico, solicitando autorização de transferência.
+                       Altera o estágio do paciente para DEVOLVIDA_PELA_REGULACAO.
+                       Cria o registro."""
+    )
+    @action(detail=True, methods=['PUT'])
+    def devolver_regulacao(self, request, pk=None):
+        pass
+
 
 class UserViewSet(GenericViewSet):
     queryset = User.objects.all()
@@ -159,9 +217,6 @@ class UserViewSet(GenericViewSet):
     #     if serializer.is_valid(raise_exception=True):
     #         serializer.save()
     #         return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-def sessao_atual(id_paciente):
-    return Sessao.objects.filter(paciente_id=id_paciente).order_by('-criada_em').first()
 
 ### ROTAS DE LOGIN / AUTENTICACAO
 
@@ -206,7 +261,6 @@ def alterar_senha(request, id):
     pass
 
 # ROTAS DO MEDICO
-def criar_prescricao(request):
     try:
         prontuario = request.PUT.get('prontuario', '')
         p = Paciente.objects.get(prontuario=prontuario)
@@ -263,7 +317,7 @@ def encaminhar_farmacia(request, id_paciente): ### WIP
         p.save()
 
         r = Registro(paciente=p,
-                     sessao=sessao_atual(id_paciente),
+                     #sessao=sessao_atual(id_paciente),
                      usuario=request.user,
                      estagio_atual=p.estagio_atual,
                      mensagem=msg)
@@ -285,35 +339,6 @@ def minha_conta(request, id):
         return JsonResponse({"erro": str(e)})
 def dashboard(request):
     pass
-def consultar_prescricao_paciente(request, id_paciente):
-    # PRESCRICAO -> HISTORICO DA SESSAO ATUAL DO PACIENTE + PLANO TERAPEUTICO
-    try:
-        p = Paciente.objects.get(id=id_paciente)
-        plano = Paciente.objects.get(id=id_paciente).plano_terapeutico
-        historico = list(Registro.objects.filter(paciente=p, sessao=sessao_atual(id_paciente)))
-
-        return JsonResponse([plano, historico])
-
-    except Exception as e:
-        return JsonResponse({'erro': str(e)})
-
-@csrf_exempt
-def criar_paciente(request):
-    nome = request.POST.get('nome', '')
-    prontuario = request.POST.get('prontuario', '')
-    try:
-        p = Paciente.objects.get(prontuario=prontuario)
-        return JsonResponse({"ERRO": "já existe paciente cadastrado com este prontuário"})
-    except Paciente.DoesNotExist as e:
-        if prontuario and nome:
-            p = Paciente(prontuario=prontuario, nome=nome, estagio_atual="CADASTRADO")
-            p.save()
-            return JsonResponse({"OK": "paciente criado com sucesso!"})
-        else:
-            return JsonResponse({'erro': 'informe os dados do paciente corretamente'})
-    except Exception as e:
-        return JsonResponse({"erro": str(e)})
-
 def alterar_dados_do_usuario(request, id):
     try:
         nome = request.PUT.get('first_name', '')
