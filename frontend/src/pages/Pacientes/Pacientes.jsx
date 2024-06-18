@@ -36,6 +36,8 @@ import Pagination from '../../components/Pagination/Pagination';
 import PacienteCard from '../../components/Cards/PacienteCard';
 import HistoricoCard from '../../components/Cards/HistoricoCard';
 import CabecalhoHistorico from '../../components/Ficha/CabecalhoHistorico';
+import formatarData from '../../utils/FormatarData';
+
 
 
 function ModalCriarPaciente({ isOpen, onClose }) {
@@ -238,15 +240,18 @@ function QuadroFicha({ selectedPaciente, historico }) {
             {/* Histórico */}
             <h4 style={{ textAlign: 'center' }}>Histórico</h4>
             <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
-            {historico.map((registro, index) => (
-                <HistoricoCard
-                  key={index}
-                  title={registro.estagio_atual}
-                  date={registro.date}
-                  time={registro.time}
-                  text={registro.mensagem}
-                />
-              ))}
+            {historico.map((registro, index) => {
+                    const { dataFormatada, horaFormatada } = formatarData(registro.criado_em);
+                    return (
+                      <HistoricoCard
+                        key={index}
+                        title={registro.estagio_atual}
+                        date={dataFormatada} // Data formatada
+                        time={horaFormatada} // Horário formatado
+                        text={registro.mensagem}
+                      />
+                    );
+                  })}
             </div>
           </MDBCardBody>
   

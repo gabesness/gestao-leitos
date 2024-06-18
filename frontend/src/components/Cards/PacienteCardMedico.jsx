@@ -17,6 +17,9 @@ function PacienteCardMedico({ paciente, selectedPaciente, handlePacienteClick })
   } else if (paciente.estagio_atual === 'INTERNADO') {
     tagContent = 'Internado';
     tagColor = 'primary';
+  } else if (paciente.estagio_atual === 'ALTA_NORMAL') {
+    tagContent = 'Em 3 Dias';
+    tagColor = 'primary';
   }
   return (
     <MDBListGroupItem

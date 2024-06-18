@@ -36,6 +36,8 @@ import Pagination from '../../components/Pagination/Pagination';
 import PacienteCardMedico from '../../components/Cards/PacienteCardMedico';
 import HistoricoCard from '../../components/Cards/HistoricoCard';
 import CabecalhoPaciente from '../../components/Ficha/CabecalhoPaciente';
+import formatarData from '../../utils/FormatarData';
+
 
 function ModalNovaPrescricao({ isOpen, onClose }) {
   const [prontuario, setProntuario] = useState('');
@@ -218,7 +220,8 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
   const filteredPacientes = pacientes.filter(paciente => 
     activeTab === 'pendentes' ? 
       ['PRESCRICAO_CRIADA', 
-      'DEVOLVIDA_PELA_FARMACIA', 
+      'DEVOLVIDA_PELA_FARMACIA',
+      'ALTA_NORMAL',  
       'DEVOLVIDA_PELA_REGULACAO']
       .includes(paciente.estagio_atual) 
       : 
@@ -298,6 +301,7 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
   );
 }
 
+
 function QuadroFicha({ selectedPaciente, historico }) {
   return (
   <MDBCol md='8'>
@@ -318,15 +322,18 @@ function QuadroFicha({ selectedPaciente, historico }) {
       <div className="col-md-6">
       <h4>Histórico</h4>
       <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
-      {historico.map((registro, index) => (
-                <HistoricoCard
-                  key={index}
-                  title={registro.estagio_atual}
-                  date={registro.date}
-                  time={registro.time}
-                  text={registro.mensagem}
-                />
-              ))} 
+      {historico.map((registro, index) => {
+                    const { dataFormatada, horaFormatada } = formatarData(registro.criado_em);
+                    return (
+                      <HistoricoCard
+                        key={index}
+                        title={registro.estagio_atual}
+                        date={dataFormatada} // Data formatada
+                        time={horaFormatada} // Horário formatado
+                        text={registro.mensagem}
+                      />
+                    );
+                  })}
         </div>
         </div>
 
@@ -388,7 +395,7 @@ function HomeMedico() {
   useEffect(() => {
     const fetchPacientes = async () => {
       try {
-        const response = await axios.get(`http://localhost:8000/pacientes/${paciente.id}/historico_atual/`);
+        const response = await axios.get('http://localhost:8000/pacientes/lista_medico/');
         setPacientes(response.data);
         console.log("Lista de pacientes:", response.data);
       } catch (error) {
@@ -401,7 +408,7 @@ function HomeMedico() {
   const handlePacienteClick = async (paciente) => {
     setSelectedPaciente(paciente);
     try {
-      const response = await axios.get(`http://localhost:8000/pacientes/${paciente.id}/historico_completo/`);
+      const response = await axios.get(`http://localhost:8000/pacientes/${paciente.id}/historico_atual/`);
       setHistorico(response.data);
       console.log('Histórico do paciente:', response.data);
     } catch (error) {

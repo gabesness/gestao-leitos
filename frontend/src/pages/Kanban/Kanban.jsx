@@ -29,6 +29,8 @@ import './Kanban.css';
 import PacienteCard from '../../components/Cards/PacienteCard';
 import HistoricoCard from '../../components/Cards/HistoricoCard';
 import CabecalhoPacienteModal from '../../components/Ficha/CabecalhoPacienteModal';
+import formatarData from '../../utils/FormatarData';
+
 
 function ModalFicha({ isOpen, onClose, selectedPaciente, historico}) {
   const handleClose = () => {
@@ -54,15 +56,18 @@ function ModalFicha({ isOpen, onClose, selectedPaciente, historico}) {
               <div className="col-md-6">
               <h4>Histórico</h4>
               <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
-              {historico.map((registro, index) => (
-                <HistoricoCard
-                  key={index}
-                  title={registro.estagio_atual}
-                  date={registro.date}
-                  time={registro.time}
-                  text={registro.mensagem}
-                />
-              ))} 
+              {historico.map((registro, index) => {
+                    const { dataFormatada, horaFormatada } = formatarData(registro.criado_em);
+                    return (
+                      <HistoricoCard
+                        key={index}
+                        title={registro.estagio_atual}
+                        date={dataFormatada} // Data formatada
+                        time={horaFormatada} // Horário formatado
+                        text={registro.mensagem}
+                      />
+                    );
+                  })}
                 </div>
                 </div>
 
