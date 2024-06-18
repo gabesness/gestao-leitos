@@ -43,6 +43,7 @@ class PacienteViewSet(GenericViewSet):
             'DEVOLVIDA_PELA_FARMACIA',
             'DEVOLVIDA_PELA_REGULACAO',
             'INTERNADO',
+            'ALTA_NORMAL',
             ]
         queryset = self.get_queryset().filter(estagio_atual__in=estagios)
         serializer = self.get_serializer(queryset, many=True)
@@ -68,6 +69,7 @@ class PacienteViewSet(GenericViewSet):
             'ENCAMINHADO_PARA_AGENDAMENTO',
             'AGENDADO',
             'AUTORIZADO_PARA_TRANSFERENCIA',
+            'ALTA_NORMAL',
             ]
         queryset = self.get_queryset().filter(estagio_atual__in=estagios)
         serializer = self.get_serializer(queryset, many=True)
