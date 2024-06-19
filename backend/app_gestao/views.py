@@ -11,6 +11,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from drf_spectacular.utils import extend_schema, PolymorphicProxySerializer
+from drf_spectacular.types import OpenApiTypes
 from .serializers import *
 
 # Create your views here.
@@ -142,14 +143,18 @@ class PrescricaoViewSet(GenericViewSet):
 
     @extend_schema(
         summary="Criar prescrição do paciente",
-        description="""Altera o estado do paciente para PRESCRICAO_CRIADA (APENAS se o estagio_atual for CADASTRADO ou ALTA_NORMAL);
+        description="""Requer o prontuário do paciente;
+                       Altera o estado do paciente para PRESCRICAO_CRIADA (APENAS se o estagio_atual for CADASTRADO ou ALTA_NORMAL);
                        cria uma sessao nova para ele;
                        cria um Registro""",
-        request=None
+        request=None,
     )
-    @action(detail=True, methods=['PATCH'])
-    def criar_prescricao(self, request, pk=None):
-        paciente = self.get_object()
+    @action(detail=False, methods=['PATCH'], url_path='(?P<prontuario>[^/.]+)/criar_prescricao')
+    def criar_prescricao(self, request, prontuario):
+        try:
+            paciente = self.get_queryset().get(prontuario=prontuario)
+        except Paciente.DoesNotExist:
+            return Response({'erro': 'Paciente não encontrado'}, status=status.HTTP_400_BAD_REQUEST)
         serializer = self.get_serializer(paciente)
         estagios_aceitos = ['CADASTRADO', 'ALTA_NORMAL']
         if serializer.data['estagio_atual'] in estagios_aceitos:
@@ -160,8 +165,12 @@ class PrescricaoViewSet(GenericViewSet):
 
     @extend_schema(
         summary="*WIP* Enviar prescrição do médico para a Farmácia",
-        description="""O médico encaminha a prescrição para a farmácia, tanto faz se é a primeira vez ou se é depois de uma devolução.""",
-        request=PrescricaoSerializer
+        description="""O médico encaminha a prescrição para a farmácia (devolvida ou não);
+                       Altera o estágio atual do paciente para ENCAMINHADO_PARA_FARMACIA;
+                       Caso o paciente não possua plano terapêutico, é criado um plano novo e atribuído ao paciente;
+                       Caso já possua, o plano é apenas alterado;
+                       Cria um Registro.""",
+        request=PrescricaoSerializer # recebe um atributo 'mensagem' e um atributo Plano_terapeutico
         )
     @action(detail=True, methods=['PATCH'])
     def encaminhar_farmacia(self, request, pk=None):
@@ -170,31 +179,95 @@ class PrescricaoViewSet(GenericViewSet):
         estagios_aceitos = ['PRESCRICAO_CRIADA', 'DEVOLVIDA_PELA_FARMACIA']
         if serializer.data['estagio_atual'] in estagios_aceitos:
             serializer.atualizar(obj=paciente, usuario=request.user, estagio='ENCAMINHADO_PARA_FARMACIA', mensagem=request.data['mensagem'])
-            return Response({'OK': 'enviado com sucesso'}, status=status.HTTP_200_OK)
+            return Response({'OK': 'enviado com sucesso'}, status=status.HTTP_204_NO_CONTENT)
         else:
             return Response({'erro': 'estagio_atual invalido'}, status=status.HTTP_400_BAD_REQUEST)
 
     @extend_schema(
-        summary="*WIP* Devolução da prescrição pela Farmácia",
+        summary="Devolução da prescrição (Farmácia)",
         description="""Farmácia devolve para o médico corrigir e reenviar;
                        Altera o estágio do paciente para DEVOLVIDA_PELA_FARMACIA;
-                       Cria o registro."""
+                       Cria o registro.""",
+        request={'application/json': {'mensagem': 'string'}}
     )
-    @action(detail=True, methods=['PUT'])
+    @action(detail=True, methods=['PATCH'])
     def devolver_farmacia(self, request, pk=None):
-        pass
+        paciente = self.get_object()
+        serializer = self.get_serializer(paciente)
+        if serializer.data['estagio_atual'] == 'ENCAMINHADO_PARA_FARMACIA':
+            serializer.atualizar(obj=paciente, usuario=request.user, estagio='DEVOLVIDO_PELA_FARMACIA', mensagem=request.data)
+            return Response({'OK': 'devolvido com sucesso'}, status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response({'erro': 'estagio_atual invalido'}, status=status.HTTP_400_BAD_REQUEST)
 
     @extend_schema(
-        summary="*WIP* Devolução da prescrição pela Regulação",
+        summary="Devolução da prescrição (Regulação)",
         description="""A Regulação devolve a prescrição para o médico, solicitando autorização de transferência.
                        Altera o estágio do paciente para DEVOLVIDA_PELA_REGULACAO.
-                       Cria o registro."""
+                       Cria o registro.""",
+        request={'application/json': {'mensagem': 'string'}},
     )
-    @action(detail=True, methods=['PUT'])
+    @action(detail=True, methods=['PATCH'])
     def devolver_regulacao(self, request, pk=None):
-        pass
+        paciente = self.get_object()
+        serializer = self.get_serializer(paciente)
+        estagios_aceitos = ['ENCAMINHADO_PARA_AGENDAMENTO', 'AUTORIZADO_PARA_TRANSFERENCIA']
+        if serializer.data['estagio_atual'] in estagios_aceitos:
+            serializer.atualizar(obj=paciente, usuario=request.user, estagio='DEVOLVIDO_PELA_REGULACAO', mensagem=request.data)
+            return Response({'OK': 'devolvido com sucesso'}, status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response({'erro': 'estagio_atual invalido'}, status=status.HTTP_400_BAD_REQUEST)
+    
+    @extend_schema(
+        summary="Autorização de transferência",
+        description="""O médico recebe a solicitação de transferência da Regulação e faz a autorização;
+                       A prescrição retorna para a Regulação;
+                       Altera o estágio atual do paciente para AUTORIZADO_PARA_TRANSFERENCIA;
+                       Cria o registro""",
+        request={'application/json': {'mensagem': 'string'}}
+    )
+    @action(detail=True, methods=['PATCH'])
+    def autorizar_transferencia(self, request, pk=None):
+        paciente = self.get_object()
+        serializer = self.get_serializer(paciente)
+        if serializer.data['estagio_atual'] == 'DEVOLVIDO_PELA_REGULACAO':
+            serializer.atualizar(obj=paciente, usuario=request.user, estagio='AUTORIZADO_PARA_TRANSFERENCIA', mensagem=request.data)
+            return Response({'OK': 'devolvido com sucesso'}, status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response({'erro': 'estagio_atual invalido'}, status=status.HTTP_400_BAD_REQUEST)
 
+    @extend_schema(
+        summary="Confirmação de transferência",
+        description="""Regulação confirma a transferência, efetivamente removendo o paciente do fluxo de internação;
+                       Altera o estágio atual do paciente para TRANSFERIDO;
+                       Cria o registro;
+                       A partir desse momento, não é possível mais interagir com esse paciente, apenas efetuar consultas.""",
+        request={'application/json': {'mensagem': 'string'}}
+    )
+    @action(detail=True, methods=['PATCH'])
+    def transferir(self, request, pk=None):
+        paciente = self.get_object()
+        serializer = self.get_serializer(paciente)
+        if serializer.data['estagio_atual'] == 'AUTORIZADO_PARA_TRANSFERENCIA':
+            serializer.atualizar(obj=paciente, usuario=request.user, estagio='TRANSFERIDO', mensagem=request.data)
+            return Response({'OK': 'devolvido com sucesso'}, status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response({'erro': 'estagio_atual invalido'}, status=status.HTTP_400_BAD_REQUEST)
 
+class LeitoViewSet(GenericViewSet):
+    queryset = Leito.objects.all()
+    serializer_class = LeitoSerializer
+
+    @extend_schema(
+        summary="Todos os leitos",
+        description="Retorna todos os leitos no sistema"
+    )
+    @action(detail=False, methods=['GET'], url_path='lista')
+    def todos(self, request):
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+    
 class UserViewSet(GenericViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer

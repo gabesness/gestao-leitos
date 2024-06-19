@@ -3,7 +3,9 @@
 from rest_framework import serializers
 from .models import * 
 from django.contrib.auth.models import User
-    
+
+ # A definicao desta classe permite que as demais classes possam ser instanciadas
+ # com quantos e quaisquer campos quisermos   
 class DynamicFieldsModelSerializer(serializers.ModelSerializer):
     """
     A ModelSerializer that takes an additional `fields` argument that
@@ -24,17 +26,17 @@ class DynamicFieldsModelSerializer(serializers.ModelSerializer):
             for field_name in existing - allowed:
                 self.fields.pop(field_name)
 
-class UserSerializer(serializers.ModelSerializer):
+class UserSerializer(DynamicFieldsModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'username', 'password', 'first_name', 'last_name', 'email', 'groups']
 
-class SessaoSerializer(serializers.ModelSerializer):
+class SessaoSerializer(DynamicFieldsModelSerializer):
     class Meta:
         model = Sessao
         fields = ['id', 'numero', 'leito', 'data_internacao', 'data_alta', 'criada_em']
 
-class RegistroSerializer(serializers.ModelSerializer):
+class RegistroSerializer(DynamicFieldsModelSerializer):
     class Meta:
         model = Registro
         fields = ['id', 'usuario', 'paciente', 'sessao', 'estagio_atual', 'mensagem', 'criado_em']
@@ -77,9 +79,14 @@ class PacienteSerializer(DynamicFieldsModelSerializer):
     def criar_prescricao(self, obj, usuario):
         obj.criar_prescricao(usuario)
 
-class Plano_terapeuticoSerializer(serializers.ModelSerializer):
+class Plano_terapeuticoSerializer(DynamicFieldsModelSerializer):
     class Meta:
         model = Plano_terapeutico
+        fields = ('__all__')
+
+class LeitoSerializer(DynamicFieldsModelSerializer):
+    class Meta:
+        model = Leito
         fields = ('__all__')
 
 class PrescricaoSerializer(serializers.Serializer):

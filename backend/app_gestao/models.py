@@ -5,8 +5,8 @@ from django.contrib.auth.models import User
 class EstagioEnum(models.TextChoices):
     CADASTRADO = "CADASTRADO" # Paciente cadastrado
     PRESCRICAO_CRIADA = "PRESCRICAO_CRIADA" # Prescricao criada
-    PRESCRICAO_DEVOLVIDA_PELA_FARMACIA = "DEVOLVIDA_PELA_FARMACIA" # Prescricao devolvida ao medico pela farmacia para alteracao de medicamentos
-    PRESCRICAO_DEVOLVIDA_PELA_REGULACAO = "DEVOLVIDA_PELA_REGULACAO" # Prescricao devolvida ao medico pela regulacao para autorizacao de encaminhamento
+    PRESCRICAO_DEVOLVIDA_PELA_FARMACIA = "DEVOLVIDO_PELA_FARMACIA" # Prescricao devolvida ao medico pela farmacia para alteracao de medicamentos
+    PRESCRICAO_DEVOLVIDA_PELA_REGULACAO = "DEVOLVIDO_PELA_REGULACAO" # Prescricao devolvida ao medico pela regulacao para autorizacao de encaminhamento
     ENCAMINHADO_PARA_FARMACIA = "ENCAMINHADO_PARA_FARMACIA" # Paciente encaminhado para a farmacia
     ENCAMINHADO_PARA_AGENDAMENTO = "ENCAMINHADO_PARA_AGENDAMENTO" # Encaminhado para a Regulacao agendar o paciente
     AUTORIZADO_PARA_TRANSFERENCIA = "AUTORIZADO_PARA_TRANSFERENCIA" # Paciente autorizado pelo medico para ser transferido para outro hospital, pendente conf. pela regulacao
@@ -54,7 +54,6 @@ class Paciente(models.Model):
         s.save()
         self.atualizar(usuario=usuario, estagio='PRESCRICAO_CRIADA', mensagem="Prescrição criada!")
 
-
     def __str__(self):
         return f"Paciente {self.nome}"
 
@@ -66,7 +65,7 @@ class Leito(models.Model):
         return f"Leito {self.numero}"
 
 class Sessao(models.Model):
-    paciente = models.ForeignKey("Paciente", on_delete=models.CASCADE, editable=False)
+    paciente = models.ForeignKey("Paciente", on_delete=models.CASCADE)
     numero = models.IntegerField()
     leito = models.ForeignKey("Leito", on_delete=models.CASCADE, null=True, blank=True, editable=False)
     data_internacao = models.DateTimeField(null=True, blank=True)
