@@ -41,8 +41,8 @@ class PacienteViewSet(GenericViewSet):
     def lista_medico(self, request):
         estagios = [
             'PRESCRICAO_CRIADA',
-            'DEVOLVIDA_PELA_FARMACIA',
-            'DEVOLVIDA_PELA_REGULACAO',
+            'DEVOLVIDO_PELA_FARMACIA',
+            'DEVOLVIDO_PELA_REGULACAO',
             'INTERNADO',
             'ALTA_NORMAL',
             ]
