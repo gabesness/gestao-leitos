@@ -8,10 +8,10 @@ function PacienteCardMedico({ paciente, selectedPaciente, handlePacienteClick })
   if (paciente.estagio_atual === 'PRESCRICAO_CRIADA') {
     tagContent = 'Nova';
     tagColor = 'primary';
-  } else if (paciente.estagio_atual === 'DEVOLVIDA_PELA_FARMACIA') {
+  } else if (paciente.estagio_atual === 'DEVOLVIDO_PELA_FARMACIA') {
     tagContent = 'Da Farmácia';
     tagColor = 'success';
-  } else if (paciente.estagio_atual === 'DEVOLVIDA_PELA_REGULACAO') {
+  } else if (paciente.estagio_atual === 'DEVOLVIDO_PELA_REGULACAO') {
     tagContent = 'Transferência';
     tagColor = 'warning';
   } else if (paciente.estagio_atual === 'INTERNADO') {

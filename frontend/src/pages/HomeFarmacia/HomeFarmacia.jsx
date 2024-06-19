@@ -69,7 +69,7 @@ function ModalDevolverMedico({ isOpen, onClose }) {
   );
 }
 
-function ModalEnviarRegulaçao({ isOpen, onClose }) {
+function ModalEnviarRegulacao({ isOpen, onClose }) {
   const handleClose = () => {
     if (isOpen) {
       onClose();
@@ -122,12 +122,6 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
   });
 
   const currentPacientes = searchedPacientes.slice(indexOfFirstPost, indexOfLastPost);
-
-  // Modal
-  const [basicModal, setBasicModal] = useState(false);
-
-  const toggleOpen = () => setBasicModal(!basicModal);
-
   
   return (
     <MDBCol md='4'>
@@ -165,12 +159,20 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
           )}
         </MDBCardBody>
       </MDBCard>
-      <ModalDevolverMedico isOpen={basicModal} onClose={toggleOpen} />
     </MDBCol>
   );
 }
 
 function QuadroFicha({ selectedPaciente, historico }) {
+  // Modais
+  // Modal de devolver ao medico
+  const [isModalDevolverMedicoOpen, setIsModalDevolverMedicoOpen] = useState(false);
+  const toggleModalDevolverMedico = () => setIsModalDevolverMedicoOpen(!isModalDevolverMedicoOpen);
+  
+  // Modal enviar regulacao
+  const [isModalEnviarRegulacaoOpen, setIsModalEnviarRegulacaoOpen] = useState(false);
+  const toggleModalEnviarRegulacao = () => setIsModalEnviarRegulacaoOpen(!isModalEnviarRegulacaoOpen);
+
   return (
   <MDBCol md='8'>
   {selectedPaciente && (
@@ -235,10 +237,10 @@ function QuadroFicha({ selectedPaciente, historico }) {
 
     <div style={{ padding: '20px', marginTop: '10px', display: 'flex', justifyContent: 'space-between', borderTop: '1px solid rgba(0,0,0,.125)' }}>
       <div>
-        <MDBBtn style={{ marginLeft: '10px' }}>DEVOLVER</MDBBtn>
+        <MDBBtn style={{ marginLeft: '10px' }}onClick={toggleModalDevolverMedico}>DEVOLVER</MDBBtn>
       </div>
       <div>
-        <MDBBtn style={{ marginLeft: '10px' }}>ENVIAR</MDBBtn>
+        <MDBBtn style={{ marginLeft: '10px' }}onClick={toggleModalEnviarRegulacao}>ENVIAR</MDBBtn>
       </div>
     </div>
         </MDBCard>
@@ -248,7 +250,10 @@ function QuadroFicha({ selectedPaciente, historico }) {
         <p style={{ fontSize: '1.5rem' }}> Selecione um Usuário</p>
       </div>
     )}
-
+  
+   {/* Modais */}
+    <ModalDevolverMedico isOpen={isModalDevolverMedicoOpen} onClose={toggleModalDevolverMedico} />
+    <ModalEnviarRegulacao isOpen={isModalEnviarRegulacaoOpen} onClose={toggleModalEnviarRegulacao} />
       </MDBCol>
   )
 }

@@ -70,7 +70,7 @@ function ModalDevolverMedico({ isOpen, onClose }) {
   );
 }
 
-function ModalConfirmarAgendamento({ isOpen, onClose }) {
+function ModalAgendamento({ isOpen, onClose }) {
   const handleClose = () => {
     if (isOpen) {
       onClose();
@@ -100,7 +100,7 @@ function ModalConfirmarAgendamento({ isOpen, onClose }) {
   );
 }
 
-function ModalConfirmarInternacao({ isOpen, onClose }) {
+function ModalInternacao({ isOpen, onClose }) {
   const handleClose = () => {
     if (isOpen) {
       onClose();
@@ -130,7 +130,7 @@ function ModalConfirmarInternacao({ isOpen, onClose }) {
   );
 }
 
-function ModalConfirmarTransferencia({ isOpen, onClose }) {
+function ModalTransferencia({ isOpen, onClose }) {
   const handleClose = () => {
     if (isOpen) {
       onClose();
@@ -142,7 +142,7 @@ function ModalConfirmarTransferencia({ isOpen, onClose }) {
       <MDBModalDialog>
         <MDBModalContent>
           <MDBModalHeader>
-            <MDBModalTitle>Confirmar transferências</MDBModalTitle>
+            <MDBModalTitle>Confirmar transferência</MDBModalTitle>
             <MDBBtn className='btn-close' color='none' onClick={handleClose}></MDBBtn>
           </MDBModalHeader>
           <MDBModalBody>
@@ -160,7 +160,7 @@ function ModalConfirmarTransferencia({ isOpen, onClose }) {
   );
 }
 
-function ModalConfirmarFacelimento({ isOpen, onClose }) {
+function ModalAltaObito({ isOpen, onClose }) {
   const handleClose = () => {
     if (isOpen) {
       onClose();
@@ -183,89 +183,6 @@ function ModalConfirmarFacelimento({ isOpen, onClose }) {
           <MDBModalFooter>
             <MDBBtn color='danger'>Cancelar</MDBBtn>
             <MDBBtn>Confirmar Alta</MDBBtn>
-          </MDBModalFooter>
-        </MDBModalContent>
-      </MDBModalDialog>
-    </MDBModal>
-  );
-}
-
-function ModalCriarPaciente({ isOpen, onClose }) {
-  const handleClose = () => {
-    if (isOpen) {
-      onClose();
-    }
-  };
-
-  const [formValue, setFormValue] = useState({
-    nome: '',
-    prontuario: '',
-  });
-
-  const onChange = (e) => {
-    setFormValue({ ...formValue, [e.target.name]: e.target.value });
-  };
-
-  async function CriarPaciente(event) {
-    event.preventDefault();
-    const formData = new FormData();
-    formData.append('nome', formValue.nome);
-    formData.append('prontuario', formValue.prontuario);
-    
-    try {
-      const response = await axios.post('http://localhost:8000/criar_paciente/', formData);
-      if (response.status === 200) {
-        // Aqui você pode lidar com a resposta, se necessário
-      }
-    } catch (error) {
-      console.error('Erro ao criar paciente:', error);
-    }
-  }
-
-
-  return (
-    <MDBModal open={isOpen} onClose={handleClose} tabIndex='-1' appendToBody>
-      <MDBModalDialog>
-        <MDBModalContent>
-          <MDBModalHeader>
-            <MDBModalTitle>Adicionar Paciente Novo</MDBModalTitle>
-            <MDBBtn className='btn-close' color='none' onClick={handleClose}></MDBBtn>
-          </MDBModalHeader>
-          <MDBModalBody>
-          <form onSubmit={CriarPaciente}>
-            <MDBInput 
-              className="mb-4" 
-              name="nome" 
-              id="nome" 
-              label="Nome" 
-              type="text"
-              value={formValue.nome} 
-              onChange={onChange} 
-            />
-
-            <MDBInput 
-              className="mb-4" 
-              name="prontuario" 
-              id="prontuario" 
-              label="prontuario" 
-              type="text"
-              value={formValue.prontuario} 
-              onChange={onChange} 
-            />  
-
-            <MDBBtn
-              className='w-100 mb-4'
-              size='md'
-              type="submit"
-            >
-              Salvar
-            </MDBBtn>
-          </form>
-
-          </MDBModalBody>
-          <MDBModalFooter>
-            <MDBBtn color='danger'>Cancelar</MDBBtn>
-            <MDBBtn>Criar</MDBBtn>
           </MDBModalFooter>
         </MDBModalContent>
       </MDBModalDialog>
@@ -305,12 +222,6 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
   });
 
   const currentPacientes = searchedPacientes.slice(indexOfFirstPost, indexOfLastPost);
-
-   // Modal
-   const [basicModal, setBasicModal] = useState(false);
-
-   const toggleOpen = () => setBasicModal(!basicModal);
- 
 
   return (
     <MDBCol md='4'>
@@ -355,17 +266,64 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
           )}
         </MDBCardBody>
       </MDBCard>
-      <ModalCriarPaciente isOpen={basicModal} onClose={toggleOpen} />
     </MDBCol>
   );
 }
 
 function QuadroFicha({ selectedPaciente, historico }) {
+  // Modais
+  // Modal de devolver ao medico
+  const [isModalDevolverMedicoOpen, setIsModalDevolverMedicoOpen] = useState(false);
+  const toggleModalDevolverMedico = () => setIsModalDevolverMedicoOpen(!isModalDevolverMedicoOpen);
+  
+  // Modal Agendamento
+  const [isModalAgendamentoOpen, setIsModalAgendamentoOpen] = useState(false);
+  const toggleModalAgendamento = () => setIsModalAgendamentoOpen(!isModalAgendamentoOpen);
+
+  // Modal transferência
+  const [isModalTransferenciaOpen, setIsModalTransferenciaOpen] = useState(false);
+  const toggleModalTransferencia = () => setIsModalTransferenciaOpen(!isModalTransferenciaOpen);
+ 
+  // Modal confirmar Alta Óbito
+  const [isModalAltaObitoOpen, setIsModalAltaObitoOpen] = useState(false);
+  const toggleModalAltaObito = () => setIsModalAltaObitoOpen(!isModalAltaObitoOpen);
+
+  // Modal Internacao
+  const [isModalInternacaoOpen, setIsModalInternacaoOpen] = useState(false);
+  const toggleModalInternacao = () => setIsModalInternacaoOpen(!isModalInternacaoOpen);
+    
+
   const [selectedLeito, setSelectedLeito] = useState(null);
 
   const handleSelectLeito = (index) => {
     setSelectedLeito(index + 1);
   };
+
+    // Botões da Direita
+    const renderButtons = () => {
+      switch (selectedPaciente.estagio_atual) {
+        case 'ENCAMINHADO_PARA_AGENDAMENTO':
+          return <MDBBtn style={{ marginLeft: '10px' }} onClick={toggleModalAgendamento} >AGENDAR</MDBBtn>;
+        case 'AUTORIZADO_PARA_TRANSFERENCIA':
+          return (
+            <>
+              <div>
+                <MDBBtn style={{ marginLeft: '10px' }} onClick={toggleModalTransferencia} >CONFIRMAR TRANSFERÊNCIA</MDBBtn>
+              </div>
+            </>
+          );
+        case 'AGENDADO':
+          return (
+            <>
+              <div>
+                <MDBBtn color='primary' onClick={toggleModalInternacao} >CONFIRMAR INTERNAÇÃO</MDBBtn>
+              </div>
+            </>
+          );
+        default:
+          return null;
+      }
+    };
 
   return (
   <MDBCol md='8'>
@@ -443,12 +401,17 @@ function QuadroFicha({ selectedPaciente, historico }) {
     {/* Botões */}
 
     <div style={{ padding: '20px', marginTop: '10px', display: 'flex', justifyContent: 'space-between', borderTop: '1px solid rgba(0,0,0,.125)' }}>
-      <div>
-        <MDBBtn style={{ marginLeft: '10px' }}>ENCAMINHAR</MDBBtn>
-      </div>
-      <div>
-        <MDBBtn style={{ marginLeft: '10px' }}>RESERVAR</MDBBtn>
-      </div>
+        <div>
+          {selectedPaciente.estagio_atual === 'ENCAMINHADO_PARA_AGENDAMENTO' && (
+              <MDBBtn color='success' style={{ marginLeft: '10px' }} onClick={toggleModalDevolverMedico} >DEVOLVER</MDBBtn>
+          )}
+          {selectedPaciente.estagio_atual === 'AGENDADO' && (
+              <MDBBtn color='danger' style={{ marginLeft: '10px' }} onClick={toggleModalAltaObito} >ALTA ÓBITO</MDBBtn>
+          )}
+        </div>
+        <div>
+          {renderButtons()}
+        </div>
     </div>
         </MDBCard>
  )}
@@ -457,6 +420,12 @@ function QuadroFicha({ selectedPaciente, historico }) {
         <p style={{ fontSize: '1.5rem' }}> Selecione um Usuário</p>
       </div>
     )}
+  {/* Modais */}
+  <ModalDevolverMedico isOpen={isModalDevolverMedicoOpen} onClose={toggleModalDevolverMedico} />
+  <ModalAgendamento isOpen={isModalAgendamentoOpen} onClose={toggleModalAgendamento} />
+  <ModalTransferencia isOpen={isModalTransferenciaOpen} onClose={toggleModalTransferencia} />
+  <ModalAltaObito isOpen={isModalAltaObitoOpen} onClose={toggleModalAltaObito} />
+  <ModalInternacao isOpen={isModalInternacaoOpen} onClose={toggleModalInternacao} />
 
       </MDBCol>
   )

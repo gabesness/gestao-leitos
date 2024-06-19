@@ -89,66 +89,6 @@ function ModalNovaPrescricao({ isOpen, onClose }) {
   );
 }
 
-function ModalConfirmarAlta({ isOpen, onClose }) {
-  const handleClose = () => {
-    if (isOpen) {
-      onClose();
-    }
-  };
-
-  return (
-    <MDBModal open={isOpen} onClose={handleClose} tabIndex='-1' appendToBody>
-      <MDBModalDialog>
-        <MDBModalContent>
-          <MDBModalHeader>
-            <MDBModalTitle>Confirmação de Alta</MDBModalTitle>
-            <MDBBtn className='btn-close' color='none' onClick={handleClose}></MDBBtn>
-          </MDBModalHeader>
-          <MDBModalBody>
-
-          Confirme que o paciente está recebendo alta
-
-          </MDBModalBody>
-          <MDBModalFooter>
-            <MDBBtn color='danger'>Cancelar</MDBBtn>
-            <MDBBtn>Confirmar Alta</MDBBtn>
-          </MDBModalFooter>
-        </MDBModalContent>
-      </MDBModalDialog>
-    </MDBModal>
-  );
-}
-
-function ModalConfirmarFacelimento({ isOpen, onClose }) {
-  const handleClose = () => {
-    if (isOpen) {
-      onClose();
-    }
-  };
-
-  return (
-    <MDBModal open={isOpen} onClose={handleClose} tabIndex='-1' appendToBody>
-      <MDBModalDialog>
-        <MDBModalContent>
-          <MDBModalHeader>
-            <MDBModalTitle>Confirmação de Falecimento</MDBModalTitle>
-            <MDBBtn className='btn-close' color='none' onClick={handleClose}></MDBBtn>
-          </MDBModalHeader>
-          <MDBModalBody>
-
-          Confirme que o paciente faleceu
-
-          </MDBModalBody>
-          <MDBModalFooter>
-            <MDBBtn color='danger'>Cancelar</MDBBtn>
-            <MDBBtn>Confirmar Alta</MDBBtn>
-          </MDBModalFooter>
-        </MDBModalContent>
-      </MDBModalDialog>
-    </MDBModal>
-  );
-}
-
 function ModalEnviarFarmacia({ isOpen, onClose }) {
   const handleClose = () => {
     if (isOpen) {
@@ -179,7 +119,97 @@ function ModalEnviarFarmacia({ isOpen, onClose }) {
   );
 }
 
-function ModalConfirmarTransferencia({ isOpen, onClose }) {
+function ModalAltaObito({ isOpen, onClose }) {
+  const handleClose = () => {
+    if (isOpen) {
+      onClose();
+    }
+  };
+
+  return (
+    <MDBModal open={isOpen} onClose={handleClose} tabIndex='-1' appendToBody>
+      <MDBModalDialog>
+        <MDBModalContent>
+          <MDBModalHeader>
+            <MDBModalTitle>Confirmação de Alta Óbito</MDBModalTitle>
+            <MDBBtn className='btn-close' color='none' onClick={handleClose}></MDBBtn>
+          </MDBModalHeader>
+          <MDBModalBody>
+
+          Confirme que o paciente está recebendo alta
+
+          </MDBModalBody>
+          <MDBModalFooter>
+            <MDBBtn color='danger'>Cancelar</MDBBtn>
+            <MDBBtn>Confirmar Alta</MDBBtn>
+          </MDBModalFooter>
+        </MDBModalContent>
+      </MDBModalDialog>
+    </MDBModal>
+  );
+}
+
+function ModalAltaNormal({ isOpen, onClose }) {
+  const handleClose = () => {
+    if (isOpen) {
+      onClose();
+    }
+  };
+
+  return (
+    <MDBModal open={isOpen} onClose={handleClose} tabIndex='-1' appendToBody>
+      <MDBModalDialog>
+        <MDBModalContent>
+          <MDBModalHeader>
+            <MDBModalTitle>Confirmação de Alta Normal</MDBModalTitle>
+            <MDBBtn className='btn-close' color='none' onClick={handleClose}></MDBBtn>
+          </MDBModalHeader>
+          <MDBModalBody>
+
+          Confirme que o paciente está recebendo alta
+
+          </MDBModalBody>
+          <MDBModalFooter>
+            <MDBBtn color='danger'>Cancelar</MDBBtn>
+            <MDBBtn>Confirmar Alta</MDBBtn>
+          </MDBModalFooter>
+        </MDBModalContent>
+      </MDBModalDialog>
+    </MDBModal>
+  );
+}
+
+function ModalAltaDefinitiva({ isOpen, onClose }) {
+  const handleClose = () => {
+    if (isOpen) {
+      onClose();
+    }
+  };
+
+  return (
+    <MDBModal open={isOpen} onClose={handleClose} tabIndex='-1' appendToBody>
+      <MDBModalDialog>
+        <MDBModalContent>
+          <MDBModalHeader>
+            <MDBModalTitle>Confirmação de Alta Definitiva</MDBModalTitle>
+            <MDBBtn className='btn-close' color='none' onClick={handleClose}></MDBBtn>
+          </MDBModalHeader>
+          <MDBModalBody>
+
+          Confirme que o paciente está recebendo alta
+
+          </MDBModalBody>
+          <MDBModalFooter>
+            <MDBBtn color='danger'>Cancelar</MDBBtn>
+            <MDBBtn>Confirmar Alta</MDBBtn>
+          </MDBModalFooter>
+        </MDBModalContent>
+      </MDBModalDialog>
+    </MDBModal>
+  );
+}
+
+function ModalTransferencia({ isOpen, onClose }) {
   const handleClose = () => {
     if (isOpen) {
       onClose();
@@ -225,9 +255,9 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
   const filteredPacientes = pacientes.filter(paciente => 
     activeTab === 'pendentes' ? 
       ['PRESCRICAO_CRIADA', 
-      'DEVOLVIDA_PELA_FARMACIA',
+      'DEVOLVIDO_PELA_FARMACIA',
       'ALTA_NORMAL',  
-      'DEVOLVIDA_PELA_REGULACAO']
+      'DEVOLVIDO_PELA_REGULACAO']
       .includes(paciente.estagio_atual) 
       : 
       paciente.estagio_atual === 'INTERNADO'
@@ -315,6 +345,57 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
 
 
 function QuadroFicha({ selectedPaciente, historico }) {
+  // Modais
+  // Modal de Envio para farmácia
+  const [isModalEnviarFarmaciaOpen, setIsModalEnviarFarmaciaOpen] = useState(false);
+  const toggleModalEnviarFarmacia = () => setIsModalEnviarFarmaciaOpen(!isModalEnviarFarmaciaOpen);
+  
+  // Modal confirmar Alta Normal
+  const [isModalAltaNormalOpen, setIsModalAltaNormalOpen] = useState(false);
+  const toggleModalAltaNormal = () => setIsModalAltaNormalOpen(!isModalAltaNormalOpen);
+
+  // Modal confirmar Alta Definitiva
+  const [isModalAltaDefinitivaOpen, setIsModalAltaDefinitivaOpen] = useState(false);
+  const toggleModalAltaDefinitiva = () => setIsModalAltaDefinitivaOpen(!isModalAltaDefinitivaOpen);
+
+  // Modal confirmar Alta Óbito
+  const [isModalAltaObitoOpen, setIsModalAltaObitoOpen] = useState(false);
+  const toggleModalAltaObito = () => setIsModalAltaObitoOpen(!isModalAltaObitoOpen);
+
+  // Modal confirmar transferência
+  const [isModalTransferenciaOpen, setIsModalTransferenciaOpen] = useState(false);
+  const toggleModalTransferencia = () => setIsModalTransferenciaOpen(!isModalTransferenciaOpen);
+
+
+  // Botões da Direita
+  const renderButtons = () => {
+    switch (selectedPaciente.estagio_atual) {
+      case 'PRESCRICAO_CRIADA':
+      case 'DEVOLVIDO_PELA_FARMACIA':
+        return <MDBBtn style={{ marginLeft: '10px' }} onClick={toggleModalEnviarFarmacia} >ENVIAR</MDBBtn>;
+      case 'ALTA_NORMAL':
+        return (
+          <>
+            <div>
+              <MDBBtn style={{ marginLeft: '10px' }} onClick={toggleModalEnviarFarmacia} >ENVIAR</MDBBtn>
+            </div>
+          </>
+        );
+      case 'DEVOLVIDO_PELA_REGULACAO':
+        return <MDBBtn onClick={toggleModalTransferencia} >AUTORIZAR TRANSFERÊNCIA</MDBBtn>;
+      case 'INTERNADO':
+        return (
+          <>
+            <div>
+              <MDBBtn color='primary'onClick={toggleModalAltaNormal}>ALTA NORMAL</MDBBtn>
+            </div>
+          </>
+        );
+      default:
+        return null;
+    }
+  };
+
   return (
   <MDBCol md='8'>
   {selectedPaciente && (
@@ -377,14 +458,22 @@ function QuadroFicha({ selectedPaciente, historico }) {
     {/* Botões */}
 
     <div style={{ padding: '20px', marginTop: '10px', display: 'flex', justifyContent: 'space-between', borderTop: '1px solid rgba(0,0,0,.125)' }}>
-      <div>
-        <MDBBtn color='danger' >DELETAR</MDBBtn>
-        <MDBBtn color='success' style={{ marginLeft: '10px' }}>SALVAR RASCUNHO</MDBBtn>
-      </div>
-      <div>
-        <MDBBtn style={{ marginLeft: '10px' }}>ENVIAR</MDBBtn>
-      </div>
-    </div>
+            <div>
+              {selectedPaciente.estagio_atual === 'ALTA_NORMAL' && (
+                <MDBBtn color='success' style={{ marginLeft: '10px' }}>CRIAR PRESCRIÇÃO</MDBBtn>
+              )}
+              {selectedPaciente.estagio_atual === 'INTERNADO' && (
+                <>
+                  <MDBBtn color='warning' style={{ marginLeft: '10px' }}onClick={toggleModalAltaDefinitiva}>ALTA DEFINITIVA</MDBBtn>
+                  <MDBBtn color='danger' style={{ marginLeft: '10px' }} onClick={toggleModalAltaObito}>ALTA ÓBITO</MDBBtn>
+                </>
+              )}
+            </div>
+            <div>
+            {renderButtons()}
+            </div>
+          </div>
+
         </MDBCard>
  )}
     {!selectedPaciente && (
@@ -393,7 +482,14 @@ function QuadroFicha({ selectedPaciente, historico }) {
       </div>
     )}
 
-      </MDBCol>
+       {/* Modais */}
+       <ModalEnviarFarmacia isOpen={isModalEnviarFarmaciaOpen} onClose={toggleModalEnviarFarmacia} />
+       <ModalAltaObito isOpen={isModalAltaObitoOpen} onClose={toggleModalAltaObito} />
+       <ModalAltaNormal isOpen={isModalAltaNormalOpen} onClose={toggleModalAltaNormal} />
+       <ModalAltaDefinitiva isOpen={isModalAltaDefinitivaOpen} onClose={toggleModalAltaDefinitiva} />
+       <ModalTransferencia isOpen={isModalTransferenciaOpen} onClose={toggleModalTransferencia} />
+
+       </MDBCol>
   )
 }
 

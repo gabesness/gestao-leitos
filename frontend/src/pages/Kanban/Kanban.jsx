@@ -155,8 +155,8 @@ function Kanban() {
               <MDBCardBody className='p-2'>
                 {pacientes.filter(paciente => 
                   paciente.estagio_atual === 'PRESCRICAO_CRIADA' ||
-                  paciente.estagio_atual === 'DEVOLVIDA_PELA_FARMACIA' ||
-                  paciente.estagio_atual === 'DEVOLVIDA_PELA_REGULACAO'
+                  paciente.estagio_atual === 'DEVOLVIDO_PELA_FARMACIA' ||
+                  paciente.estagio_atual === 'DEVOLVIDO_PELA_REGULACAO'
                 ).map((paciente, index) => (
                   <PacienteCard
                     key={index}
@@ -251,8 +251,8 @@ function Kanban() {
                   <MDBCardBody>
                     {pacientes.filter(paciente => 
                       paciente.estagio_atual === 'ALTA_NORMAL' ||
-                      paciente.estagio_atual === 'ALTA_CURADO' ||
-                      paciente.estagio_atual === 'FALECIMENTO'
+                      paciente.estagio_atual === 'ALTA_OBITO' ||
+                      paciente.estagio_atual === 'ALTA_DEFINITIVA'
                     ).map((paciente, index) => (
                       <PacienteCard
                         key={index}
