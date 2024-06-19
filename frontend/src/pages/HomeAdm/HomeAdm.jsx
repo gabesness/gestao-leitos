@@ -41,12 +41,24 @@ import CabecalhoUsuario from '../../components/Ficha/CabecalhoUsuario';
 function QuadroLista({ usuarios, activeTab, selectedUser, handleUserClick, setActiveTab }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [postsPerPage] = useState(5); // Quantidade de usuários por página
+  const [searchTerm, setSearchTerm] = useState(''); // Estado para o termo de pesquisa
+
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value);
+  };
 
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
   const currentUsers = usuarios.slice(indexOfFirstPost, indexOfLastPost);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  const searchedUsuarios = usuarios.filter(usuario => {
+    return usuario.first_name.toLowerCase().includes(searchTerm.toLowerCase());
+  });
+
+  const currentUsuarios = searchedUsuarios.slice(indexOfFirstPost, indexOfLastPost);
+
 
   return (
     <MDBCol md='4'>
@@ -69,12 +81,12 @@ function QuadroLista({ usuarios, activeTab, selectedUser, handleUserClick, setAc
 
           {/* Cabeçalho */}
 
-          <MDBInput type="text" label="Pesquisar" />
+          <MDBInput type="text" label="Pesquisar" value={searchTerm} onChange={handleSearchChange} className="flex-grow-1" style={{ height: '40px' }} />
           <MDBListGroup light>
 
           {/* Listagem */}
 
-          {currentUsers.map((usuario, index) => (
+          {currentUsuarios.map((usuario, index) => (
               <UsuarioCard key={index} user={usuario} selectedUser={selectedUser} handleUserClick={handleUserClick} />
             ))}
 
@@ -83,7 +95,7 @@ function QuadroLista({ usuarios, activeTab, selectedUser, handleUserClick, setAc
             <div className="pag">
               <Pagination
                 postsPerPage={postsPerPage}
-                totalPosts={usuarios.length}
+                totalPosts={searchedUsuarios.length}
                 paginate={paginate}
               />
             </div>

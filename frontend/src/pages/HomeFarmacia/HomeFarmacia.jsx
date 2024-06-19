@@ -158,7 +158,7 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
             <div className="pag">
               <Pagination
                 postsPerPage={postsPerPage}
-                totalPosts={pacientes.length}
+                totalPosts={searchedPacientes.length}
                 paginate={paginate}
               />
             </div>
