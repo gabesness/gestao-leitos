@@ -124,17 +124,31 @@ function ModalCriarPaciente({ isOpen, onClose }) {
 }
 
 
-function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteClick, setActiveTab }) {
+function QuadroLista({ pacientes, selectedPaciente, handlePacienteClick, }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [postsPerPage] = useState(5); // Quantidade de usuários por página
+  const [searchTerm, setSearchTerm] = useState(''); // Estado para o termo de pesquisa
+
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value);
+  };
 
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
-  const currentPacientes = pacientes.slice(indexOfFirstPost, indexOfLastPost);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const cargo = localStorage.getItem('cargo');
+
+  const searchedPacientes = pacientes.filter(paciente => {
+    if (/^\d+$/.test(searchTerm)) {
+      return paciente.prontuario.includes(searchTerm);
+    }
+    return paciente.nome.toLowerCase().includes(searchTerm.toLowerCase());
+  });
+
+  const currentPacientes = searchedPacientes.slice(indexOfFirstPost, indexOfLastPost);
+
 
 
   // Modal
@@ -145,22 +159,13 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
   return (
     <MDBCol md='4'>
       <MDBCard className='mb-4' style={{ borderTopLeftRadius: '30px', borderTopRightRadius: '30px', borderBottomLeftRadius: '20px', borderBottomRightRadius: '20px'}}>
-         {/* Botões das Abas */}
-        <div className="text-center mb-4">
-          <MDBBtn className="w-50" style={{ borderTopLeftRadius: '20px', borderTopRightRadius: '0px', borderBottomRightRadius: '0px', borderBottomLeftRadius: '0px' }} color={activeTab === 'pendentes' ? 'light' : 'dark'} rippleColor='dark' onClick={() => setActiveTab('pendentes')}>
-            Pendentes
-          </MDBBtn>
-          <MDBBtn className="w-50" style={{ borderTopLeftRadius: '0px', borderTopRightRadius: '20px', borderBottomLeftRadius: '0px', borderBottomRightRadius: '0px' }} color={activeTab === 'internados' ? 'light' : 'dark'} onClick={() => setActiveTab('internados')}>
-            Internados
-          </MDBBtn>
-        </div>
 
         {/* Conteúdo */}
         <MDBCardBody>
           {/* Cabeçalho */}
 
           <div className="d-flex align-items-center mb-3">
-            <MDBInput type="text" label="Pesquisar" className="flex-grow-1" style={{ height: '40px' }} />
+          <MDBInput type="text" label="Pesquisar" value={searchTerm} onChange={handleSearchChange} className="flex-grow-1" style={{ height: '40px' }} />
             {cargo === 'Recepção' || cargo === 'Regulação' ? (
               <MDBBtn onClick={toggleOpen} className="ms-2 d-flex justify-content-center align-items-center" style={{ borderRadius: '50%', width: '40px', height: '40px', padding: '0', margin: '0' }} color="dark">
                 <MDBIcon fas icon="plus" />
@@ -270,7 +275,6 @@ function QuadroFicha({ selectedPaciente, historico }) {
 function Pacientes() {
   const [pacientes, setPacientes] = useState([]);
   const [historico, setHistorico] = useState([]);
-  const [activeTab, setActiveTab] = useState('pendentes');
   const [selectedPaciente, setselectedPaciente] = useState(null);
 
 
@@ -306,10 +310,8 @@ function Pacientes() {
           <MDBRow>
           <QuadroLista
               pacientes={pacientes}
-              activeTab={activeTab}
               selectedPaciente={selectedPaciente}
               handlePacienteClick={handlePacienteClick}
-              setActiveTab={setActiveTab}
             />
 
           <QuadroFicha 

@@ -276,6 +276,11 @@ function ModalCriarPaciente({ isOpen, onClose }) {
 function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteClick, setActiveTab }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [postsPerPage] = useState(5); // Quantidade de usuários por página
+  const [searchTerm, setSearchTerm] = useState(''); // Estado para o termo de pesquisa
+
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value);
+  };
 
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
@@ -289,10 +294,17 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
       paciente.estagio_atual === 'AGENDADO'
   );
 
-  const currentPacientes = filteredPacientes.slice(indexOfFirstPost, indexOfLastPost);
-
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  const searchedPacientes = filteredPacientes.filter(paciente => {
+    if (/^\d+$/.test(searchTerm)) {
+      return paciente.prontuario.includes(searchTerm);
+    }
+    return paciente.nome.toLowerCase().includes(searchTerm.toLowerCase());
+  });
+
+  const currentPacientes = searchedPacientes.slice(indexOfFirstPost, indexOfLastPost);
 
    // Modal
    const [basicModal, setBasicModal] = useState(false);
@@ -321,7 +333,7 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
 
           {/* Cabeçalho */}
 
-          <MDBInput type="text" label="Pesquisar" />
+          <MDBInput type="text" label="Pesquisar" value={searchTerm} onChange={handleSearchChange} className="flex-grow-1" style={{ height: '40px' }} />
 
           <MDBListGroup light>
 

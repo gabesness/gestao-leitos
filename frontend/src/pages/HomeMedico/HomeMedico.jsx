@@ -213,6 +213,11 @@ function ModalConfirmarTransferencia({ isOpen, onClose }) {
 function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteClick, setActiveTab }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [postsPerPage] = useState(5); // Quantidade de usuários por página
+  const [searchTerm, setSearchTerm] = useState(''); // Estado para o termo de pesquisa
+
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value);
+  };
 
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
@@ -228,9 +233,16 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
       paciente.estagio_atual === 'INTERNADO'
   );
 
-  const currentPacientes = filteredPacientes.slice(indexOfFirstPost, indexOfLastPost);
-
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+ const searchedPacientes = filteredPacientes.filter(paciente => {
+    if (/^\d+$/.test(searchTerm)) {
+      return paciente.prontuario.includes(searchTerm);
+    }
+    return paciente.nome.toLowerCase().includes(searchTerm.toLowerCase());
+  });
+
+  const currentPacientes = searchedPacientes.slice(indexOfFirstPost, indexOfLastPost);
 
 
   // Modal
@@ -256,8 +268,8 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
           {/* Cabeçalho */}
 
           <div className="d-flex align-items-center mb-3">
-            <MDBInput type="text" label="Pesquisar" className="flex-grow-1" style={{ height: '40px' }} />
-            <MDBBtn
+          <MDBInput type="text" label="Pesquisar" value={searchTerm} onChange={handleSearchChange} className="flex-grow-1" style={{ height: '40px' }} />
+          <MDBBtn
               onClick={toggleOpen}
               className="ms-2 d-flex justify-content-center align-items-center btn-sm"
               style={{
