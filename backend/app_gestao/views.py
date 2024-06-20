@@ -5,6 +5,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 #from django.middleware.csrf import get_token
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
+from django.shortcuts import get_object_or_404
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from rest_framework.views import APIView
 from rest_framework import status
@@ -158,30 +159,101 @@ class PrescricaoViewSet(GenericViewSet):
         serializer = self.get_serializer(paciente)
         estagios_aceitos = ['CADASTRADO', 'ALTA_NORMAL']
         if serializer.data['estagio_atual'] in estagios_aceitos:
-            serializer.criar_prescricao(obj=paciente, usuario=request.user)
-            return Response(serializer.data['historico_atual'], status=status.HTTP_204_NO_CONTENT)
+            serializer.criar_prescricao(obj=paciente)
+            serializer.atualizar_estagio(obj=paciente, usuario=request.user, estagio='PRESCRICAO_CRIADA', mensagem='Prescrição criada!')
+            return Response(status=status.HTTP_204_NO_CONTENT)
         else:
             return Response({'erro': 'estagio_atual inválido'},status=status.HTTP_400_BAD_REQUEST)
 
     @extend_schema(
         summary="*WIP* Enviar prescrição do médico para a Farmácia",
         description="""O médico encaminha a prescrição para a farmácia (devolvida ou não);
+                       Assume o estágio atual do paciente é PRESCRICAO_CRIADA ou DEVOLVIDO_PELA_FARMACIA;
                        Altera o estágio atual do paciente para ENCAMINHADO_PARA_FARMACIA;
                        Caso o paciente não possua plano terapêutico, é criado um plano novo e atribuído ao paciente;
                        Caso já possua, o plano é apenas alterado;
                        Cria um Registro.""",
-        request=PrescricaoSerializer # recebe um atributo 'mensagem' e um atributo Plano_terapeutico
+        request=PrescricaoSerializer # recebe um atributo Plano_terapeutico e um atributo mensagem
         )
     @action(detail=True, methods=['PATCH'])
     def encaminhar_farmacia(self, request, pk=None):
         paciente = self.get_object()
-        serializer = self.get_serializer(paciente)
+        paciente_serializer = self.get_serializer(paciente)
         estagios_aceitos = ['PRESCRICAO_CRIADA', 'DEVOLVIDA_PELA_FARMACIA']
-        if serializer.data['estagio_atual'] in estagios_aceitos:
-            serializer.atualizar(obj=paciente, usuario=request.user, estagio='ENCAMINHADO_PARA_FARMACIA', mensagem=request.data['mensagem'])
-            return Response({'OK': 'enviado com sucesso'}, status=status.HTTP_204_NO_CONTENT)
+        
+        if paciente_serializer.data['estagio_atual'] in estagios_aceitos:
+            # Se não houver nenhum plano terapeutico associado ao paciente, criar um plano novo
+            if paciente.plano_terapeutico is None:
+                plano_json = request.data['plano_terapeutico']
+                data = {
+                    'sessoes_prescritas': plano_json['sessoes_prescritas'],
+                    'sessoes_restantes': plano_json['sessoes_prescritas'],
+                    'dias_intervalo': plano_json['dias_intervalo'],
+                    'data_sugerida': plano_json['data_sugerida'],
+                    'medicamentos': plano_json['medicamentos'],
+                }
+                # Definindo um novo plano terapeutico
+                plano = Plano_terapeuticoSerializer(data={**plano_json, 'sessoes_restantes': plano_json['sessoes_prescritas']})
+                plano.is_valid()
+                plano = plano.create(data)
+            # Se já houver plano para esse paciente, recuperar o existente e alterar as suas informações
+            else:
+                plano = paciente_serializer.data['plano_terapeutico'] # consulta o plano terapeutico do paciente
+                plano = plano.update(data)
+            plano.save()
+            paciente_serializer.data['plano_terapeutico'] = plano # colocando o plano novo ou atualizado no paciente
+            paciente_serializer.save() # salvando as alteracoes de paciente
+        
+            paciente_serializer.atualizar_estagio(obj=paciente, usuario=request.user, estagio='ENCAMINHADO_PARA_FARMACIA', mensagem=request.data['mensagem'])
+            return Response({'plano': plano}, status=status.HTTP_200_OK)
         else:
             return Response({'erro': 'estagio_atual invalido'}, status=status.HTTP_400_BAD_REQUEST)
+
+    @extend_schema(
+            summary="Encaminhar para agendamento",
+            description="""Envio do paciente da Farmácia para a regulação;
+                           Assume que o paciente está no estágio de ENCAMINHADO_PARA_FARMACIA;
+                           Cria o Registro.""",
+            request={'application/json': {'mensagem': 'string'}}
+    )
+    @action(detail=True, methods=['PATCH'])
+    def encaminhar_agendamento(self, request, pk=None):
+        paciente = self.get_object()
+        serializer = self.get_serializer(paciente)
+        if serializer.data['estagio_atual'] == 'ENCAMINHADO_PARA_FARMACIA':
+            serializer.atualizar_estagio(
+                obj=paciente, 
+                usuario=request.user, 
+                estagio='ENCAMINHADO_PARA_AGENDAMENTO',
+                mensagem=request.data)
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response({'erro': 'Estágio atual inválido'}, status=status.HTTP_400_BAD_REQUEST)
+        
+    @extend_schema(
+            summary="*WIP* Agendar paciente",
+            description="""Recebe como parâmetro o leito;
+                           Assume o estágio atual do paciente como ENCAMINHADO_PARA_AGENDAMENTO;
+                           Assume que o leito está livre (FALTA IMPLEMENTAR!);
+                           Marca o leito como ocupado e coloca-o no campo 'leito' do paciente;
+                           Cria o registro.""",
+    )
+    @action(detail=True, methods=['PATCH'], url_path='(?P<id_leito>[^/.]+)/agendar_paciente')
+    def agendar_paciente(self, request, pk=None, id_leito=None):
+        paciente = self.get_object()
+        serializer = self.get_serializer(paciente)
+        if serializer.data['estagio_atual'] == 'ENCAMINHADO_PARA_AGENDAMENTO':
+            serializer.alocar_leito(obj=paciente, id_leito=id_leito)
+            serializer.atualizar_estagio(
+                obj=paciente,
+                usuario=request.user,
+                estagio='AGENDADO',
+                mensagem=f"Paciente agendado para internação."
+                )
+            return Response({'OK': 'Agendado com sucesso'}, status=status.HTTP_200_OK)
+        else:
+            return Response({'erro': 'estagio_atual inválido'}, status=status.HTTP_400_BAD_REQUEST)
+
 
     @extend_schema(
         summary="Devolução da prescrição (Farmácia)",
@@ -253,6 +325,8 @@ class PrescricaoViewSet(GenericViewSet):
             return Response({'OK': 'devolvido com sucesso'}, status=status.HTTP_204_NO_CONTENT)
         else:
             return Response({'erro': 'estagio_atual invalido'}, status=status.HTTP_400_BAD_REQUEST)
+
+
 
 class LeitoViewSet(GenericViewSet):
     queryset = Leito.objects.all()

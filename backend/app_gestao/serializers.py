@@ -73,16 +73,36 @@ class PacienteSerializer(DynamicFieldsModelSerializer):
     #     else:
     #         return None
     
-    def atualizar(self, obj, usuario, estagio, mensagem):
-        obj.atualizar(usuario, estagio, mensagem)
+    def atualizar_estagio(self, obj, usuario, estagio, mensagem):
+        obj.atualizar_estagio(usuario, estagio, mensagem)
 
-    def criar_prescricao(self, obj, usuario):
-        obj.criar_prescricao(usuario)
+    def criar_prescricao(self, obj):
+        obj.criar_prescricao()
+    
+    def alocar_leito(self, obj, id_leito):
+        obj.alocar_leito(id_leito)
+    
+    def desalocar_leito(self, obj):
+        obj.desalocar_leito()
 
 class Plano_terapeuticoSerializer(DynamicFieldsModelSerializer):
     class Meta:
         model = Plano_terapeutico
         fields = ('__all__')
+        read_only_fields = ['sessoes_restantes']
+    
+    def create(self, validated_data):
+        validated_data['sessoes_restantes'] = validated_data['sessoes_prescritas']
+        return Plano_terapeutico.objects.create(**validated_data)
+    
+    def update(self, obj, validated_data):
+        obj.sessoes_prescritas = validated_data.get('sessoes_prescritas', obj.sessoes_prescritas)
+        obj.dias_intervalo = validated_data.get('dias_intervalo', obj.dias_intervalo)
+        obj.data_sugerida = validated_data.get('data_sugerida', obj.data_sugerida)
+        obj.medicamentos = validated_data.get('medicamentos', obj.medicamentos)
+        obj.save()
+        return obj
+
 
 class LeitoSerializer(DynamicFieldsModelSerializer):
     class Meta:
