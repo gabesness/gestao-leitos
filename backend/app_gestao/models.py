@@ -1,6 +1,7 @@
 from django.db import models
 from datetime import datetime
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 class EstagioEnum(models.TextChoices):
     CADASTRADO = "CADASTRADO" # Paciente cadastrado
@@ -60,6 +61,11 @@ class Paciente(models.Model):
     def criar_prescricao(self):
         s = Sessao(paciente=self, numero=0)
         s.save()
+        self.save()
+    
+    def associar_plano(self, plano_terapeutico):
+        self.plano_terapeutico = plano_terapeutico
+        self.save()
 
     def alocar_leito(self, id_leito):
         leito = Leito.objects.get(id=id_leito)
@@ -75,13 +81,17 @@ class Paciente(models.Model):
         leito.save()
         self.save()
     
-    # def internar(self):
-    #     s = self.sessao_atual()
-    #     s.data_internacao = datetime.now()
+    def internar(self):
+        s = self.sessao_atual()
+        s.data_internacao = timezone.now()
+        s.save()
+        self.save()
 
-    # def dar_alta(self):
-    #     s = self.sesao_atual()
-    #     s.data_alta = datetime.now()
+    def dar_alta(self):
+        s = self.sesao_atual()
+        s.data_alta = timezone.now()
+        s.save()
+        self.save()
 
     def __str__(self):
         return f"Paciente {self.nome}"

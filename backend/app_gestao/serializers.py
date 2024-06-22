@@ -45,6 +45,7 @@ class PacienteSerializer(DynamicFieldsModelSerializer):
     sessao_atual = serializers.SerializerMethodField()
     historico_atual = serializers.SerializerMethodField()
     historico_completo = serializers.SerializerMethodField()
+    plano_terapeutico = serializers.SerializerMethodField()
 
     class Meta:
         model = Paciente
@@ -66,6 +67,10 @@ class PacienteSerializer(DynamicFieldsModelSerializer):
         historico = obj.historico_completo()
         return RegistroSerializer(historico, many=True).data
     
+    def get_plano_terapeutico(self, obj) -> dict:
+        plano_terapeutico = obj.plano_terapeutico
+        return Plano_terapeuticoSerializer(plano_terapeutico)
+    
     # def get_plano_terapeutico(self, obj) -> dict:
     #     pt = obj.plano_terapeutico()
     #     if pt:
@@ -79,16 +84,25 @@ class PacienteSerializer(DynamicFieldsModelSerializer):
     def criar_prescricao(self, obj):
         obj.criar_prescricao()
     
+    def associar_plano(self, obj, plano_terapeutico):
+        obj.associar_plano(plano_terapeutico)
+    
     def alocar_leito(self, obj, id_leito):
         obj.alocar_leito(id_leito)
     
     def desalocar_leito(self, obj):
         obj.desalocar_leito()
 
+    def internar(self, obj):
+        obj.internar()
+
+    def dar_alta(self, obj):
+        obj.dar_alta()
+
 class Plano_terapeuticoSerializer(DynamicFieldsModelSerializer):
     class Meta:
         model = Plano_terapeutico
-        fields = ('__all__')
+        fields = ['id', 'sessoes_prescritas', 'sessoes_restantes', 'data_sugerida', 'medicamentos']
         read_only_fields = ['sessoes_restantes']
     
     def create(self, validated_data):
