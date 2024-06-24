@@ -69,14 +69,7 @@ class PacienteSerializer(DynamicFieldsModelSerializer):
     
     def get_plano_terapeutico(self, obj) -> dict:
         plano_terapeutico = obj.plano_terapeutico
-        return Plano_terapeuticoSerializer(plano_terapeutico)
-    
-    # def get_plano_terapeutico(self, obj) -> dict:
-    #     pt = obj.plano_terapeutico()
-    #     if pt:
-    #         return Plano_terapeuticoSerializer(pt).data
-    #     else:
-    #         return None
+        return Plano_terapeuticoSerializer(plano_terapeutico).data
     
     def atualizar_estagio(self, obj, usuario, estagio, mensagem):
         obj.atualizar_estagio(usuario, estagio, mensagem)
@@ -102,7 +95,7 @@ class PacienteSerializer(DynamicFieldsModelSerializer):
 class Plano_terapeuticoSerializer(DynamicFieldsModelSerializer):
     class Meta:
         model = Plano_terapeutico
-        fields = ['id', 'sessoes_prescritas', 'sessoes_restantes', 'data_sugerida', 'medicamentos']
+        fields = ['id', 'sessoes_prescritas', 'sessoes_restantes', 'dias_intervalo', 'data_sugerida', 'medicamentos']
         read_only_fields = ['sessoes_restantes']
     
     def create(self, validated_data):

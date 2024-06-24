@@ -5,14 +5,11 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 #from django.middleware.csrf import get_token
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
-from django.shortcuts import get_object_or_404
-from rest_framework.viewsets import ModelViewSet, GenericViewSet
-from rest_framework.views import APIView
+from rest_framework.viewsets import GenericViewSet
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import action
-from drf_spectacular.utils import extend_schema, PolymorphicProxySerializer
-from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import extend_schema
 from .serializers import *
 
 # Create your views here.
@@ -262,7 +259,7 @@ class PrescricaoViewSet(GenericViewSet):
         serializer = self.get_serializer(paciente)
         if serializer.data['estagio_atual'] == 'AGENDADO':
             serializer.internar(obj=paciente)
-            serializer.atualizar_estagio(usuario=request.user, estagio='INTERNADO', mensagem="Paciente internado.")
+            serializer.atualizar_estagio(obj=paciente, usuario=request.user, estagio='INTERNADO', mensagem="Paciente internado.")
             return Response({'OK': 'Paciente internado com sucesso!'}, status=status.HTTP_200_OK)
         else:
             return Response({'erro': 'estagio_atual invalido'}, status=status.HTTP_400_BAD_REQUEST)
@@ -274,21 +271,21 @@ class PrescricaoViewSet(GenericViewSet):
                            Retira a chave estrangeira de leito do paciente;
                            Coloca a data de alta na sessão atual;
                            Assume os estágios: INTERNADO ou AGENDADO.""",
-            request={'application/json': {'tipo_alta': 'string'}}
+            request={'application/json': {'tipo_alta': 'int'}}
     )
     @action(detail=True, methods=['PATCH'])
     def dar_alta(self, request, pk=None):
         paciente = self.get_object()
         estagios_aceitos = ['AGENDADO', 'INTERNADO']
         if paciente.estagio_atual in estagios_aceitos:
-            alta = request
-            if alta == 'N': # alta normal
+            alta = int(request.data)
+            if alta == 0: # alta normal
                 paciente.dar_alta()
                 paciente.atualizar_estagio(usuario=request.user, estagio='ALTA_NORMAL', mensagem="Paciente com alta.")
-            elif alta == 'D': # alta definitiva
+            elif alta == 1: # alta definitiva
                 paciente.dar_alta()
                 paciente.atualizar_estagio(usuario=request.user, estagio='ALTA_DEFINITIVA', mensagem="Paciente com alta definitiva.")
-            elif alta == 'O': # alta óbito
+            elif alta == 2: # alta óbito
                 paciente.dar_alta()
                 paciente.atualizar_estagio(usuario=request.user, estagio='ALTA_OBITO', mensagem="Registrado o óbito do paciente nesta data.")
             else:
