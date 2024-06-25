@@ -39,7 +39,21 @@ import CabecalhoPaciente from '../../components/Ficha/CabecalhoPaciente';
 import formatarData from '../../utils/FormatarData';
 
 
-function ModalDevolverMedico({ isOpen, onClose }) {
+function ModalDevolverMedico({ isOpen, onClose, selectedPaciente }) {
+  
+  const handleDevolver = async () => {
+    if (!selectedPaciente) return;
+
+    try {
+      const response = await axios.patch(`http://localhost:8000/prescricoes/${selectedPaciente.id}/devolver_farmacia/`);
+      console.log("Prescrição devolvida com sucesso:", response.data);
+      onClose(); // Fechar o modal após a resposta
+    } catch (error) {
+      console.error("Erro ao devolver a prescrição:", error);
+    }
+  };
+ 
+ 
   const handleClose = () => {
     if (isOpen) {
       onClose();
@@ -61,7 +75,7 @@ function ModalDevolverMedico({ isOpen, onClose }) {
           </MDBModalBody>
           <MDBModalFooter>
             <MDBBtn color='danger'>Cancelar</MDBBtn>
-            <MDBBtn>Devolver</MDBBtn>
+            <MDBBtn onClick={handleDevolver} >Devolver</MDBBtn>
           </MDBModalFooter>
         </MDBModalContent>
       </MDBModalDialog>
@@ -69,7 +83,21 @@ function ModalDevolverMedico({ isOpen, onClose }) {
   );
 }
 
-function ModalEnviarRegulacao({ isOpen, onClose }) {
+function ModalEnviarRegulacao({ isOpen, onClose, selectedPaciente }) {
+  
+  const handleEnviar = async () => {
+    if (!selectedPaciente) return;
+
+    try {
+      const response = await axios.patch(`http://localhost:8000/prescricoes/${selectedPaciente.id}/encaminhar_agendamento/`);
+      console.log("Prescrição devolvida com sucesso:", response.data);
+      onClose(); // Fechar o modal após a resposta
+    } catch (error) {
+      console.error("Erro ao devolver a prescrição:", error);
+    }
+  };
+  
+  
   const handleClose = () => {
     if (isOpen) {
       onClose();
@@ -91,7 +119,7 @@ function ModalEnviarRegulacao({ isOpen, onClose }) {
           </MDBModalBody>
           <MDBModalFooter>
             <MDBBtn color='danger'>Cancelar</MDBBtn>
-            <MDBBtn>Enviar</MDBBtn>
+            <MDBBtn onClick={handleEnviar} >Enviar</MDBBtn>
           </MDBModalFooter>
         </MDBModalContent>
       </MDBModalDialog>
@@ -213,15 +241,40 @@ function QuadroFicha({ selectedPaciente, historico }) {
         <div className="col-md-6">
           <div>
             <h4>Dados da Solicitação</h4>
-            <MDBTextArea label="Medicamentos" id="textAreaExample" rows={4} className="mb-3" disabled/>
-            <MDBInput label="Data de Entrada" id="textAreaExample" type="date" className="mb-3" disabled/>
+            <MDBTextArea 
+                    label="Medicamentos" 
+                    id="textAreaExample" 
+                    rows={4} 
+                    className="mb-3" 
+                    value={selectedPaciente.plano_terapeutico?.medicamentos || ''}
+                    disabled 
+                  />
+            
+            <MDBInput 
+                    label="Data de Entrada" 
+                    id="textAreaExample" 
+                    type="date" 
+                    className="mb-3" 
+                    value={selectedPaciente.plano_terapeutico?.data_sugerida || ''} 
+                    disabled 
+                  />
 
             <div className="d-flex align-items-center mb-3">
               <div className="me-2">
-                <MDBInput label="Nº de Sessões" id="sessoes" disabled/>
+              <MDBInput 
+                        label="Nº de Sessões" 
+                        id="sessoes" 
+                        value={selectedPaciente.plano_terapeutico?.sessoes_prescritas || ''} 
+                        disabled 
+                      />
               </div>
               <div>
-                <MDBInput label="Dias de intervalo" id="intervaloDias" disabled/>
+              <MDBInput 
+                        label="Dias de intervalo" 
+                        id="intervaloDias" 
+                        value={selectedPaciente.plano_terapeutico?.dias_intervalo || ''} 
+                        disabled 
+                      />
               </div>
             </div>
 
@@ -252,8 +305,8 @@ function QuadroFicha({ selectedPaciente, historico }) {
     )}
   
    {/* Modais */}
-    <ModalDevolverMedico isOpen={isModalDevolverMedicoOpen} onClose={toggleModalDevolverMedico} />
-    <ModalEnviarRegulacao isOpen={isModalEnviarRegulacaoOpen} onClose={toggleModalEnviarRegulacao} />
+    <ModalDevolverMedico isOpen={isModalDevolverMedicoOpen} onClose={toggleModalDevolverMedico} selectedPaciente={selectedPaciente}/>
+    <ModalEnviarRegulacao isOpen={isModalEnviarRegulacaoOpen} onClose={toggleModalEnviarRegulacao} selectedPaciente={selectedPaciente}/>
       </MDBCol>
   )
 }

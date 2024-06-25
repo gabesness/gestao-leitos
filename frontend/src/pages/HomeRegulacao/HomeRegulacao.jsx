@@ -39,7 +39,22 @@ import CabecalhoPaciente from '../../components/Ficha/CabecalhoPaciente';
 import formatarData from '../../utils/FormatarData';
 
 
-function ModalDevolverMedico({ isOpen, onClose }) {
+function ModalDevolverMedico({ isOpen, onClose, selectedPaciente }) {
+  
+  const handleDevolver = async () => {
+    if (!selectedPaciente) return;
+
+    try {
+      const response = await axios.patch(`http://localhost:8000/prescricoes/${selectedPaciente.id}/devolver_regulacao/`);
+      console.log("Prescrição devolvida com sucesso:", response.data);
+      onClose(); // Fechar o modal após a resposta
+    } catch (error) {
+      console.error("Erro ao devolver a prescrição:", error);
+    }
+  };
+ 
+ 
+ 
   const handleClose = () => {
     if (isOpen) {
       onClose();
@@ -62,7 +77,7 @@ function ModalDevolverMedico({ isOpen, onClose }) {
           </MDBModalBody>
           <MDBModalFooter>
             <MDBBtn color='danger'>Cancelar</MDBBtn>
-            <MDBBtn>Devolver</MDBBtn>
+            <MDBBtn onClick={handleDevolver}>Devolver</MDBBtn>
           </MDBModalFooter>
         </MDBModalContent>
       </MDBModalDialog>
@@ -70,7 +85,22 @@ function ModalDevolverMedico({ isOpen, onClose }) {
   );
 }
 
-function ModalAgendamento({ isOpen, onClose }) {
+function ModalAgendamento({ isOpen, onClose, selectedPaciente, selectedLeito }) {
+  
+  const handleAgendar = async () => {
+    if (!selectedPaciente) return;
+
+    try {
+      const response = await axios.patch(`http://localhost:8000/prescricoes/${selectedPaciente.id}/${selectedLeito}/agendar_paciente/`);
+      console.log("Prescrição Agendada com sucesso:", response.data);
+      onClose(); // Fechar o modal após a resposta
+    } catch (error) {
+      console.error("Erro ao devolver a prescrição:", error);
+    }
+  };
+  
+  
+  
   const handleClose = () => {
     if (isOpen) {
       onClose();
@@ -92,7 +122,7 @@ function ModalAgendamento({ isOpen, onClose }) {
           </MDBModalBody>
           <MDBModalFooter>
             <MDBBtn color='danger'>Cancelar</MDBBtn>
-            <MDBBtn>Agendar</MDBBtn>
+            <MDBBtn onClick={handleAgendar} >Agendar</MDBBtn>
           </MDBModalFooter>
         </MDBModalContent>
       </MDBModalDialog>
@@ -100,7 +130,21 @@ function ModalAgendamento({ isOpen, onClose }) {
   );
 }
 
-function ModalInternacao({ isOpen, onClose }) {
+function ModalInternacao({ isOpen, onClose, selectedPaciente }) {
+  
+  const handleInternar = async () => {
+    if (!selectedPaciente) return;
+
+    try {
+      const response = await axios.patch(`http://localhost:8000/prescricoes/${selectedPaciente.id}/internar/`);
+      console.log("Prescrição devolvida com sucesso:", response.data);
+      onClose(); // Fechar o modal após a resposta
+    } catch (error) {
+      console.error("Erro ao devolver a prescrição:", error);
+    }
+  };
+
+  
   const handleClose = () => {
     if (isOpen) {
       onClose();
@@ -122,7 +166,7 @@ function ModalInternacao({ isOpen, onClose }) {
           </MDBModalBody>
           <MDBModalFooter>
             <MDBBtn color='danger'>Cancelar</MDBBtn>
-            <MDBBtn>Agendar</MDBBtn>
+            <MDBBtn onClick={handleInternar}>Internado</MDBBtn>
           </MDBModalFooter>
         </MDBModalContent>
       </MDBModalDialog>
@@ -130,7 +174,19 @@ function ModalInternacao({ isOpen, onClose }) {
   );
 }
 
-function ModalTransferencia({ isOpen, onClose }) {
+function ModalTransferencia({ isOpen, onClose, selectedPaciente }) {
+  const handleTransferir = async () => {
+    if (!selectedPaciente) return;
+
+    try {
+      const response = await axios.patch(`http://localhost:8000/prescricoes/${selectedPaciente.id}/transferir/`);
+      console.log("Prescrição devolvida com sucesso:", response.data);
+      onClose(); // Fechar o modal após a resposta
+    } catch (error) {
+      console.error("Erro ao devolver a prescrição:", error);
+    }
+  };
+  
   const handleClose = () => {
     if (isOpen) {
       onClose();
@@ -152,7 +208,7 @@ function ModalTransferencia({ isOpen, onClose }) {
           </MDBModalBody>
           <MDBModalFooter>
             <MDBBtn color='danger'>Cancelar</MDBBtn>
-            <MDBBtn>Agendar</MDBBtn>
+            <MDBBtn onClick={handleTransferir} >Transferido</MDBBtn>
           </MDBModalFooter>
         </MDBModalContent>
       </MDBModalDialog>
@@ -160,7 +216,22 @@ function ModalTransferencia({ isOpen, onClose }) {
   );
 }
 
-function ModalAltaObito({ isOpen, onClose }) {
+function ModalAltaObito({ isOpen, onClose, selectedPaciente }) {
+    const handleAltaObito = async () => {
+      if (!selectedPaciente) return;
+  
+      try {
+        const response = await axios.patch(
+          `http://localhost:8000/prescricoes/${selectedPaciente.id}/dar_alta/`, 
+          { tipoAlta: 2 } // Enviando o tipo de alta como "2"
+        );
+        onClose(); // Fechar o modal após a resposta
+      } catch (error) {
+        console.error("Erro ao devolver a prescrição:", error);
+      }
+    };
+  
+  
   const handleClose = () => {
     if (isOpen) {
       onClose();
@@ -182,7 +253,7 @@ function ModalAltaObito({ isOpen, onClose }) {
           </MDBModalBody>
           <MDBModalFooter>
             <MDBBtn color='danger'>Cancelar</MDBBtn>
-            <MDBBtn>Confirmar Alta</MDBBtn>
+            <MDBBtn onClick={handleAltaObito}>Confirmar Alta</MDBBtn>
           </MDBModalFooter>
         </MDBModalContent>
       </MDBModalDialog>
@@ -294,10 +365,23 @@ function QuadroFicha({ selectedPaciente, historico }) {
     
 
   const [selectedLeito, setSelectedLeito] = useState(null);
+  const [leitos, setLeitos] = useState([]);
 
-  const handleSelectLeito = (index) => {
-    setSelectedLeito(index + 1);
+  const handleSelectLeito = (leitoNumero) => {
+    setSelectedLeito(leitoNumero);
   };
+
+  useEffect(() => {
+    const fetchLeitos = async () => {
+      try {
+        const response = await axios.get('http://localhost:8000/leitos/lista/');
+        setLeitos(response.data);
+      } catch (error) {
+        console.error("Erro ao buscar os leitos:", error);
+      }
+    };
+    fetchLeitos();
+  }, []);
 
     // Botões da Direita
     const renderButtons = () => {
@@ -365,26 +449,43 @@ function QuadroFicha({ selectedPaciente, historico }) {
         <div className="col-md-6">
           <div>
             <h4>Dados da Solicitação</h4>
-            <MDBInput label="Data de Entrada" id="textAreaExample" type="date" className="mb-3" disabled/>
+            <MDBInput 
+                    label="Data de Entrada" 
+                    id="textAreaExample" 
+                    type="date" 
+                    className="mb-3" 
+                    value={selectedPaciente.plano_terapeutico?.data_sugerida || ''} 
+                    disabled 
+                  />
 
             <div className="d-flex align-items-center mb-3">
               <div className="me-2">
-                <MDBInput label="Nº de Sessões" id="sessoes" disabled/>
+              <MDBInput 
+                        label="Nº de Sessões" 
+                        id="sessoes" 
+                        value={selectedPaciente.plano_terapeutico?.sessoes_prescritas || ''} 
+                        disabled 
+                      />
               </div>
               <div>
-                <MDBInput label="Dias de intervalo" id="intervaloDias" disabled/>
+              <MDBInput 
+                        label="Dias de intervalo" 
+                        id="intervaloDias" 
+                        value={selectedPaciente.plano_terapeutico?.dias_intervalo || ''} 
+                        disabled 
+                      />
               </div>
             </div>
 
             <h5>Leitos para amanhã</h5>
 
             <div className="row mt-3">
-              {[...Array(18)].map((_, index) => (
-                <div key={index} className="col-md-2 mb-1">
-                  <MDBIcon fas icon="bed" style={{fontSize: '28px', cursor: 'pointer', color: '#14A44D'}} onClick={() => handleSelectLeito(index)} />
-                  <p style={{textAlign: 'center', fontSize: '8px'}}>Leito {index + 1}</p>
-                </div>
-              ))}
+            {leitos.map((leito, index) => (
+                    <div key={index} className="col-md-2 mb-1">
+                      <MDBIcon fas icon="bed" style={{fontSize: '28px', cursor: leito.ocupado ? 'not-allowed' : 'pointer', color: leito.ocupado ? '#A9A9A9' : '#14A44D'}} onClick={() => !leito.ocupado && handleSelectLeito(index + 1)} />
+                      <p style={{textAlign: 'center', fontSize: '8px'}}>Leito {leito.numero}</p>
+                    </div>
+            ))}
             </div>
 
             <p>Reservar: {selectedLeito !== null ? `Leito ${selectedLeito}` : ''}</p>
@@ -421,11 +522,11 @@ function QuadroFicha({ selectedPaciente, historico }) {
       </div>
     )}
   {/* Modais */}
-  <ModalDevolverMedico isOpen={isModalDevolverMedicoOpen} onClose={toggleModalDevolverMedico} />
-  <ModalAgendamento isOpen={isModalAgendamentoOpen} onClose={toggleModalAgendamento} />
-  <ModalTransferencia isOpen={isModalTransferenciaOpen} onClose={toggleModalTransferencia} />
-  <ModalAltaObito isOpen={isModalAltaObitoOpen} onClose={toggleModalAltaObito} />
-  <ModalInternacao isOpen={isModalInternacaoOpen} onClose={toggleModalInternacao} />
+  <ModalDevolverMedico isOpen={isModalDevolverMedicoOpen} onClose={toggleModalDevolverMedico} selectedPaciente={selectedPaciente} />
+  <ModalAgendamento isOpen={isModalAgendamentoOpen} onClose={toggleModalAgendamento} selectedPaciente={selectedPaciente} selectedLeito={selectedLeito}/>
+  <ModalTransferencia isOpen={isModalTransferenciaOpen} onClose={toggleModalTransferencia} selectedPaciente={selectedPaciente}/>
+  <ModalAltaObito isOpen={isModalAltaObitoOpen} onClose={toggleModalAltaObito} selectedPaciente={selectedPaciente}/>
+  <ModalInternacao isOpen={isModalInternacaoOpen} onClose={toggleModalInternacao} selectedPaciente={selectedPaciente}/>
 
       </MDBCol>
   )

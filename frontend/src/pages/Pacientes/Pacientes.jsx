@@ -63,7 +63,7 @@ function ModalCriarPaciente({ isOpen, onClose }) {
     formData.append('prontuario', formValue.prontuario);
     
     try {
-      const response = await axios.post('http://localhost:8000/criar_paciente/', formData);
+      const response = await axios.post('http://localhost:8000/pacientes/cadastrar_paciente/', formData);
       if (response.status === 200) {
       window.location.href = '/pacientes';
       }

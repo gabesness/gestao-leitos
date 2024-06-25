@@ -89,7 +89,7 @@ function ModalNovaPrescricao({ isOpen, onClose }) {
   );
 }
 
-function ModalEnviarFarmacia({ isOpen, onClose }) {
+function ModalEnviarFarmacia({ isOpen, onClose, onSubmit }) {
   const handleClose = () => {
     if (isOpen) {
       onClose();
@@ -111,7 +111,7 @@ function ModalEnviarFarmacia({ isOpen, onClose }) {
           </MDBModalBody>
           <MDBModalFooter>
             <MDBBtn color='danger'>Cancelar</MDBBtn>
-            <MDBBtn>Encaminhar</MDBBtn>
+            <MDBBtn onClick={onSubmit}>Encaminhar</MDBBtn>
           </MDBModalFooter>
         </MDBModalContent>
       </MDBModalDialog>
@@ -209,7 +209,17 @@ function ModalAltaDefinitiva({ isOpen, onClose }) {
   );
 }
 
-function ModalTransferencia({ isOpen, onClose }) {
+function ModalTransferencia({ isOpen, onClose, selectedPaciente }) {
+  
+  const handleAuthorizeTransfer = async () => {
+    try {
+      await axios.patch(`http://localhost:8000/prescricoes/${selectedPaciente.id}/autorizar_transferencia/`);
+      onClose();
+    } catch (error) {
+      console.error("Erro ao autorizar transferência:", error);
+    }
+  };
+  
   const handleClose = () => {
     if (isOpen) {
       onClose();
@@ -231,14 +241,13 @@ function ModalTransferencia({ isOpen, onClose }) {
           </MDBModalBody>
           <MDBModalFooter>
             <MDBBtn color='danger'>Cancelar</MDBBtn>
-            <MDBBtn>Autorizar transferência</MDBBtn>
+            <MDBBtn onClick={handleAuthorizeTransfer}>Autorizar transferência</MDBBtn>
           </MDBModalFooter>
         </MDBModalContent>
       </MDBModalDialog>
     </MDBModal>
   );
 }
-
 
 function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteClick, setActiveTab }) {
   const [currentPage, setCurrentPage] = useState(1);
@@ -343,7 +352,6 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
   );
 }
 
-
 function QuadroFicha({ selectedPaciente, historico }) {
   // Modais
   // Modal de Envio para farmácia
@@ -396,6 +404,58 @@ function QuadroFicha({ selectedPaciente, historico }) {
     }
   };
 
+
+  // Envio da prescrição
+
+  const [formValue, setFormValue] = useState({
+    sessoes_prescritas: '',
+    dias_intervalo: '',
+    data_sugerida: '',
+    medicamentos: '',
+    mensagem: ''
+  });
+
+  useEffect(() => {
+    if (selectedPaciente && selectedPaciente.plano_terapeutico) {
+      setFormValue({
+        sessoes_prescritas: selectedPaciente.plano_terapeutico.sessoes_prescritas || '',
+        dias_intervalo: selectedPaciente.plano_terapeutico.dias_intervalo || '',
+        data_sugerida: selectedPaciente.plano_terapeutico.data_sugerida || '',
+        medicamentos: selectedPaciente.plano_terapeutico.medicamentos || '',
+        mensagem: ''
+      });
+    }
+  }, [selectedPaciente]);
+
+
+  const onChange = (e) => {
+    setFormValue({ ...formValue, [e.target.name]: e.target.value });
+  };
+
+  async function EncaminharPaciente(event) {
+    event.preventDefault();
+    const data = {
+      plano_terapeutico: {
+        sessoes_prescritas: formValue.sessoes_prescritas,
+        dias_intervalo: formValue.dias_intervalo,
+        data_sugerida: formValue.data_sugerida,
+        medicamentos: formValue.medicamentos,
+      },
+      mensagem: formValue.mensagem
+    };
+    
+    try {
+      const response = await axios.patch(`http://localhost:8000/prescricoes/${selectedPaciente.id}/encaminhar_farmacia/`, data);
+      if (response.status === 200) {
+        // handle success
+      }
+    } catch (error) {
+      console.error('Erro ao encaminhar para farmácia', error);
+    }
+  }
+
+
+
   return (
   <MDBCol md='8'>
   {selectedPaciente && (
@@ -435,21 +495,52 @@ function QuadroFicha({ selectedPaciente, historico }) {
         <div className="col-md-6">
           <div>
             <h4>Dados da Solicitação</h4>
-            <MDBTextArea label="Medicamentos" id="textAreaExample" rows={4} className="mb-3" />
-            <MDBInput label="Data de Entrada" id="textAreaExample" type="date" className="mb-3"/>
+            <MDBTextArea 
+                    label="Medicamentos" 
+                    id="textAreaExample" 
+                    rows={4} 
+                    className="mb-3"
+                    name="medicamentos"
+                    value={formValue.medicamentos} 
+                    onChange={onChange}  />
+            
+            <MDBInput 
+                    label="Data de Entrada" 
+                    id="textAreaExample" 
+                    type="date" 
+                    className="mb-3"
+                    name="data_sugerida"
+                    value={formValue.data_sugerida} 
+                    onChange={onChange} />
 
             <div className="d-flex align-items-center mb-3">
               <div className="me-2">
-                <MDBInput label="Nº de Sessões" id="sessoes" />
+              <MDBInput 
+                        label="Nº de Sessões" 
+                        id="sessoes"
+                        name="sessoes_prescritas"
+                        value={formValue.sessoes_prescritas} 
+                        onChange={onChange}  />
               </div>
               <div>
-                <MDBInput label="Dias de intervalo" id="intervaloDias" />
+              <MDBInput 
+                        label="Dias de intervalo" 
+                        id="intervaloDias"
+                        name="dias_intervalo"
+                        value={formValue.dias_intervalo} 
+                        onChange={onChange}  />
               </div>
             </div>
 
             <hr />
 
-            <MDBTextArea label="Observações" id="textAreaExample" rows={4}/>
+            <MDBTextArea 
+                    label="Observações" 
+                    id="textAreaExample" 
+                    rows={4}
+                    name="mensagem"
+                    value={formValue.mensagem} 
+                    onChange={onChange} />
           </div>
         </div>
       </MDBRow>
@@ -483,11 +574,11 @@ function QuadroFicha({ selectedPaciente, historico }) {
     )}
 
        {/* Modais */}
-       <ModalEnviarFarmacia isOpen={isModalEnviarFarmaciaOpen} onClose={toggleModalEnviarFarmacia} />
+       <ModalEnviarFarmacia isOpen={isModalEnviarFarmaciaOpen} onClose={toggleModalEnviarFarmacia} onSubmit={EncaminharPaciente} />
        <ModalAltaObito isOpen={isModalAltaObitoOpen} onClose={toggleModalAltaObito} />
        <ModalAltaNormal isOpen={isModalAltaNormalOpen} onClose={toggleModalAltaNormal} />
        <ModalAltaDefinitiva isOpen={isModalAltaDefinitivaOpen} onClose={toggleModalAltaDefinitiva} />
-       <ModalTransferencia isOpen={isModalTransferenciaOpen} onClose={toggleModalTransferencia} />
+       <ModalTransferencia isOpen={isModalTransferenciaOpen} onClose={toggleModalTransferencia} selectedPaciente={selectedPaciente} />
 
        </MDBCol>
   )
