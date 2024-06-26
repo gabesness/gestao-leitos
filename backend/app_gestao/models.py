@@ -88,6 +88,7 @@ class Paciente(models.Model):
         self.save()
 
     def dar_alta(self):
+        self.desalocar_leito()
         s = self.sessao_atual()
         s.data_alta = timezone.now()
         s.save()

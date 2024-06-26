@@ -12,8 +12,6 @@ urlpatterns = [
     path('accounts/', include("django.contrib.auth.urls")),
     path('login/', views.fazer_login),
     path('minha_conta/<int:id>', views.minha_conta),
-
-    path('encaminhar_farmacia', views.encaminhar_farmacia),
     #path('api/csrf_token', views.csrf_token, name='csrf_token')
     path('alterar_usuario/<int:id>', views.alterar_dados_do_usuario),
     path('', include(router.urls))
