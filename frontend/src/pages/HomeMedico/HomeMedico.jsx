@@ -54,13 +54,10 @@ function ModalNovaPrescricao({ isOpen, onClose }) {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const formData = new FormData();
-    formData.append('prontuario', prontuario);
     
     try {
-      const response = await axios.post('http://localhost:8000/criar_prescricao/', formData);
+      const response = await axios.patch(`http://localhost:8000/prescricoes/${prontuario}/criar_prescricao/`);
       if (response.status === 200) {
-        window.location.href = '/prescricoes';
       }
     } catch (error) {
       console.error('Erro ao criar prescrição:', error);
