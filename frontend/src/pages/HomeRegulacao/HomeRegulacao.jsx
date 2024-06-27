@@ -39,13 +39,15 @@ import CabecalhoPaciente from '../../components/Ficha/CabecalhoPaciente';
 import formatarData from '../../utils/FormatarData';
 
 
-function ModalDevolverMedico({ isOpen, onClose, selectedPaciente }) {
+function ModalDevolverMedico({ isOpen, onClose, selectedPaciente, formValue }) {
   
   const handleDevolver = async () => {
     if (!selectedPaciente) return;
 
     try {
-      const response = await axios.patch(`http://localhost:8000/prescricoes/${selectedPaciente.id}/devolver_regulacao/`);
+      const response = await axios.patch(`http://localhost:8000/prescricoes/${selectedPaciente.id}/devolver_regulacao/`, {
+        mensagem: formValue.mensagem  // Incluir a mensagem no corpo da requisição
+      });
       console.log("Prescrição devolvida com sucesso:", response.data);
       onClose(); // Fechar o modal após a resposta
     } catch (error) {
@@ -85,13 +87,15 @@ function ModalDevolverMedico({ isOpen, onClose, selectedPaciente }) {
   );
 }
 
-function ModalAgendamento({ isOpen, onClose, selectedPaciente, selectedLeito }) {
+function ModalAgendamento({ isOpen, onClose, selectedPaciente, selectedLeito, formValue }) {
   
   const handleAgendar = async () => {
     if (!selectedPaciente) return;
 
     try {
-      const response = await axios.patch(`http://localhost:8000/prescricoes/${selectedPaciente.id}/${selectedLeito}/agendar_paciente/`);
+      const response = await axios.patch(`http://localhost:8000/prescricoes/${selectedPaciente.id}/agendar_paciente/${selectedLeito.id}/`, {
+        mensagem: formValue.mensagem  // Incluir a mensagem no corpo da requisição
+      });
       console.log("Prescrição Agendada com sucesso:", response.data);
       onClose(); // Fechar o modal após a resposta
     } catch (error) {
@@ -217,13 +221,13 @@ function ModalTransferencia({ isOpen, onClose, selectedPaciente }) {
 }
 
 function ModalAltaObito({ isOpen, onClose, selectedPaciente }) {
-    const handleAltaObito = async () => {
+    
+  const handleAltaObito = async () => {
       if (!selectedPaciente) return;
   
       try {
         const response = await axios.patch(
-          `http://localhost:8000/prescricoes/${selectedPaciente.id}/dar_alta/`, 
-          { tipoAlta: 2 } // Enviando o tipo de alta como "2"
+          `http://localhost:8000/prescricoes/${selectedPaciente.id}/dar_alta/2/`, 
         );
         onClose(); // Fechar o modal após a resposta
       } catch (error) {
@@ -342,6 +346,14 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
 }
 
 function QuadroFicha({ selectedPaciente, historico }) {
+  const [formValue, setFormValue] = useState({
+    mensagem: ''
+  });
+
+  const onChange = (e) => {
+    setFormValue({ ...formValue, [e.target.name]: e.target.value });
+  };
+
   // Modais
   // Modal de devolver ao medico
   const [isModalDevolverMedicoOpen, setIsModalDevolverMedicoOpen] = useState(false);
@@ -367,8 +379,10 @@ function QuadroFicha({ selectedPaciente, historico }) {
   const [selectedLeito, setSelectedLeito] = useState(null);
   const [leitos, setLeitos] = useState([]);
 
-  const handleSelectLeito = (leitoNumero) => {
-    setSelectedLeito(leitoNumero);
+  const handleSelectLeito = (leito) => {
+    setSelectedLeito(leito);
+    console.log(leito);
+
   };
 
   useEffect(() => {
@@ -376,6 +390,8 @@ function QuadroFicha({ selectedPaciente, historico }) {
       try {
         const response = await axios.get('http://localhost:8000/leitos/lista/');
         setLeitos(response.data);
+        console.log(response.data);
+
       } catch (error) {
         console.error("Erro ao buscar os leitos:", error);
       }
@@ -480,20 +496,36 @@ function QuadroFicha({ selectedPaciente, historico }) {
             <h5>Leitos para amanhã</h5>
 
             <div className="row mt-3">
-            {leitos.map((leito, index) => (
-                    <div key={index} className="col-md-2 mb-1">
-                      <MDBIcon fas icon="bed" style={{fontSize: '28px', cursor: leito.ocupado ? 'not-allowed' : 'pointer', color: leito.ocupado ? '#A9A9A9' : '#14A44D'}} onClick={() => !leito.ocupado && handleSelectLeito(index + 1)} />
+            {leitos.map((leito, id) => (
+                    <div key={id} className="col-md-2 mb-1">
+                      <MDBIcon 
+                      fas
+                      icon="bed"
+                      style={{
+                        fontSize: '28px',
+                        cursor: leito.ocupado ? 'not-allowed' : 'pointer',
+                        color: leito.ocupado ? '#A9A9A9' : '#14A44D',
+                      }}
+                      onClick={() => handleSelectLeito(leito)}
+                    />
+                      
                       <p style={{textAlign: 'center', fontSize: '8px'}}>Leito {leito.numero}</p>
                     </div>
             ))}
             </div>
 
-            <p>Reservar: {selectedLeito !== null ? `Leito ${selectedLeito}` : ''}</p>
-
+            <p>Reservar: {selectedLeito ? `Leito ${selectedLeito.numero}` : ''}</p>
 
             <hr />
 
-            <MDBTextArea label="Observações" id="textAreaExample" rows={4}/>
+            <MDBTextArea 
+                    label="Observações" 
+                    id="textAreaExample" 
+                    rows={4}
+                    name="mensagem"
+                    value={formValue.mensagem} 
+                    onChange={onChange}
+                    />
           </div>
         </div>
       </MDBRow>
@@ -522,8 +554,8 @@ function QuadroFicha({ selectedPaciente, historico }) {
       </div>
     )}
   {/* Modais */}
-  <ModalDevolverMedico isOpen={isModalDevolverMedicoOpen} onClose={toggleModalDevolverMedico} selectedPaciente={selectedPaciente} />
-  <ModalAgendamento isOpen={isModalAgendamentoOpen} onClose={toggleModalAgendamento} selectedPaciente={selectedPaciente} selectedLeito={selectedLeito}/>
+  <ModalDevolverMedico isOpen={isModalDevolverMedicoOpen} onClose={toggleModalDevolverMedico} selectedPaciente={selectedPaciente} formValue={formValue} />
+  <ModalAgendamento isOpen={isModalAgendamentoOpen} onClose={toggleModalAgendamento} selectedPaciente={selectedPaciente} selectedLeito={selectedLeito} formValue={formValue}/>
   <ModalTransferencia isOpen={isModalTransferenciaOpen} onClose={toggleModalTransferencia} selectedPaciente={selectedPaciente}/>
   <ModalAltaObito isOpen={isModalAltaObitoOpen} onClose={toggleModalAltaObito} selectedPaciente={selectedPaciente}/>
   <ModalInternacao isOpen={isModalInternacaoOpen} onClose={toggleModalInternacao} selectedPaciente={selectedPaciente}/>

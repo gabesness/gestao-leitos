@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { useLocation } from 'react-router-dom';
 import {
   MDBContainer,
@@ -31,11 +32,6 @@ export default function Navbar() {
 
   const handleMinhaContaClick = () => {
     window.location.href = '/minhaconta';
-  };
-
-  const handleSignOutClick = () => {
-    localStorage.clear();
-    window.location.href = '/';
   };
 
   const handleKanbanClick = () => {
@@ -76,6 +72,24 @@ export default function Navbar() {
   };
 
   const isHomePage = location.pathname === '/';
+
+
+  const handleSignOutClick = async () => {
+    try {
+      const response = await axios.post('http://localhost:8000/usuarios/logout/');
+      if (response.status === 200) {
+        localStorage.clear();
+        window.location.href = '/'; 
+      } else {
+        console.error('Erro ao fazer logout:', response);
+        // Tratar o erro ou exibir mensagem de erro, se necessário
+      }
+    } catch (error) {
+      console.error('Erro ao fazer logout:', error);
+      // Tratar o erro ou exibir mensagem de erro, se necessário
+    }
+  };
+
 
   return (
     <MDBNavbar expand='lg' light bgColor='light'>

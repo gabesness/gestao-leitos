@@ -76,16 +76,39 @@ function ModalFicha({ isOpen, onClose, selectedPaciente, historico}) {
                 <div className="col-md-6">
                   <div>
                     <h4>Dados da Solicitação</h4>
-                    <MDBTextArea label="Medicamentos" id="textAreaExample" rows={4} className="mb-3" disabled/>
-                    <MDBInput label="Data de Entrada" id="textAreaExample" type="date" className="mb-3" disabled/>
+                    <MDBTextArea 
+                    label="Medicamentos" 
+                    id="textAreaExample" 
+                    rows={4} 
+                    className="mb-3" 
+                    value={selectedPaciente.plano_terapeutico?.medicamentos || ''}
+                    disabled 
+                  />                    
+                  
+                  <MDBInput 
+                    label="Data de Entrada" 
+                    id="textAreaExample" 
+                    type="date" 
+                    className="mb-3" 
+                    value={selectedPaciente.plano_terapeutico?.data_sugerida || ''} 
+                    disabled 
+                  />
 
                     <div className="d-flex align-items-center mb-3">
                       <div className="me-2">
-                        <MDBInput label="Nº de Sessões" id="sessoes" disabled/>
-                      </div>
+                      <MDBInput 
+                        label="Nº de Sessões" 
+                        id="sessoes" 
+                        value={selectedPaciente.plano_terapeutico?.sessoes_prescritas || ''} 
+                        disabled 
+                      />                      </div>
                       <div>
-                        <MDBInput label="Dias de intervalo" id="intervaloDias" disabled/>
-                      </div>
+                      <MDBInput 
+                        label="Dias de intervalo" 
+                        id="intervaloDias" 
+                        value={selectedPaciente.plano_terapeutico?.dias_intervalo || ''} 
+                        disabled 
+                      />                      </div>
                     </div>
                   </div>
                 </div>

@@ -39,13 +39,15 @@ import CabecalhoPaciente from '../../components/Ficha/CabecalhoPaciente';
 import formatarData from '../../utils/FormatarData';
 
 
-function ModalDevolverMedico({ isOpen, onClose, selectedPaciente }) {
+function ModalDevolverMedico({ isOpen, onClose, selectedPaciente, formValue }) {
   
   const handleDevolver = async () => {
     if (!selectedPaciente) return;
-
+  
     try {
-      const response = await axios.patch(`http://localhost:8000/prescricoes/${selectedPaciente.id}/devolver_farmacia/`);
+      const response = await axios.patch(`http://localhost:8000/prescricoes/${selectedPaciente.id}/devolver_farmacia/`, {
+        mensagem: formValue.mensagem  // Incluir a mensagem no corpo da requisição
+      });
       console.log("Prescrição devolvida com sucesso:", response.data);
       onClose(); // Fechar o modal após a resposta
     } catch (error) {
@@ -83,17 +85,19 @@ function ModalDevolverMedico({ isOpen, onClose, selectedPaciente }) {
   );
 }
 
-function ModalEnviarRegulacao({ isOpen, onClose, selectedPaciente }) {
+function ModalEnviarRegulacao({ isOpen, onClose, selectedPaciente, formValue }) {
   
   const handleEnviar = async () => {
     if (!selectedPaciente) return;
-
+  
     try {
-      const response = await axios.patch(`http://localhost:8000/prescricoes/${selectedPaciente.id}/encaminhar_agendamento/`);
-      console.log("Prescrição devolvida com sucesso:", response.data);
+      const response = await axios.patch(`http://localhost:8000/prescricoes/${selectedPaciente.id}/encaminhar_agendamento/`, {
+        mensagem: formValue.mensagem  // Incluir a mensagem no corpo da requisição
+      });
+      console.log("Prescrição enviada para regulação com sucesso:", response.data);
       onClose(); // Fechar o modal após a resposta
     } catch (error) {
-      console.error("Erro ao devolver a prescrição:", error);
+      console.error("Erro ao enviar a prescrição para regulação:", error);
     }
   };
   
@@ -192,6 +196,14 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
 }
 
 function QuadroFicha({ selectedPaciente, historico }) {
+  const [formValue, setFormValue] = useState({
+    mensagem: ''
+  });
+
+  const onChange = (e) => {
+    setFormValue({ ...formValue, [e.target.name]: e.target.value });
+  };
+
   // Modais
   // Modal de devolver ao medico
   const [isModalDevolverMedicoOpen, setIsModalDevolverMedicoOpen] = useState(false);
@@ -280,7 +292,14 @@ function QuadroFicha({ selectedPaciente, historico }) {
 
             <hr />
 
-            <MDBTextArea label="Observações" id="textAreaExample" rows={4}/>
+            <MDBTextArea 
+                    label="Observações" 
+                    id="textAreaExample" 
+                    rows={4}
+                    name="mensagem"
+                    value={formValue.mensagem} 
+                    onChange={onChange}
+                    />
           </div>
         </div>
       </MDBRow>
@@ -305,8 +324,10 @@ function QuadroFicha({ selectedPaciente, historico }) {
     )}
   
    {/* Modais */}
-    <ModalDevolverMedico isOpen={isModalDevolverMedicoOpen} onClose={toggleModalDevolverMedico} selectedPaciente={selectedPaciente}/>
-    <ModalEnviarRegulacao isOpen={isModalEnviarRegulacaoOpen} onClose={toggleModalEnviarRegulacao} selectedPaciente={selectedPaciente}/>
+    <ModalDevolverMedico isOpen={isModalDevolverMedicoOpen} onClose={toggleModalDevolverMedico} selectedPaciente={selectedPaciente} formValue={formValue}
+    />
+    <ModalEnviarRegulacao isOpen={isModalEnviarRegulacaoOpen} onClose={toggleModalEnviarRegulacao} selectedPaciente={selectedPaciente} formValue={formValue}
+    />
       </MDBCol>
   )
 }

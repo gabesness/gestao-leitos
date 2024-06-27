@@ -52,7 +52,7 @@ function ModalNovaPrescricao({ isOpen, onClose }) {
     setProntuario(event.target.value);
   };
 
-  const handleSubmit = async (event) => {
+  const CriarPrescricao = async (event) => {
     event.preventDefault();
     
     try {
@@ -78,7 +78,7 @@ function ModalNovaPrescricao({ isOpen, onClose }) {
 
           </MDBModalBody>
           <MDBModalFooter>
-          <MDBBtn onClick={handleSubmit}>Criar</MDBBtn>
+          <MDBBtn onClick={CriarPrescricao}>Criar</MDBBtn>
           </MDBModalFooter>
         </MDBModalContent>
       </MDBModalDialog>
@@ -116,7 +116,22 @@ function ModalEnviarFarmacia({ isOpen, onClose, onSubmit }) {
   );
 }
 
-function ModalAltaObito({ isOpen, onClose }) {
+function ModalAltaObito({ isOpen, onClose, selectedPaciente }) {
+  
+  const handleAltaObito = async () => {
+    if (!selectedPaciente) return;
+
+    try {
+      const response = await axios.patch(
+        `http://localhost:8000/prescricoes/${selectedPaciente.id}/dar_alta/2/`, 
+      );
+      onClose(); // Fechar o modal após a resposta
+    } catch (error) {
+      console.error("Erro ao devolver a prescrição:", error);
+    }
+  };
+  
+  
   const handleClose = () => {
     if (isOpen) {
       onClose();
@@ -138,7 +153,7 @@ function ModalAltaObito({ isOpen, onClose }) {
           </MDBModalBody>
           <MDBModalFooter>
             <MDBBtn color='danger'>Cancelar</MDBBtn>
-            <MDBBtn>Confirmar Alta</MDBBtn>
+            <MDBBtn onClick={handleAltaObito} >Confirmar Alta</MDBBtn>
           </MDBModalFooter>
         </MDBModalContent>
       </MDBModalDialog>
@@ -146,7 +161,21 @@ function ModalAltaObito({ isOpen, onClose }) {
   );
 }
 
-function ModalAltaNormal({ isOpen, onClose }) {
+function ModalAltaNormal({ isOpen, onClose, selectedPaciente }) {
+  
+  const handleAltaNormal = async () => {
+    if (!selectedPaciente) return;
+
+    try {
+      const response = await axios.patch(
+        `http://localhost:8000/prescricoes/${selectedPaciente.id}/dar_alta/0/`, 
+      );
+      onClose(); // Fechar o modal após a resposta
+    } catch (error) {
+      console.error("Erro ao devolver a prescrição:", error);
+    }
+  };
+  
   const handleClose = () => {
     if (isOpen) {
       onClose();
@@ -162,13 +191,11 @@ function ModalAltaNormal({ isOpen, onClose }) {
             <MDBBtn className='btn-close' color='none' onClick={handleClose}></MDBBtn>
           </MDBModalHeader>
           <MDBModalBody>
-
-          Confirme que o paciente está recebendo alta
-
+            Confirme que o paciente está recebendo alta normal
           </MDBModalBody>
           <MDBModalFooter>
-            <MDBBtn color='danger'>Cancelar</MDBBtn>
-            <MDBBtn>Confirmar Alta</MDBBtn>
+            <MDBBtn color='danger' onClick={handleClose}>Cancelar</MDBBtn>
+            <MDBBtn onClick={handleAltaNormal}>Confirmar Alta</MDBBtn>
           </MDBModalFooter>
         </MDBModalContent>
       </MDBModalDialog>
@@ -176,7 +203,18 @@ function ModalAltaNormal({ isOpen, onClose }) {
   );
 }
 
-function ModalAltaDefinitiva({ isOpen, onClose }) {
+function ModalAltaDefinitiva({ isOpen, onClose, selectedPaciente }) {
+  
+  const handleAltaDefinitiva = async () => {
+    try {
+      await axios.patch(`http://localhost:8000/prescricoes/${selectedPaciente.id}/dar_alta/1/`);
+      onClose();
+    } catch (error) {
+      console.error("Erro ao autorizar transferência:", error);
+    }
+  };
+  
+  
   const handleClose = () => {
     if (isOpen) {
       onClose();
@@ -193,12 +231,12 @@ function ModalAltaDefinitiva({ isOpen, onClose }) {
           </MDBModalHeader>
           <MDBModalBody>
 
-          Confirme que o paciente está recebendo alta
+          Confirme que o paciente está recebendo alta definitiva
 
           </MDBModalBody>
           <MDBModalFooter>
             <MDBBtn color='danger'>Cancelar</MDBBtn>
-            <MDBBtn>Confirmar Alta</MDBBtn>
+            <MDBBtn onClick={handleAltaDefinitiva} >Confirmar Alta</MDBBtn>
           </MDBModalFooter>
         </MDBModalContent>
       </MDBModalDialog>
@@ -206,14 +244,19 @@ function ModalAltaDefinitiva({ isOpen, onClose }) {
   );
 }
 
-function ModalTransferencia({ isOpen, onClose, selectedPaciente }) {
+function ModalTransferencia({ isOpen, onClose, selectedPaciente, formValue }) {
   
   const handleAuthorizeTransfer = async () => {
+    if (!selectedPaciente) return;
+
     try {
-      await axios.patch(`http://localhost:8000/prescricoes/${selectedPaciente.id}/autorizar_transferencia/`);
-      onClose();
+      const response = await axios.patch(`http://localhost:8000/prescricoes/${selectedPaciente.id}/autorizar_transferencia/`, {
+        mensagem: formValue.mensagem  // Incluir a mensagem no corpo da requisição
+      });
+      console.log("Prescrição Agendada com sucesso:", response.data);
+      onClose(); // Fechar o modal após a resposta
     } catch (error) {
-      console.error("Erro ao autorizar transferência:", error);
+      console.error("Erro ao devolver a prescrição:", error);
     }
   };
   
@@ -371,13 +414,25 @@ function QuadroFicha({ selectedPaciente, historico }) {
   const [isModalTransferenciaOpen, setIsModalTransferenciaOpen] = useState(false);
   const toggleModalTransferencia = () => setIsModalTransferenciaOpen(!isModalTransferenciaOpen);
 
+  const [isPrescricaoCriada, setIsPrescricaoCriada] = useState(false);
+
+  useEffect(() => {
+    if (selectedPaciente && 
+      (selectedPaciente.estagio_atual === 'PRESCRICAO_CRIADA' || 
+       selectedPaciente.estagio_atual === 'DEVOLVIDO_PELA_FARMACIA')) {
+      setIsPrescricaoCriada(true);
+    } else {
+      setIsPrescricaoCriada(false);
+    }
+  }, [selectedPaciente]);
+
 
   // Botões da Direita
   const renderButtons = () => {
     switch (selectedPaciente.estagio_atual) {
       case 'PRESCRICAO_CRIADA':
       case 'DEVOLVIDO_PELA_FARMACIA':
-        return <MDBBtn style={{ marginLeft: '10px' }} onClick={toggleModalEnviarFarmacia} >ENVIAR</MDBBtn>;
+        return <MDBBtn style={{ marginLeft: '10px' }} onClick={toggleModalEnviarFarmacia} disabled={!isPrescricaoCriada} >ENVIAR</MDBBtn>;
       case 'ALTA_NORMAL':
         return (
           <>
@@ -451,6 +506,18 @@ function QuadroFicha({ selectedPaciente, historico }) {
     }
   }
 
+  const CriarSegundaPrescricao = async (event) => {
+    event.preventDefault();
+  
+    try {
+      const response = await axios.patch(`http://localhost:8000/prescricoes/${selectedPaciente.prontuario}/criar_prescricao/`);
+      if (response.status === 200) {
+      }
+    } catch (error) {
+      console.error('Erro ao criar prescrição:', error);
+    }
+  };
+
 
 
   return (
@@ -499,7 +566,9 @@ function QuadroFicha({ selectedPaciente, historico }) {
                     className="mb-3"
                     name="medicamentos"
                     value={formValue.medicamentos} 
-                    onChange={onChange}  />
+                    onChange={onChange}
+                    disabled={!isPrescricaoCriada}  
+                    />
             
             <MDBInput 
                     label="Data de Entrada" 
@@ -508,7 +577,9 @@ function QuadroFicha({ selectedPaciente, historico }) {
                     className="mb-3"
                     name="data_sugerida"
                     value={formValue.data_sugerida} 
-                    onChange={onChange} />
+                    onChange={onChange}
+                    disabled={!isPrescricaoCriada}  
+                    />
 
             <div className="d-flex align-items-center mb-3">
               <div className="me-2">
@@ -517,7 +588,9 @@ function QuadroFicha({ selectedPaciente, historico }) {
                         id="sessoes"
                         name="sessoes_prescritas"
                         value={formValue.sessoes_prescritas} 
-                        onChange={onChange}  />
+                        onChange={onChange}
+                        disabled={!isPrescricaoCriada}  
+                        />
               </div>
               <div>
               <MDBInput 
@@ -525,7 +598,9 @@ function QuadroFicha({ selectedPaciente, historico }) {
                         id="intervaloDias"
                         name="dias_intervalo"
                         value={formValue.dias_intervalo} 
-                        onChange={onChange}  />
+                        onChange={onChange}
+                        disabled={!isPrescricaoCriada}  
+                        />
               </div>
             </div>
 
@@ -537,7 +612,9 @@ function QuadroFicha({ selectedPaciente, historico }) {
                     rows={4}
                     name="mensagem"
                     value={formValue.mensagem} 
-                    onChange={onChange} />
+                    onChange={onChange}
+                    disabled={!isPrescricaoCriada}  
+                    />
           </div>
         </div>
       </MDBRow>
@@ -548,7 +625,7 @@ function QuadroFicha({ selectedPaciente, historico }) {
     <div style={{ padding: '20px', marginTop: '10px', display: 'flex', justifyContent: 'space-between', borderTop: '1px solid rgba(0,0,0,.125)' }}>
             <div>
               {selectedPaciente.estagio_atual === 'ALTA_NORMAL' && (
-                <MDBBtn color='success' style={{ marginLeft: '10px' }}>CRIAR PRESCRIÇÃO</MDBBtn>
+                <MDBBtn color='success' style={{ marginLeft: '10px' }}onClick={CriarSegundaPrescricao}>CRIAR PRESCRIÇÃO</MDBBtn>
               )}
               {selectedPaciente.estagio_atual === 'INTERNADO' && (
                 <>
@@ -572,10 +649,10 @@ function QuadroFicha({ selectedPaciente, historico }) {
 
        {/* Modais */}
        <ModalEnviarFarmacia isOpen={isModalEnviarFarmaciaOpen} onClose={toggleModalEnviarFarmacia} onSubmit={EncaminharPaciente} />
-       <ModalAltaObito isOpen={isModalAltaObitoOpen} onClose={toggleModalAltaObito} />
-       <ModalAltaNormal isOpen={isModalAltaNormalOpen} onClose={toggleModalAltaNormal} />
-       <ModalAltaDefinitiva isOpen={isModalAltaDefinitivaOpen} onClose={toggleModalAltaDefinitiva} />
-       <ModalTransferencia isOpen={isModalTransferenciaOpen} onClose={toggleModalTransferencia} selectedPaciente={selectedPaciente} />
+       <ModalAltaObito isOpen={isModalAltaObitoOpen} onClose={toggleModalAltaObito} selectedPaciente={selectedPaciente}/>
+       <ModalAltaNormal isOpen={isModalAltaNormalOpen} onClose={toggleModalAltaNormal} selectedPaciente={selectedPaciente}/>
+       <ModalAltaDefinitiva isOpen={isModalAltaDefinitivaOpen} onClose={toggleModalAltaDefinitiva} selectedPaciente={selectedPaciente}/>
+       <ModalTransferencia isOpen={isModalTransferenciaOpen} onClose={toggleModalTransferencia} selectedPaciente={selectedPaciente} formValue={formValue} />
 
        </MDBCol>
   )
