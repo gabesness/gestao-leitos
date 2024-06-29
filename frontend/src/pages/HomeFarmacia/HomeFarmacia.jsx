@@ -46,6 +46,7 @@ function ModalDevolverMedico({ isOpen, onClose, selectedPaciente, formValue }) {
   
     try {
       const response = await axios.patch(`http://localhost:8000/prescricoes/${selectedPaciente.id}/devolver_farmacia/`, {
+        id_usuario: localStorage.getItem('idUser'),
         mensagem: formValue.mensagem  // Incluir a mensagem no corpo da requisição
       });
       console.log("Prescrição devolvida com sucesso:", response.data);
@@ -92,6 +93,7 @@ function ModalEnviarRegulacao({ isOpen, onClose, selectedPaciente, formValue }) 
   
     try {
       const response = await axios.patch(`http://localhost:8000/prescricoes/${selectedPaciente.id}/encaminhar_agendamento/`, {
+        id_usuario: localStorage.getItem('idUser'),
         mensagem: formValue.mensagem  // Incluir a mensagem no corpo da requisição
       });
       console.log("Prescrição enviada para regulação com sucesso:", response.data);

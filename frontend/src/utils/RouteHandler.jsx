@@ -10,6 +10,7 @@ import HomeAdm from '../pages/HomeAdm/HomeAdm';
 import Kanban from '../pages/Kanban/Kanban';
 import Pacientes from '../pages/Pacientes/Pacientes';
 import MinhaConta from '../pages/MinhaConta/MinhaConta';
+import Dashboard from '../pages/Dashboard/Dashboard';
 
 function RouteHandler() {
   return (
@@ -24,6 +25,8 @@ function RouteHandler() {
       <Route path="/Kanban" element={<Kanban />} />
       <Route path="/Pacientes" element={<Pacientes />} />
       <Route path="/MinhaConta" element={<MinhaConta />} />
+      <Route path="/Dashboard" element={<Dashboard />} />
+
     </Routes>
   );
 }

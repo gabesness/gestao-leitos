@@ -39,6 +39,9 @@ function ModalFicha({ isOpen, onClose, selectedPaciente, historico}) {
     }
   };
 
+  const planoTerapeutico = selectedPaciente?.plano_terapeutico || {};
+  const { medicamentos = '', data_sugerida = '', sessoes_prescritas = '', dias_intervalo = '' } = planoTerapeutico;
+
   return (
     <MDBModal open={isOpen} onClose={handleClose} tabIndex='-1' appendToBody> 
       <MDBModalDialog style={{ maxWidth: '55%' }}>  
@@ -81,7 +84,7 @@ function ModalFicha({ isOpen, onClose, selectedPaciente, historico}) {
                     id="textAreaExample" 
                     rows={4} 
                     className="mb-3" 
-                    value={selectedPaciente.plano_terapeutico?.medicamentos || ''}
+                    value={medicamentos}
                     disabled 
                   />                    
                   
@@ -90,7 +93,7 @@ function ModalFicha({ isOpen, onClose, selectedPaciente, historico}) {
                     id="textAreaExample" 
                     type="date" 
                     className="mb-3" 
-                    value={selectedPaciente.plano_terapeutico?.data_sugerida || ''} 
+                    value={data_sugerida}
                     disabled 
                   />
 
@@ -99,14 +102,14 @@ function ModalFicha({ isOpen, onClose, selectedPaciente, historico}) {
                       <MDBInput 
                         label="Nº de Sessões" 
                         id="sessoes" 
-                        value={selectedPaciente.plano_terapeutico?.sessoes_prescritas || ''} 
+                        value={sessoes_prescritas}
                         disabled 
                       />                      </div>
                       <div>
                       <MDBInput 
                         label="Dias de intervalo" 
                         id="intervaloDias" 
-                        value={selectedPaciente.plano_terapeutico?.dias_intervalo || ''} 
+                        value={dias_intervalo}
                         disabled 
                       />                      </div>
                     </div>

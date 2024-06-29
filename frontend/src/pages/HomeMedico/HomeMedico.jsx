@@ -56,7 +56,9 @@ function ModalNovaPrescricao({ isOpen, onClose }) {
     event.preventDefault();
     
     try {
-      const response = await axios.patch(`http://localhost:8000/prescricoes/${prontuario}/criar_prescricao/`);
+      const response = await axios.patch(`http://localhost:8000/prescricoes/${prontuario}/criar_prescricao/`, {
+        id_usuario: localStorage.getItem('idUser'),
+      });
       if (response.status === 200) {
       }
     } catch (error) {
@@ -122,9 +124,9 @@ function ModalAltaObito({ isOpen, onClose, selectedPaciente }) {
     if (!selectedPaciente) return;
 
     try {
-      const response = await axios.patch(
-        `http://localhost:8000/prescricoes/${selectedPaciente.id}/dar_alta/2/`, 
-      );
+      const response = await axios.patch(`http://localhost:8000/prescricoes/${selectedPaciente.id}/dar_alta/2/`, {
+        id_usuario: localStorage.getItem('idUser'),
+      });
       onClose(); // Fechar o modal após a resposta
     } catch (error) {
       console.error("Erro ao devolver a prescrição:", error);
@@ -167,9 +169,9 @@ function ModalAltaNormal({ isOpen, onClose, selectedPaciente }) {
     if (!selectedPaciente) return;
 
     try {
-      const response = await axios.patch(
-        `http://localhost:8000/prescricoes/${selectedPaciente.id}/dar_alta/0/`, 
-      );
+      const response = await axios.patch(`http://localhost:8000/prescricoes/${selectedPaciente.id}/dar_alta/0/`, {
+        id_usuario: localStorage.getItem('idUser'),
+      });
       onClose(); // Fechar o modal após a resposta
     } catch (error) {
       console.error("Erro ao devolver a prescrição:", error);
@@ -207,7 +209,9 @@ function ModalAltaDefinitiva({ isOpen, onClose, selectedPaciente }) {
   
   const handleAltaDefinitiva = async () => {
     try {
-      await axios.patch(`http://localhost:8000/prescricoes/${selectedPaciente.id}/dar_alta/1/`);
+      const response = await axios.patch(`http://localhost:8000/prescricoes/${selectedPaciente.id}/dar_alta/1/`, {
+        id_usuario: localStorage.getItem('idUser'),
+      });
       onClose();
     } catch (error) {
       console.error("Erro ao autorizar transferência:", error);
@@ -251,6 +255,7 @@ function ModalTransferencia({ isOpen, onClose, selectedPaciente, formValue }) {
 
     try {
       const response = await axios.patch(`http://localhost:8000/prescricoes/${selectedPaciente.id}/autorizar_transferencia/`, {
+        id_usuario: localStorage.getItem('idUser'),
         mensagem: formValue.mensagem  // Incluir a mensagem no corpo da requisição
       });
       console.log("Prescrição Agendada com sucesso:", response.data);
@@ -497,7 +502,9 @@ function QuadroFicha({ selectedPaciente, historico }) {
     };
     
     try {
-      const response = await axios.patch(`http://localhost:8000/prescricoes/${selectedPaciente.id}/encaminhar_farmacia/`, data);
+      const response = await axios.patch(`http://localhost:8000/prescricoes/${selectedPaciente.id}/encaminhar_farmacia/`, {
+        id_usuario: localStorage.getItem('idUser'),
+      });
       if (response.status === 200) {
         // handle success
       }

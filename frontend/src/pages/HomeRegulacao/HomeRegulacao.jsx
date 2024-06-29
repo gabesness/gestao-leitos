@@ -40,12 +40,13 @@ import formatarData from '../../utils/FormatarData';
 
 
 function ModalDevolverMedico({ isOpen, onClose, selectedPaciente, formValue }) {
-  
+
   const handleDevolver = async () => {
     if (!selectedPaciente) return;
 
     try {
       const response = await axios.patch(`http://localhost:8000/prescricoes/${selectedPaciente.id}/devolver_regulacao/`, {
+        id_usuario: localStorage.getItem('idUser'),
         mensagem: formValue.mensagem  // Incluir a mensagem no corpo da requisição
       });
       console.log("Prescrição devolvida com sucesso:", response.data);
@@ -88,12 +89,13 @@ function ModalDevolverMedico({ isOpen, onClose, selectedPaciente, formValue }) {
 }
 
 function ModalAgendamento({ isOpen, onClose, selectedPaciente, selectedLeito, formValue }) {
-  
+
   const handleAgendar = async () => {
     if (!selectedPaciente) return;
 
     try {
       const response = await axios.patch(`http://localhost:8000/prescricoes/${selectedPaciente.id}/agendar_paciente/${selectedLeito.id}/`, {
+        id_usuario: localStorage.getItem('idUser'),
         mensagem: formValue.mensagem  // Incluir a mensagem no corpo da requisição
       });
       console.log("Prescrição Agendada com sucesso:", response.data);
@@ -140,7 +142,9 @@ function ModalInternacao({ isOpen, onClose, selectedPaciente }) {
     if (!selectedPaciente) return;
 
     try {
-      const response = await axios.patch(`http://localhost:8000/prescricoes/${selectedPaciente.id}/internar/`);
+      const response = await axios.patch(`http://localhost:8000/prescricoes/${selectedPaciente.id}/internar/`, {
+        id_usuario: localStorage.getItem('idUser'),
+      });
       console.log("Prescrição devolvida com sucesso:", response.data);
       onClose(); // Fechar o modal após a resposta
     } catch (error) {
@@ -183,7 +187,9 @@ function ModalTransferencia({ isOpen, onClose, selectedPaciente }) {
     if (!selectedPaciente) return;
 
     try {
-      const response = await axios.patch(`http://localhost:8000/prescricoes/${selectedPaciente.id}/transferir/`);
+      const response = await axios.patch(`http://localhost:8000/prescricoes/${selectedPaciente.id}/transferir/`, {
+        id_usuario: localStorage.getItem('idUser'),
+      });
       console.log("Prescrição devolvida com sucesso:", response.data);
       onClose(); // Fechar o modal após a resposta
     } catch (error) {
@@ -226,9 +232,9 @@ function ModalAltaObito({ isOpen, onClose, selectedPaciente }) {
       if (!selectedPaciente) return;
   
       try {
-        const response = await axios.patch(
-          `http://localhost:8000/prescricoes/${selectedPaciente.id}/dar_alta/2/`, 
-        );
+        const response = await axios.patch(`http://localhost:8000/prescricoes/${selectedPaciente.id}/dar_alta/2/`, {
+          id_usuario: localStorage.getItem('idUser'),
+        });
         onClose(); // Fechar o modal após a resposta
       } catch (error) {
         console.error("Erro ao devolver a prescrição:", error);
