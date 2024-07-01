@@ -8,6 +8,8 @@ import {
   MDBInput
 } from 'mdb-react-ui-kit';
 import './Login.css';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function Login() {
 
@@ -41,6 +43,8 @@ function Login() {
       console.log(localStorage.getItem('username'));
       console.log(localStorage.getItem('cargo'));
 
+      toast.success('Login realizado com sucesso!');
+
       if (response.data.groups[0] === "Administrador") {
         window.location.href = '/homeadm';
       }
@@ -59,6 +63,7 @@ function Login() {
 
       }
     } catch (error) {
+      toast.error('Erro ao logar: Verifique suas credenciais e tente novamente.');
       console.error('Erro ao logar:', error);
     }
   }
@@ -111,6 +116,7 @@ function Login() {
           </form>
         </MDBCardBody>
       </MDBCard>
+      <ToastContainer />
     </MDBContainer>
   );
 }

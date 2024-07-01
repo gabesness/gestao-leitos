@@ -37,6 +37,8 @@ import PacienteCardMedico from '../../components/Cards/PacienteCardMedico';
 import HistoricoCard from '../../components/Cards/HistoricoCard';
 import CabecalhoPaciente from '../../components/Ficha/CabecalhoPaciente';
 import formatarData from '../../utils/FormatarData';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 function ModalNovaPrescricao({ isOpen, onClose }) {
@@ -60,9 +62,12 @@ function ModalNovaPrescricao({ isOpen, onClose }) {
         id_usuario: localStorage.getItem('idUser'),
       });
       if (response.status === 200) {
+        toast.success('Prescrição criada com sucesso!');
+
       }
     } catch (error) {
       console.error('Erro ao criar prescrição:', error);
+      toast.error(error.response.data.msg);
     }
   };
 
@@ -506,7 +511,8 @@ function QuadroFicha({ selectedPaciente, historico }) {
         id_usuario: localStorage.getItem('idUser'),
       });
       if (response.status === 200) {
-        // handle success
+        toast.success('Prescrição encaminhada para farmácia com sucesso!');
+
       }
     } catch (error) {
       console.error('Erro ao encaminhar para farmácia', error);
@@ -519,6 +525,7 @@ function QuadroFicha({ selectedPaciente, historico }) {
     try {
       const response = await axios.patch(`http://localhost:8000/prescricoes/${selectedPaciente.prontuario}/criar_prescricao/`);
       if (response.status === 200) {
+        toast.success('Prescrição criada com sucesso!');
       }
     } catch (error) {
       console.error('Erro ao criar prescrição:', error);
@@ -555,6 +562,8 @@ function QuadroFicha({ selectedPaciente, historico }) {
                         date={dataFormatada} // Data formatada
                         time={horaFormatada} // Horário formatado
                         text={registro.mensagem}
+                        first_name={registro.usuario.first_name}
+                        last_name={registro.usuario.last_name}
                       />
                     );
                   })}
@@ -719,7 +728,7 @@ function HomeMedico() {
           </MDBRow>
         </MDBCardBody>
       </MDBCard>
-
+      <ToastContainer />
     </MDBContainer>
   );
 }

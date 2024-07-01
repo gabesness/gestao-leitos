@@ -454,12 +454,14 @@ function QuadroFicha({ selectedPaciente, historico }) {
                     const { dataFormatada, horaFormatada } = formatarData(registro.criado_em);
                     return (
                       <HistoricoCard
-                        key={index}
-                        title={registro.estagio_atual}
-                        date={dataFormatada} // Data formatada
-                        time={horaFormatada} // Horário formatado
-                        text={registro.mensagem}
-                      />
+                      key={index}
+                      title={registro.estagio_atual}
+                      date={dataFormatada} // Data formatada
+                      time={horaFormatada} // Horário formatado
+                      text={registro.mensagem}
+                      first_name={registro.usuario.first_name}
+                      last_name={registro.usuario.last_name}
+                    />
                     );
                   })}
           

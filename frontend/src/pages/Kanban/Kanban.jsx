@@ -63,12 +63,14 @@ function ModalFicha({ isOpen, onClose, selectedPaciente, historico}) {
                     const { dataFormatada, horaFormatada } = formatarData(registro.criado_em);
                     return (
                       <HistoricoCard
-                        key={index}
-                        title={registro.estagio_atual}
-                        date={dataFormatada} // Data formatada
-                        time={horaFormatada} // Horário formatado
-                        text={registro.mensagem}
-                      />
+                      key={index}
+                      title={registro.estagio_atual}
+                      date={dataFormatada} // Data formatada
+                      time={horaFormatada} // Horário formatado
+                      text={registro.mensagem}
+                      first_name={registro.usuario.first_name}
+                      last_name={registro.usuario.last_name}
+                    />
                     );
                   })}
                 </div>
@@ -197,25 +199,25 @@ function Kanban() {
 
             {/* Coluna da Farmácia */}
             <MDBCol md='2'>
-            <MDBCardHeader className="text-center" style={{ fontSize: "22px", padding: "5px 15px", backgroundColor: "#b4c5e4" }}>
+            <MDBCard>
+              <MDBCardHeader className="text-center" style={{ fontSize: "22px", padding: "5px 15px", backgroundColor: "#b4c5e4" }}>
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
                   <MDBIcon fas icon="pills" style={{ marginRight: "8px" }}/>
                   <strong>Farmácia</strong>
                 </div>
               </MDBCardHeader>
-              <MDBCard>
-                <MDBCardBody>
-                  {pacientes.filter(paciente => paciente.estagio_atual === 'ENCAMINHADO_PARA_FARMACIA').map((paciente, index) => (
-                    <PacienteCard
-                      key={index}
-                      paciente={paciente}
-                      selectedPaciente={selectedPaciente}
-                      handlePacienteClick={handlePacienteClick}
-                    />
-                  ))}
-                </MDBCardBody>
-              </MDBCard>
-            </MDBCol>
+              <MDBCardBody className='p-2'>
+                {pacientes.filter(paciente => paciente.estagio_atual === 'ENCAMINHADO_PARA_FARMACIA').map((paciente, index) => (
+                  <PacienteCard
+                    key={index}
+                    paciente={paciente}
+                    selectedPaciente={selectedPaciente}
+                    handlePacienteClick={handlePacienteClick}
+                  />
+                ))}
+              </MDBCardBody>
+            </MDBCard>
+          </MDBCol>
 
             {/* Coluna da Regulação */}
             <MDBCol md='2'>
@@ -226,7 +228,7 @@ function Kanban() {
                 </div>
               </MDBCardHeader>
               <MDBCard>
-                  <MDBCardBody>
+              <MDBCardBody className='p-2'>
                     {pacientes.filter(paciente => 
                       paciente.estagio_atual === 'ENCAMINHADO_PARA_AGENDAMENTO' ||
                       paciente.estagio_atual === 'AGENDADO' ||
@@ -252,7 +254,7 @@ function Kanban() {
                   <strong>Internação</strong>
                 </div>
               </MDBCardHeader>
-               <MDBCardBody>
+              <MDBCardBody className='p-2'>
                   {pacientes.filter(paciente => paciente.estagio_atual === 'INTERNADO').map((paciente, index) => (
                     <PacienteCard
                       key={index}
@@ -274,7 +276,7 @@ function Kanban() {
                   <strong>Alta</strong>
                 </div>
               </MDBCardHeader>
-                  <MDBCardBody>
+              <MDBCardBody className='p-2'>
                     {pacientes.filter(paciente => 
                       paciente.estagio_atual === 'ALTA_NORMAL' ||
                       paciente.estagio_atual === 'ALTA_OBITO' ||
@@ -300,7 +302,7 @@ function Kanban() {
                   <strong>Transferido</strong>
                 </div>
               </MDBCardHeader>
-                 <MDBCardBody>
+              <MDBCardBody className='p-2'>
                     {pacientes.filter(paciente => paciente.estagio_atual === 'TRANSFERIDO').map((paciente, index) => (
                       <PacienteCard
                         key={index}
