@@ -560,8 +560,6 @@ class PrescricaoViewSet(GenericViewSet):
         except User.DoesNotExist: return Response({'Erro': 'Usuário inválido'}, status=status.HTTP_401_UNAUTHORIZED)
         except Exception as e: return Response({'Erro': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
-
 class LeitoViewSet(GenericViewSet):
     queryset = Leito.objects.all()
     serializer_class = LeitoSerializer
@@ -658,6 +656,96 @@ class UserViewSet(GenericViewSet):
     #     if serializer.is_valid(raise_exception=True):
     #         serializer.save()
     #         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+class EstatisticaViewSet(GenericViewSet):
+    """
+    Estatisticas -- APENAS requisicoes GET:
+    * Taxa de ocupacao de leitos x tempo;
+
+    """
+
+    # ======== ESTRUTURA DAS FUNCOES =========
+    # Modo Ultimos x dias:
+    # Parametro intervalo:<int> representa quantos dias para tras o sistema vai buscar as informacoes
+    # Modo Mes/Ano:
+    # Parametros mes:<int> e ano:<int>, busca apenas no periodo informado
+    # Modo Completo:
+    # Busca todos os registros do sistema
+    def taxa_ocupacao(self, ano=None, mes=None, intervalo=None):
+        """
+        Retorna a % de leitos ocupados por tempo.
+        Ex.: 01/06 - 57%; 02/06 - 61%; 03/06 - 65% ...
+        """
+        pass
+
+    def historico_de_altas(self):
+        """
+        Retorna quantas altas tiveram de cada tipo por tempo
+        Ex.: 01/06 - (3T, 5D, 1O); 02/06 - (7T, 1D, 2O) ...
+        T - Pacientes transferidos; D - Altas definitivas; O - Obitos.
+        """
+        pass
+
+    @action(detail=False, methods=['GET']) # OK
+    def histograma_numero_sessoes(self, request):
+        """
+        Conta quantas sessoes teve cada paciente, e depois agrupa os pacientes por numero de sessao
+        Ex.: Considere
+             Joao - 3 sessoes,
+             Maria - 4 sessoes,
+             Lucas - 4 sessoes,
+             Marcos - 5 sessoes,
+             Elisa - 7 sessoes,
+        O histograma ira condensar essas informacoes em algo como
+            3 sessoes - 1 paciente,
+            4 sessoes - 2 pacientes,
+            5 sessoes - 1 paciente,
+            7 sessoes - 1 paciente,
+        Passo-a-passo:
+        1. Conte o numero de sessoes que cada paciente teve;
+        2. Considere o intervalo de 1 ate o numero maximo de sessoes encontrado;
+        3. Para cada valor no intervalo, conte quantas vezes esse valor aparece.
+        """
+        ids_pacientes = Paciente.objects.all().values('id')
+        numero_sessoes = []
+        for pair in ids_pacientes:
+            numero_sessoes.append(Sessao.objects.filter(paciente_id=pair['id']).count())
+        data = []
+        for i in range(1, max(numero_sessoes)+1):
+            data.append({i: numero_sessoes.count(i)})
+
+        return Response(data)
+        
+    @action(detail=False, methods=['GET']) # OK
+    def histograma_tempo_internacao(self, request):
+        """
+        Semelhante ao histograma_numero_sessoes, porem dessa vez com o tempo de internacao\n
+        Ex.:\n
+            1 dia - 2 pacientes,\n
+            2 dias - 3 pacientes,\n
+            3 dias - 5 pacientes,\n
+            4 dias - 0 pacientes,\n 
+            ...\n
+        Passo-a-passo:
+        1. Calcule o tempo de internacao de cada Sessao;
+        2. Considere o intervalo de 1 ate o tempo maximo de internacao encontrado;
+        3. Para cada valor no intervalo, conte quantas vezes esse valor aparece.
+        """
+        sessoes = list(Sessao.objects.filter(data_internacao__isnull=False, data_alta__isnull=False))
+        tempos = []
+        for sessao in sessoes:
+            tempo = sessao.data_alta - sessao.data_internacao
+            tempos.append(tempo.days+1)
+        
+        data = []
+        for i in range(1, max(tempos)+1):
+            data.append({i: tempos.count(i)})
+        return Response(data)
+
+    def pacientes_novos(self):
+        """
+        Retorna quantos novos pacientes entraram no sistema por tempo
+        """
 
 ### ROTAS DE LOGIN / AUTENTICACAO
 

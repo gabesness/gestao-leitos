@@ -32,14 +32,20 @@ class UserSerializer(DynamicFieldsModelSerializer):
         fields = ['id', 'username', 'password', 'first_name', 'last_name', 'email', 'groups']
 
 class SessaoSerializer(DynamicFieldsModelSerializer):
+
     class Meta:
         model = Sessao
-        fields = ['id', 'numero', 'leito', 'data_internacao', 'data_alta', 'criada_em']
+        fields = ['id', 'leito', 'paciente', 'data_alta', 'criada_em']
 
 class RegistroSerializer(DynamicFieldsModelSerializer):
+    usuario = serializers.SerializerMethodField()
     class Meta:
         model = Registro
         fields = ['id', 'usuario', 'paciente', 'sessao', 'estagio_atual', 'mensagem', 'criado_em']
+    
+    def get_usuario(self, obj) -> dict:
+        usuario = obj.usuario
+        return UserSerializer(usuario, fields=['username', 'first_name', 'last_name', 'groups']).data
 
 class PacienteSerializer(DynamicFieldsModelSerializer):
     sessao_atual = serializers.SerializerMethodField()

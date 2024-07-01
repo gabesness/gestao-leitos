@@ -7,6 +7,7 @@ router.register(r'pacientes', views.PacienteViewSet, basename='paciente')
 router.register(r'usuarios', views.UserViewSet, basename='usuario')
 router.register(r'prescricoes', views.PrescricaoViewSet, basename='prescricao')
 router.register(r'leitos', views.LeitoViewSet, basename='leito')
+router.register(r'estatisticas', views.EstatisticaViewSet, basename='estatistica')
 
 urlpatterns = [
     path('accounts/', include("django.contrib.auth.urls")),
