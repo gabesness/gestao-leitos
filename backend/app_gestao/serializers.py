@@ -114,7 +114,7 @@ class Plano_terapeuticoSerializer(DynamicFieldsModelSerializer):
         obj.data_sugerida = validated_data.get('data_sugerida', obj.data_sugerida)
         obj.medicamentos = validated_data.get('medicamentos', obj.medicamentos)
         obj.save()
-        return obj
+        #return obj
 
 
 class LeitoSerializer(DynamicFieldsModelSerializer):

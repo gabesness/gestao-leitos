@@ -474,7 +474,7 @@ class PrescricaoViewSet(GenericViewSet):
         try:
             paciente = self.get_object()
             serializer = self.get_serializer(paciente)
-            user = User.objects.get(request.data['id_usuario'])
+            user = User.objects.get(id=request.data['id_usuario'])
             estagios_aceitos = ['ENCAMINHADO_PARA_AGENDAMENTO', 'AUTORIZADO_PARA_TRANSFERENCIA']
             if user:
                 if serializer.data['estagio_atual'] in estagios_aceitos:
@@ -512,7 +512,7 @@ class PrescricaoViewSet(GenericViewSet):
         try:
             paciente = self.get_object()
             serializer = self.get_serializer(paciente)
-            user = User.objects.get(request.data['id_usuario'])
+            user = User.objects.get(id=request.data['id_usuario'])
             if user:
                 if serializer.data['estagio_atual'] == 'DEVOLVIDO_PELA_REGULACAO':
                     serializer.atualizar_estagio(obj=paciente, usuario=user, estagio='AUTORIZADO_PARA_TRANSFERENCIA', mensagem=request.data['mensagem'])

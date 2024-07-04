@@ -61,13 +61,16 @@ function ModalNovaPrescricao({ isOpen, onClose }) {
       const response = await axios.patch(`http://localhost:8000/prescricoes/${prontuario}/criar_prescricao/`, {
         id_usuario: localStorage.getItem('idUser'),
       });
-      if (response.status === 200) {
-        toast.success('Prescrição criada com sucesso!');
-
+      if (response.status === 204) {
+      toast.success('Prescrição criada com sucesso!');
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
       }
+
     } catch (error) {
       console.error('Erro ao criar prescrição:', error);
-      toast.error(error.response.data.msg);
+      toast.error(error.response.data.erro);
     }
   };
 
@@ -89,6 +92,7 @@ function ModalNovaPrescricao({ isOpen, onClose }) {
           </MDBModalFooter>
         </MDBModalContent>
       </MDBModalDialog>
+      <ToastContainer />
     </MDBModal>
   );
 }
@@ -105,7 +109,7 @@ function ModalEnviarFarmacia({ isOpen, onClose, onSubmit }) {
       <MDBModalDialog>
         <MDBModalContent>
           <MDBModalHeader>
-            <MDBModalTitle>Confirmação envio para farmácia</MDBModalTitle>
+            <MDBModalTitle>Confirmação de envio para farmácia</MDBModalTitle>
             <MDBBtn className='btn-close' color='none' onClick={handleClose}></MDBBtn>
           </MDBModalHeader>
           <MDBModalBody>
@@ -132,9 +136,14 @@ function ModalAltaObito({ isOpen, onClose, selectedPaciente }) {
       const response = await axios.patch(`http://localhost:8000/prescricoes/${selectedPaciente.id}/dar_alta/2/`, {
         id_usuario: localStorage.getItem('idUser'),
       });
-      onClose(); // Fechar o modal após a resposta
+      toast.success('Prescrição Atualizada!');
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
+      
     } catch (error) {
       console.error("Erro ao devolver a prescrição:", error);
+      toast.error(error.response.data.Erro);
     }
   };
   
@@ -164,6 +173,7 @@ function ModalAltaObito({ isOpen, onClose, selectedPaciente }) {
           </MDBModalFooter>
         </MDBModalContent>
       </MDBModalDialog>
+      <ToastContainer />
     </MDBModal>
   );
 }
@@ -177,9 +187,13 @@ function ModalAltaNormal({ isOpen, onClose, selectedPaciente }) {
       const response = await axios.patch(`http://localhost:8000/prescricoes/${selectedPaciente.id}/dar_alta/0/`, {
         id_usuario: localStorage.getItem('idUser'),
       });
-      onClose(); // Fechar o modal após a resposta
+      toast.success('Prescrição Atualizada!');
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
     } catch (error) {
       console.error("Erro ao devolver a prescrição:", error);
+      toast.error(error.response.data.Erro);
     }
   };
   
@@ -217,9 +231,14 @@ function ModalAltaDefinitiva({ isOpen, onClose, selectedPaciente }) {
       const response = await axios.patch(`http://localhost:8000/prescricoes/${selectedPaciente.id}/dar_alta/1/`, {
         id_usuario: localStorage.getItem('idUser'),
       });
-      onClose();
+      toast.success('Prescrição Atualizada!');
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
     } catch (error) {
       console.error("Erro ao autorizar transferência:", error);
+      toast.error(error.response.data.Erro);
+
     }
   };
   
@@ -264,9 +283,13 @@ function ModalTransferencia({ isOpen, onClose, selectedPaciente, formValue }) {
         mensagem: formValue.mensagem  // Incluir a mensagem no corpo da requisição
       });
       console.log("Prescrição Agendada com sucesso:", response.data);
-      onClose(); // Fechar o modal após a resposta
+      toast.success('A transferência foi autorizada!');
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
     } catch (error) {
       console.error("Erro ao devolver a prescrição:", error);
+      toast.error(error.response.data.Erro);
     }
   };
   
@@ -342,8 +365,8 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
   return (
     <MDBCol md='4'>
       <MDBCard className='mb-4' style={{ borderTopLeftRadius: '30px', borderTopRightRadius: '30px', borderBottomLeftRadius: '20px', borderBottomRightRadius: '20px'}}>
-         {/* Botões das Abas */}
-        <div className="text-center mb-4">
+        {/* Botões das Abas */}
+        <div className="text-center mb-2"> {/* Ajuste a margem inferior */}
           <MDBBtn className="w-50" style={{ borderTopLeftRadius: '20px', borderTopRightRadius: '0px', borderBottomRightRadius: '0px', borderBottomLeftRadius: '0px' }} color={activeTab === 'pendentes' ? 'light' : 'dark'} rippleColor='dark' onClick={() => setActiveTab('pendentes')}>
             Pendentes
           </MDBBtn>
@@ -351,14 +374,13 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
             Internados
           </MDBBtn>
         </div>
-
+  
         {/* Conteúdo */}
         <MDBCardBody>
           {/* Cabeçalho */}
-
-          <div className="d-flex align-items-center mb-3">
-          <MDBInput type="text" label="Pesquisar" value={searchTerm} onChange={handleSearchChange} className="flex-grow-1" style={{ height: '40px' }} />
-          <MDBBtn
+          <div className="d-flex align-items-center mb-2"> {/* Ajuste a margem inferior */}
+            <MDBInput type="text" label="Pesquisar" value={searchTerm} onChange={handleSearchChange} className="flex-grow-1" style={{ height: '40px' }} />
+            <MDBBtn
               onClick={toggleOpen}
               className="ms-2 d-flex justify-content-center align-items-center btn-sm"
               style={{
@@ -366,17 +388,15 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
                 height: '40px',
                 margin: '0',
               }}
-              color="dark"
+              color="primary"
             >
-               <MDBIcon fas icon="plus" />
+              <MDBIcon fas icon="plus" />
             </MDBBtn>
           </div>
-          
+  
           <MDBListGroup light>
-
-          {/* Listagem */}
-
-          {currentPacientes.map((paciente) => (
+            {/* Listagem */}
+            {currentPacientes.map((paciente) => (
               <PacienteCardMedico
                 key={paciente.id}
                 paciente={paciente}
@@ -384,8 +404,8 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
                 handlePacienteClick={handlePacienteClick}
               />
             ))}
-
           </MDBListGroup>
+  
           {filteredPacientes.length > postsPerPage && (
             <div className="pag">
               <Pagination
@@ -400,6 +420,7 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
       <ModalNovaPrescricao isOpen={basicModal} onClose={toggleOpen} />
     </MDBCol>
   );
+  
 }
 
 function QuadroFicha({ selectedPaciente, historico }) {
@@ -443,14 +464,6 @@ function QuadroFicha({ selectedPaciente, historico }) {
       case 'PRESCRICAO_CRIADA':
       case 'DEVOLVIDO_PELA_FARMACIA':
         return <MDBBtn style={{ marginLeft: '10px' }} onClick={toggleModalEnviarFarmacia} disabled={!isPrescricaoCriada} >ENVIAR</MDBBtn>;
-      case 'ALTA_NORMAL':
-        return (
-          <>
-            <div>
-              <MDBBtn style={{ marginLeft: '10px' }} onClick={toggleModalEnviarFarmacia} >ENVIAR</MDBBtn>
-            </div>
-          </>
-        );
       case 'DEVOLVIDO_PELA_REGULACAO':
         return <MDBBtn onClick={toggleModalTransferencia} >AUTORIZAR TRANSFERÊNCIA</MDBBtn>;
       case 'INTERNADO':
@@ -496,26 +509,28 @@ function QuadroFicha({ selectedPaciente, historico }) {
 
   async function EncaminharPaciente(event) {
     event.preventDefault();
-    const data = {
-      plano_terapeutico: {
-        sessoes_prescritas: formValue.sessoes_prescritas,
-        dias_intervalo: formValue.dias_intervalo,
-        data_sugerida: formValue.data_sugerida,
-        medicamentos: formValue.medicamentos,
-      },
-      mensagem: formValue.mensagem
-    };
     
     try {
       const response = await axios.patch(`http://localhost:8000/prescricoes/${selectedPaciente.id}/encaminhar_farmacia/`, {
+        plano_terapeutico: {
+          sessoes_prescritas: formValue.sessoes_prescritas,
+          dias_intervalo: formValue.dias_intervalo,
+          data_sugerida: formValue.data_sugerida,
+          medicamentos: formValue.medicamentos,
+        },
+        mensagem: formValue.mensagem,
         id_usuario: localStorage.getItem('idUser'),
       });
       if (response.status === 200) {
         toast.success('Prescrição encaminhada para farmácia com sucesso!');
-
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
       }
     } catch (error) {
       console.error('Erro ao encaminhar para farmácia', error);
+      toast.error(error.response.data.Erro);
+
     }
   }
 
@@ -523,12 +538,18 @@ function QuadroFicha({ selectedPaciente, historico }) {
     event.preventDefault();
   
     try {
-      const response = await axios.patch(`http://localhost:8000/prescricoes/${selectedPaciente.prontuario}/criar_prescricao/`);
-      if (response.status === 200) {
+      const response = await axios.patch(`http://localhost:8000/prescricoes/${selectedPaciente.prontuario}/criar_prescricao/`, {
+        id_usuario: localStorage.getItem('idUser'),
+      });
+      if (response.status === 204) {
         toast.success('Prescrição criada com sucesso!');
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
       }
     } catch (error) {
       console.error('Erro ao criar prescrição:', error);
+      toast.error(error.response.data.erro);
     }
   };
 
@@ -641,7 +662,7 @@ function QuadroFicha({ selectedPaciente, historico }) {
     <div style={{ padding: '20px', marginTop: '10px', display: 'flex', justifyContent: 'space-between', borderTop: '1px solid rgba(0,0,0,.125)' }}>
             <div>
               {selectedPaciente.estagio_atual === 'ALTA_NORMAL' && (
-                <MDBBtn color='success' style={{ marginLeft: '10px' }}onClick={CriarSegundaPrescricao}>CRIAR PRESCRIÇÃO</MDBBtn>
+                <MDBBtn color='success' style={{ marginLeft: '10px' }}onClick={CriarSegundaPrescricao}>INICIAR NOVA SESSÃO</MDBBtn>
               )}
               {selectedPaciente.estagio_atual === 'INTERNADO' && (
                 <>
@@ -659,7 +680,7 @@ function QuadroFicha({ selectedPaciente, historico }) {
  )}
     {!selectedPaciente && (
       <div className="text-center">
-        <p style={{ fontSize: '1.5rem' }}> Selecione um Usuário</p>
+        <p style={{ fontSize: '1.5rem' }}> Selecione um Paciente</p>
       </div>
     )}
 

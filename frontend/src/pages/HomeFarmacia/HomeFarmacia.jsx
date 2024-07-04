@@ -37,6 +37,8 @@ import PacienteCard from '../../components/Cards/PacienteCard';
 import HistoricoCard from '../../components/Cards/HistoricoCard';
 import CabecalhoPaciente from '../../components/Ficha/CabecalhoPaciente';
 import formatarData from '../../utils/FormatarData';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 function ModalDevolverMedico({ isOpen, onClose, selectedPaciente, formValue }) {
@@ -49,10 +51,13 @@ function ModalDevolverMedico({ isOpen, onClose, selectedPaciente, formValue }) {
         id_usuario: localStorage.getItem('idUser'),
         mensagem: formValue.mensagem  // Incluir a mensagem no corpo da requisição
       });
-      console.log("Prescrição devolvida com sucesso:", response.data);
-      onClose(); // Fechar o modal após a resposta
+      toast.success('Prescrição devolvida com sucesso!');
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
     } catch (error) {
       console.error("Erro ao devolver a prescrição:", error);
+      toast.error(error.response.data.erro);
     }
   };
  
@@ -68,12 +73,12 @@ function ModalDevolverMedico({ isOpen, onClose, selectedPaciente, formValue }) {
       <MDBModalDialog>
         <MDBModalContent>
           <MDBModalHeader>
-            <MDBModalTitle>Confirmação de retorno ao médico</MDBModalTitle>
+            <MDBModalTitle>Confirmação de devolução ao médico</MDBModalTitle>
             <MDBBtn className='btn-close' color='none' onClick={handleClose}></MDBBtn>
           </MDBModalHeader>
           <MDBModalBody>
 
-          A prescrição será retornada ao médico
+          A prescrição será devolvida ao médico
 
           </MDBModalBody>
           <MDBModalFooter>
@@ -82,6 +87,7 @@ function ModalDevolverMedico({ isOpen, onClose, selectedPaciente, formValue }) {
           </MDBModalFooter>
         </MDBModalContent>
       </MDBModalDialog>
+      <ToastContainer />
     </MDBModal>
   );
 }
@@ -96,10 +102,13 @@ function ModalEnviarRegulacao({ isOpen, onClose, selectedPaciente, formValue }) 
         id_usuario: localStorage.getItem('idUser'),
         mensagem: formValue.mensagem  // Incluir a mensagem no corpo da requisição
       });
-      console.log("Prescrição enviada para regulação com sucesso:", response.data);
-      onClose(); // Fechar o modal após a resposta
+      toast.success('Prescrição encaminhada com sucesso!');
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
     } catch (error) {
       console.error("Erro ao enviar a prescrição para regulação:", error);
+      toast.error(error.response.data.erro);
     }
   };
   
@@ -120,7 +129,7 @@ function ModalEnviarRegulacao({ isOpen, onClose, selectedPaciente, formValue }) 
           </MDBModalHeader>
           <MDBModalBody>
 
-          A prescrição será enviada a regulação para que possa ser feita a reserva dos leitos
+          A prescrição será enviada à regulação para que possa ser feita a reserva do leito.
 
           </MDBModalBody>
           <MDBModalFooter>
@@ -129,6 +138,7 @@ function ModalEnviarRegulacao({ isOpen, onClose, selectedPaciente, formValue }) 
           </MDBModalFooter>
         </MDBModalContent>
       </MDBModalDialog>
+      <ToastContainer />
     </MDBModal>
   );
 }
@@ -323,7 +333,7 @@ function QuadroFicha({ selectedPaciente, historico }) {
  )}
     {!selectedPaciente && (
       <div className="text-center">
-        <p style={{ fontSize: '1.5rem' }}> Selecione um Usuário</p>
+        <p style={{ fontSize: '1.5rem' }}> Selecione um Paciente</p>
       </div>
     )}
   
@@ -386,6 +396,7 @@ function HomeFarmacia() {
           </MDBRow>
         </MDBCardBody>
       </MDBCard>
+      <ToastContainer />
 
     </MDBContainer>
   );

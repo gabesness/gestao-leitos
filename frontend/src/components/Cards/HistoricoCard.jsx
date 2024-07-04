@@ -3,7 +3,7 @@ import { MDBCard, MDBCardBody, MDBCardTitle, MDBCardText } from 'mdb-react-ui-ki
 
 function HistoricoCard({ title, date, time, text, first_name, last_name }) {
   return (
-    <MDBCard style={{ marginBottom: '10px' }}>
+    <MDBCard style={{ marginBottom: '10px', backgroundColor: '#bbdefb' }}>
       <MDBCardBody style={{ padding: '10px' }}>
         <MDBCardTitle style={{ fontSize: '1rem' }}>
           {title}

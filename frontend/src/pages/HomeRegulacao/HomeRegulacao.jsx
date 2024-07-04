@@ -37,6 +37,8 @@ import PacienteRegulacaoCard from '../../components/Cards/PacienteRegulacaoCard'
 import HistoricoCard from '../../components/Cards/HistoricoCard';
 import CabecalhoPaciente from '../../components/Ficha/CabecalhoPaciente';
 import formatarData from '../../utils/FormatarData';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 function ModalDevolverMedico({ isOpen, onClose, selectedPaciente, formValue }) {
@@ -50,9 +52,13 @@ function ModalDevolverMedico({ isOpen, onClose, selectedPaciente, formValue }) {
         mensagem: formValue.mensagem  // Incluir a mensagem no corpo da requisição
       });
       console.log("Prescrição devolvida com sucesso:", response.data);
-      onClose(); // Fechar o modal após a resposta
+      toast.success('Prescrição devolvida com sucesso!');
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
     } catch (error) {
       console.error("Erro ao devolver a prescrição:", error);
+      toast.error(error.response.data.Erro);
     }
   };
  
@@ -74,8 +80,9 @@ function ModalDevolverMedico({ isOpen, onClose, selectedPaciente, formValue }) {
           </MDBModalHeader>
           <MDBModalBody>
 
-          A prescrição será devolvida ao médico por falta de vagas, para que possar ser autorizado 
-          o encaminhamento para outro hospital.
+          A prescrição será devolvida ao médico por falta de vagas, 
+          para que possar ser autorizado o encaminhamento para outro hospital.
+
 
           </MDBModalBody>
           <MDBModalFooter>
@@ -84,6 +91,7 @@ function ModalDevolverMedico({ isOpen, onClose, selectedPaciente, formValue }) {
           </MDBModalFooter>
         </MDBModalContent>
       </MDBModalDialog>
+      <ToastContainer />
     </MDBModal>
   );
 }
@@ -99,9 +107,13 @@ function ModalAgendamento({ isOpen, onClose, selectedPaciente, selectedLeito, fo
         mensagem: formValue.mensagem  // Incluir a mensagem no corpo da requisição
       });
       console.log("Prescrição Agendada com sucesso:", response.data);
-      onClose(); // Fechar o modal após a resposta
+      toast.success('Paciente agendado com sucesso!');
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
     } catch (error) {
       console.error("Erro ao devolver a prescrição:", error);
+      toast.error(error.response.data.erro);
     }
   };
   
@@ -123,7 +135,7 @@ function ModalAgendamento({ isOpen, onClose, selectedPaciente, selectedLeito, fo
           </MDBModalHeader>
           <MDBModalBody>
 
-          O paciente será agendado ao leito.
+          O paciente será agendado.
 
           </MDBModalBody>
           <MDBModalFooter>
@@ -132,6 +144,7 @@ function ModalAgendamento({ isOpen, onClose, selectedPaciente, selectedLeito, fo
           </MDBModalFooter>
         </MDBModalContent>
       </MDBModalDialog>
+      <ToastContainer />
     </MDBModal>
   );
 }
@@ -146,9 +159,13 @@ function ModalInternacao({ isOpen, onClose, selectedPaciente }) {
         id_usuario: localStorage.getItem('idUser'),
       });
       console.log("Prescrição devolvida com sucesso:", response.data);
-      onClose(); // Fechar o modal após a resposta
+      toast.success('Paciente internado!');
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
     } catch (error) {
       console.error("Erro ao devolver a prescrição:", error);
+      toast.error(error.response.data.erro);
     }
   };
 
@@ -178,22 +195,27 @@ function ModalInternacao({ isOpen, onClose, selectedPaciente }) {
           </MDBModalFooter>
         </MDBModalContent>
       </MDBModalDialog>
+      <ToastContainer />
     </MDBModal>
   );
 }
 
-function ModalTransferencia({ isOpen, onClose, selectedPaciente }) {
+function ModalTransferencia({ isOpen, onClose, selectedPaciente, formValue }) {
   const handleTransferir = async () => {
     if (!selectedPaciente) return;
 
     try {
       const response = await axios.patch(`http://localhost:8000/prescricoes/${selectedPaciente.id}/transferir/`, {
         id_usuario: localStorage.getItem('idUser'),
+        mensagem: formValue.mensagem  
       });
       console.log("Prescrição devolvida com sucesso:", response.data);
-      onClose(); // Fechar o modal após a resposta
-    } catch (error) {
+      toast.success('Paciente transferido!');
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);    } catch (error) {
       console.error("Erro ao devolver a prescrição:", error);
+      toast.error(error.response.data.erro);
     }
   };
   
@@ -222,6 +244,7 @@ function ModalTransferencia({ isOpen, onClose, selectedPaciente }) {
           </MDBModalFooter>
         </MDBModalContent>
       </MDBModalDialog>
+      <ToastContainer />
     </MDBModal>
   );
 }
@@ -235,9 +258,12 @@ function ModalAltaObito({ isOpen, onClose, selectedPaciente }) {
         const response = await axios.patch(`http://localhost:8000/prescricoes/${selectedPaciente.id}/dar_alta/2/`, {
           id_usuario: localStorage.getItem('idUser'),
         });
-        onClose(); // Fechar o modal após a resposta
-      } catch (error) {
+        toast.success('Prescrição atualizada!');
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);      } catch (error) {
         console.error("Erro ao devolver a prescrição:", error);
+        toast.error(error.response.data.erro);
       }
     };
   
@@ -267,6 +293,7 @@ function ModalAltaObito({ isOpen, onClose, selectedPaciente }) {
           </MDBModalFooter>
         </MDBModalContent>
       </MDBModalDialog>
+      <ToastContainer />
     </MDBModal>
   );
 }
@@ -386,9 +413,13 @@ function QuadroFicha({ selectedPaciente, historico }) {
   const [leitos, setLeitos] = useState([]);
 
   const handleSelectLeito = (leito) => {
-    setSelectedLeito(leito);
-    console.log(leito);
-
+    // Se o leito clicado já estiver selecionado, desmarque-o
+    if (selectedLeito?.numero === leito.numero) {
+      setSelectedLeito(null);
+    } else {
+      // Caso contrário, selecione o leito clicado
+      setSelectedLeito(leito);
+    }
   };
 
   useEffect(() => {
@@ -501,28 +532,29 @@ function QuadroFicha({ selectedPaciente, historico }) {
               </div>
             </div>
 
+            {selectedPaciente.estagio_atual === 'ENCAMINHADO_PARA_AGENDAMENTO' && (
+          <>
             <h5>Leitos para amanhã</h5>
-
             <div className="row mt-3">
-            {leitos.map((leito, id) => (
-                    <div key={id} className="col-md-2 mb-1">
-                      <MDBIcon 
-                      fas
-                      icon="bed"
-                      style={{
-                        fontSize: '28px',
-                        cursor: leito.ocupado ? 'not-allowed' : 'pointer',
-                        color: leito.ocupado ? '#A9A9A9' : '#14A44D',
-                      }}
-                      onClick={() => handleSelectLeito(leito)}
-                    />
-                      
-                      <p style={{textAlign: 'center', fontSize: '8px'}}>Leito {leito.numero}</p>
-                    </div>
-            ))}
+              {leitos.map((leito, id) => (
+                <div key={id} className="col-md-2 mb-1">
+                  <MDBIcon
+                    fas
+                    icon="bed"
+                    style={{
+                      fontSize: '28px',
+                      cursor: leito.ocupado ? 'not-allowed' : 'pointer',
+                      color: selectedLeito?.numero === leito.numero ? '#1E90FF' : (leito.ocupado ? '#A9A9A9' : '#14A44D'),
+                    }}
+                    onClick={() => handleSelectLeito(leito)}
+                  />
+                  <p style={{ textAlign: 'center', fontSize: '8px' }}>Leito {leito.numero}</p>
+                </div>
+              ))}
             </div>
-
             <p>Reservar: {selectedLeito ? `Leito ${selectedLeito.numero}` : ''}</p>
+          </>
+        )}
 
             <hr />
 
@@ -558,13 +590,13 @@ function QuadroFicha({ selectedPaciente, historico }) {
  )}
     {!selectedPaciente && (
       <div className="text-center">
-        <p style={{ fontSize: '1.5rem' }}> Selecione um Usuário</p>
+        <p style={{ fontSize: '1.5rem' }}> Selecione um Paciente</p>
       </div>
     )}
   {/* Modais */}
   <ModalDevolverMedico isOpen={isModalDevolverMedicoOpen} onClose={toggleModalDevolverMedico} selectedPaciente={selectedPaciente} formValue={formValue} />
   <ModalAgendamento isOpen={isModalAgendamentoOpen} onClose={toggleModalAgendamento} selectedPaciente={selectedPaciente} selectedLeito={selectedLeito} formValue={formValue}/>
-  <ModalTransferencia isOpen={isModalTransferenciaOpen} onClose={toggleModalTransferencia} selectedPaciente={selectedPaciente}/>
+  <ModalTransferencia isOpen={isModalTransferenciaOpen} onClose={toggleModalTransferencia} selectedPaciente={selectedPaciente} formValue={formValue}/>
   <ModalAltaObito isOpen={isModalAltaObitoOpen} onClose={toggleModalAltaObito} selectedPaciente={selectedPaciente}/>
   <ModalInternacao isOpen={isModalInternacaoOpen} onClose={toggleModalInternacao} selectedPaciente={selectedPaciente}/>
 
@@ -626,7 +658,7 @@ function HomeRegulacao() {
           </MDBRow>
         </MDBCardBody>
       </MDBCard>
-
+      <ToastContainer />
     </MDBContainer>
   );
 }

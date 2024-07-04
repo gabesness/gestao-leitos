@@ -8,7 +8,7 @@ function UsuarioCard({ user, selectedUser, handleUserClick }) {
       onClick={() => handleUserClick(user)}
     >
       <div className='ms-2 me-auto'>
-        <div className='fw-bold'>{user.first_name}{user.last_name}</div>
+        <div className='fw-bold'>{user.first_name} {user.last_name}</div>
       </div>
     </MDBListGroupItem>
   );

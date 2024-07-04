@@ -97,7 +97,7 @@ function ModalCriarPaciente({ isOpen, onClose }) {
               className="mb-4" 
               name="prontuario" 
               id="prontuario" 
-              label="prontuario" 
+              label="Prontuário" 
               type="text"
               value={formValue.prontuario} 
               onChange={onChange} 
@@ -114,8 +114,6 @@ function ModalCriarPaciente({ isOpen, onClose }) {
 
           </MDBModalBody>
           <MDBModalFooter>
-            <MDBBtn color='danger'>Cancelar</MDBBtn>
-            <MDBBtn>Criar</MDBBtn>
           </MDBModalFooter>
         </MDBModalContent>
       </MDBModalDialog>
@@ -167,9 +165,18 @@ function QuadroLista({ pacientes, selectedPaciente, handlePacienteClick, }) {
           <div className="d-flex align-items-center mb-3">
           <MDBInput type="text" label="Pesquisar" value={searchTerm} onChange={handleSearchChange} className="flex-grow-1" style={{ height: '40px' }} />
             {cargo === 'Recepção' || cargo === 'Regulação' ? (
-              <MDBBtn onClick={toggleOpen} className="ms-2 d-flex justify-content-center align-items-center" style={{ borderRadius: '50%', width: '40px', height: '40px', padding: '0', margin: '0' }} color="dark">
-                <MDBIcon fas icon="plus" />
-              </MDBBtn>
+              <MDBBtn
+              onClick={toggleOpen}
+              className="ms-2 d-flex justify-content-center align-items-center btn-sm"
+              style={{
+                minWidth: '40px',
+                height: '40px',
+                margin: '0',
+              }}
+              color="primary"
+            >
+               <MDBIcon fas icon="plus" />
+            </MDBBtn>
             ) : null}
           </div>
           
@@ -221,7 +228,7 @@ function QuadroFicha({ selectedPaciente, historico }) {
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <MDBBtn className='mx-2' color='tertiary' rippleColor='light'>
                 <MDBIcon fas icon="file-download" className='me-2' />
-                Sessão Atual
+                Esta Sessão
               </MDBBtn>
               <MDBBtn className='mx-2' color='tertiary' rippleColor='light'>
                 <MDBIcon fas icon="file-download" className='me-2' />
@@ -264,7 +271,7 @@ function QuadroFicha({ selectedPaciente, historico }) {
       )}
       {!selectedPaciente && (
         <div className="text-center">
-          <p style={{ fontSize: '1.5rem' }}>Selecione um Usuário</p>
+          <p style={{ fontSize: '1.5rem' }}>Selecione um Paciente</p>
         </div>
       )}
     </MDBCol>

@@ -63,7 +63,7 @@ function Login() {
 
       }
     } catch (error) {
-      toast.error('Erro ao logar: Verifique suas credenciais e tente novamente.');
+      toast.error(error.response.data.Erro);
       console.error('Erro ao logar:', error);
     }
   }

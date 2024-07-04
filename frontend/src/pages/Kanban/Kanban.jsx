@@ -164,154 +164,171 @@ function Kanban() {
   const toggleOpen = () => setBasicModal(!basicModal);
 
   return (
-    <MDBContainer fluid className='p-4 background-radial-gradient overflow-hidden d-flex justify-content-center'  style={{ minHeight: '100vh' }}>
+    <MDBContainer fluid className='p-4 background-radial-gradient overflow-hidden d-flex justify-content-center' style={{ minHeight: '100vh' }}>
       <MDBCard className='my-5 bg-glass max-width-card' style={{ width: '100%', maxWidth: '1200px' }}>
-      <h2 style={{ marginTop: '10px', marginLeft: '10px', marginBottom: '-8px' }}>Acompanhamento</h2>
-      <hr style={{ marginBottom: '10px' }} />
+        <h2 style={{ marginTop: '10px', marginLeft: '10px', marginBottom: '-8px' }}>Acompanhamento</h2>
+        <hr style={{ marginBottom: '10px' }} />
         <MDBCardBody className='p-3'>
-        <MDBRow className='g-2'>
-
+          <MDBRow className='g-2'>
             {/* Coluna de Médico */}
             <MDBCol md='2'>
               <MDBCard>
-              <MDBCardHeader className="text-center" style={{ fontSize: "22px", padding: "5px 15px", backgroundColor: "#b4c5e4" }}>
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-                  <MDBIcon fas icon="user-md" style={{ marginRight: "8px" }}/>
-                  <strong>Médico</strong>
-                </div>
-              </MDBCardHeader>
-              <MDBCardBody className='p-2'>
-                {pacientes.filter(paciente => 
-                  paciente.estagio_atual === 'PRESCRICAO_CRIADA' ||
-                  paciente.estagio_atual === 'DEVOLVIDO_PELA_FARMACIA' ||
-                  paciente.estagio_atual === 'DEVOLVIDO_PELA_REGULACAO'
-                ).map((paciente, index) => (
-                  <PacienteCard
-                    key={index}
-                    paciente={paciente}
-                    selectedPaciente={selectedPaciente}
-                    handlePacienteClick={handlePacienteClick}
-                  />
-                ))}
-              </MDBCardBody>
-              </MDBCard>
-            </MDBCol>
-
-            {/* Coluna da Farmácia */}
-            <MDBCol md='2'>
-            <MDBCard>
-              <MDBCardHeader className="text-center" style={{ fontSize: "22px", padding: "5px 15px", backgroundColor: "#b4c5e4" }}>
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-                  <MDBIcon fas icon="pills" style={{ marginRight: "8px" }}/>
-                  <strong>Farmácia</strong>
-                </div>
-              </MDBCardHeader>
-              <MDBCardBody className='p-2'>
-                {pacientes.filter(paciente => paciente.estagio_atual === 'ENCAMINHADO_PARA_FARMACIA').map((paciente, index) => (
-                  <PacienteCard
-                    key={index}
-                    paciente={paciente}
-                    selectedPaciente={selectedPaciente}
-                    handlePacienteClick={handlePacienteClick}
-                  />
-                ))}
-              </MDBCardBody>
-            </MDBCard>
-          </MDBCol>
-
-            {/* Coluna da Regulação */}
-            <MDBCol md='2'>
-            <MDBCardHeader className="text-center" style={{ fontSize: "22px", padding: "5px 15px", backgroundColor: "#b4c5e4" }}>
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-                  <MDBIcon far icon="calendar-alt" style={{ marginRight: "8px" }}/>
-                  <strong>Regulação</strong>
-                </div>
-              </MDBCardHeader>
-              <MDBCard>
-              <MDBCardBody className='p-2'>
-                    {pacientes.filter(paciente => 
-                      paciente.estagio_atual === 'ENCAMINHADO_PARA_AGENDAMENTO' ||
-                      paciente.estagio_atual === 'AGENDADO' ||
-                      paciente.estagio_atual === 'AUTORIZADO_PARA_TRANSFERENCIA'
-                    ).map((paciente, index) => (
+                <MDBCardHeader className="text-center" style={{ fontSize: "22px", padding: "5px 15px", backgroundColor: "#b4c5e4" }}>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <MDBIcon fas icon="user-md" style={{ marginRight: "8px" }} />
+                    <strong>Médico</strong>
+                  </div>
+                </MDBCardHeader>
+                <MDBCardBody className='p-2'>
+                  {pacientes.filter(paciente => 
+                    paciente.estagio_atual === 'PRESCRICAO_CRIADA' ||
+                    paciente.estagio_atual === 'DEVOLVIDO_PELA_FARMACIA' ||
+                    paciente.estagio_atual === 'DEVOLVIDO_PELA_REGULACAO'
+                  ).map((paciente, index) => (
+                    <div key={index}>
                       <PacienteCard
-                        key={index}
                         paciente={paciente}
                         selectedPaciente={selectedPaciente}
                         handlePacienteClick={handlePacienteClick}
                       />
-                    ))}
-                  </MDBCardBody>
-              </MDBCard>
-            </MDBCol>
-
-            {/* Coluna da Internação */}
-            <MDBCol md='2'>
-              <MDBCard>
-              <MDBCardHeader className="text-center" style={{ fontSize: "22px", padding: "5px 15px", backgroundColor: "#b4c5e4" }}>
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-                  <MDBIcon fas icon="bed" style={{ marginRight: "8px" }}/>
-                  <strong>Internação</strong>
-                </div>
-              </MDBCardHeader>
-              <MDBCardBody className='p-2'>
-                  {pacientes.filter(paciente => paciente.estagio_atual === 'INTERNADO').map((paciente, index) => (
-                    <PacienteCard
-                      key={index}
-                      paciente={paciente}
-                      selectedPaciente={selectedPaciente}
-                      handlePacienteClick={handlePacienteClick}
-                    />
+                      {/* Linha separadora */}
+                      {index < pacientes.length - 1 && <hr style={{ borderTop: '1px solid #ddd', margin: '10px 0' }} />}
+                    </div>
                   ))}
                 </MDBCardBody>
               </MDBCard>
             </MDBCol>
-
+  
+            {/* Coluna da Farmácia */}
+            <MDBCol md='2'>
+              <MDBCard>
+                <MDBCardHeader className="text-center" style={{ fontSize: "22px", padding: "5px 15px", backgroundColor: "#b4c5e4" }}>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <MDBIcon fas icon="pills" style={{ marginRight: "8px" }} />
+                    <strong>Farmácia</strong>
+                  </div>
+                </MDBCardHeader>
+                <MDBCardBody className='p-2'>
+                  {pacientes.filter(paciente => paciente.estagio_atual === 'ENCAMINHADO_PARA_FARMACIA').map((paciente, index) => (
+                    <div key={index}>
+                      <PacienteCard
+                        paciente={paciente}
+                        selectedPaciente={selectedPaciente}
+                        handlePacienteClick={handlePacienteClick}
+                      />
+                      {/* Linha separadora */}
+                      {index < pacientes.length - 1 && <hr style={{ borderTop: '1px solid #ddd', margin: '10px 0' }} />}
+                    </div>
+                  ))}
+                </MDBCardBody>
+              </MDBCard>
+            </MDBCol>
+  
+            {/* Coluna da Regulação */}
+            <MDBCol md='2'>
+              <MDBCard>
+                <MDBCardHeader className="text-center" style={{ fontSize: "22px", padding: "5px 15px", backgroundColor: "#b4c5e4" }}>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <MDBIcon far icon="calendar-alt" style={{ marginRight: "8px" }} />
+                    <strong>Regulação</strong>
+                  </div>
+                </MDBCardHeader>
+                <MDBCardBody className='p-2'>
+                  {pacientes.filter(paciente => 
+                    paciente.estagio_atual === 'ENCAMINHADO_PARA_AGENDAMENTO' ||
+                    paciente.estagio_atual === 'AGENDADO' ||
+                    paciente.estagio_atual === 'AUTORIZADO_PARA_TRANSFERENCIA'
+                  ).map((paciente, index) => (
+                    <div key={index}>
+                      <PacienteCard
+                        paciente={paciente}
+                        selectedPaciente={selectedPaciente}
+                        handlePacienteClick={handlePacienteClick}
+                      />
+                      {/* Linha separadora */}
+                      {index < pacientes.length - 1 && <hr style={{ borderTop: '1px solid #ddd', margin: '10px 0' }} />}
+                    </div>
+                  ))}
+                </MDBCardBody>
+              </MDBCard>
+            </MDBCol>
+  
+            {/* Coluna da Internação */}
+            <MDBCol md='2'>
+              <MDBCard>
+                <MDBCardHeader className="text-center" style={{ fontSize: "22px", padding: "5px 15px", backgroundColor: "#b4c5e4" }}>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <MDBIcon fas icon="bed" style={{ marginRight: "8px" }} />
+                    <strong>Internação</strong>
+                  </div>
+                </MDBCardHeader>
+                <MDBCardBody className='p-2'>
+                  {pacientes.filter(paciente => paciente.estagio_atual === 'INTERNADO').map((paciente, index) => (
+                    <div key={index}>
+                      <PacienteCard
+                        paciente={paciente}
+                        selectedPaciente={selectedPaciente}
+                        handlePacienteClick={handlePacienteClick}
+                      />
+                      {/* Linha separadora */}
+                      {index < pacientes.length - 1 && <hr style={{ borderTop: '1px solid #ddd', margin: '10px 0' }} />}
+                    </div>
+                  ))}
+                </MDBCardBody>
+              </MDBCard>
+            </MDBCol>
+  
             {/* Coluna da Alta */}
             <MDBCol md='2'>
               <MDBCard>
-              <MDBCardHeader className="text-center" style={{ fontSize: "22px", padding: "5px 15px", backgroundColor: "#b4c5e4" }}>
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-                  <MDBIcon fas icon="check-circle" style={{ marginRight: "8px" }}/>
-                  <strong>Alta</strong>
-                </div>
-              </MDBCardHeader>
-              <MDBCardBody className='p-2'>
-                    {pacientes.filter(paciente => 
-                      paciente.estagio_atual === 'ALTA_NORMAL' ||
-                      paciente.estagio_atual === 'ALTA_OBITO' ||
-                      paciente.estagio_atual === 'ALTA_DEFINITIVA'
-                    ).map((paciente, index) => (
+                <MDBCardHeader className="text-center" style={{ fontSize: "22px", padding: "5px 15px", backgroundColor: "#b4c5e4" }}>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <MDBIcon fas icon="check-circle" style={{ marginRight: "8px" }} />
+                    <strong>Alta</strong>
+                  </div>
+                </MDBCardHeader>
+                <MDBCardBody className='p-2'>
+                  {pacientes.filter(paciente => 
+                    paciente.estagio_atual === 'ALTA_NORMAL' ||
+                    paciente.estagio_atual === 'ALTA_OBITO' ||
+                    paciente.estagio_atual === 'ALTA_DEFINITIVA'
+                  ).map((paciente, index) => (
+                    <div key={index}>
                       <PacienteCard
-                        key={index}
                         paciente={paciente}
                         selectedPaciente={selectedPaciente}
                         handlePacienteClick={handlePacienteClick}
                       />
-                    ))}
-                  </MDBCardBody>
+                      {/* Linha separadora */}
+                      {index < pacientes.length - 1 && <hr style={{ borderTop: '1px solid #ddd', margin: '10px 0' }} />}
+                    </div>
+                  ))}
+                </MDBCardBody>
               </MDBCard>
             </MDBCol>
-
+  
             {/* Coluna da Transferência */}
             <MDBCol md='2'>
               <MDBCard>
-              <MDBCardHeader className="text-center" style={{ fontSize: "22px", padding: "5px 15px", backgroundColor: "#b4c5e4" }}>
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-                  <MDBIcon fas icon="hospital-alt" style={{ marginRight: "8px" }}/>
-                  <strong>Transferido</strong>
-                </div>
-              </MDBCardHeader>
-              <MDBCardBody className='p-2'>
-                    {pacientes.filter(paciente => paciente.estagio_atual === 'TRANSFERIDO').map((paciente, index) => (
+                <MDBCardHeader className="text-center" style={{ fontSize: "22px", padding: "5px 15px", backgroundColor: "#b4c5e4" }}>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <MDBIcon fas icon="hospital-alt" style={{ marginRight: "8px" }} />
+                    <strong>Transferido</strong>
+                  </div>
+                </MDBCardHeader>
+                <MDBCardBody className='p-2'>
+                  {pacientes.filter(paciente => paciente.estagio_atual === 'TRANSFERIDO').map((paciente, index) => (
+                    <div key={index}>
                       <PacienteCard
-                        key={index}
                         paciente={paciente}
                         selectedPaciente={selectedPaciente}
                         handlePacienteClick={handlePacienteClick}
                       />
-                    ))}
-                  </MDBCardBody>
+                      {/* Linha separadora */}
+                      {index < pacientes.length - 1 && <hr style={{ borderTop: '1px solid #ddd', margin: '10px 0' }} />}
+                    </div>
+                  ))}
+                </MDBCardBody>
               </MDBCard>
             </MDBCol>
           </MDBRow>
@@ -320,6 +337,7 @@ function Kanban() {
       <ModalFicha isOpen={basicModal} onClose={toggleOpen} selectedPaciente={selectedPaciente} historico={historico}/>
     </MDBContainer>
   );
+  
 }
 
 export default Kanban;

@@ -1,6 +1,6 @@
 import React from 'react';
 
-const CabecalhoFicha = ({ selectedUser }) => {
+const CabecalhoMeuUsuario = ({ selectedUser }) => {
   return (
     <div style={{ width: '100%', padding: '5px', background: 'linear-gradient(to top, #2c8fe6, #82c2fa)', borderTopLeftRadius: '20px', borderTopRightRadius: '20px' }}>
     {selectedUser && (
@@ -18,4 +18,4 @@ const CabecalhoFicha = ({ selectedUser }) => {
   );
 };
 
-export default CabecalhoFicha;
+export default CabecalhoMeuUsuario;
