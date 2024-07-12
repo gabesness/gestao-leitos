@@ -116,20 +116,21 @@ export default function Navbar() {
                   </MDBNavbarLink>
                 )}
 
+<MDBNavbarLink
+                  href='#'
+                  onClick={handlePacientesClick}
+                  className={location.pathname === '/pacientes' ? 'active' : ''}
+                >
+                  <MDBIcon icon="user-friends" fas style={{ fontSize: '1.2rem' }} />
+                </MDBNavbarLink>
+                
+
                 <MDBNavbarLink
                   href='#'
                   onClick={handleKanbanClick}
                   className={location.pathname === '/kanban' ? 'active' : ''}
                 >
                   <MDBIcon icon='columns' fas style={{ fontSize: '1.2rem' }} />
-                </MDBNavbarLink>
-
-                <MDBNavbarLink
-                  href='#'
-                  onClick={handlePacientesClick}
-                  className={location.pathname === '/pacientes' ? 'active' : ''}
-                >
-                  <MDBIcon icon="user-friends" fas style={{ fontSize: '1.2rem' }} />
                 </MDBNavbarLink>
 
                 <MDBNavbarLink

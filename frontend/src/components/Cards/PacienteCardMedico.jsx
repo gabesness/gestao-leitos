@@ -1,5 +1,5 @@
 import React from 'react';
-import { MDBListGroupItem } from 'mdb-react-ui-kit';
+import { MDBListGroupItem, MDBIcon } from 'mdb-react-ui-kit';
 
 function PacienteCardMedico({ paciente, selectedPaciente, handlePacienteClick }) {
   let tagContent = '';
@@ -31,7 +31,13 @@ function PacienteCardMedico({ paciente, selectedPaciente, handlePacienteClick })
         Prontuário: {paciente.prontuario}
       </div>
       {tagContent && (
-        <span className={`badge bg-${tagColor} me-2`}>{tagContent}</span>
+        <span className={`badge bg-${tagColor} me-2`}>
+          {tagContent === 'Nova' && <MDBIcon far icon="file-alt" className="me-1" />}
+          {tagContent === 'Da Farmácia' && <MDBIcon fas icon="undo-alt" className="me-1" />}
+          {tagContent === 'Transferência' && <MDBIcon fas icon="exchange-alt" className="me-1" />}
+          {tagContent === 'Internado' && <MDBIcon fas icon="bed" className="me-1" />}
+          {tagContent}
+        </span>
       )}
     </MDBListGroupItem>
   );

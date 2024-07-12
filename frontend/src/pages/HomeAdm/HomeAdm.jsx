@@ -62,7 +62,7 @@ function QuadroLista({ usuarios, activeTab, selectedUser, handleUserClick, setAc
 
   return (
     <MDBCol md='4'>
-      <MDBCard className='mb-4' style={{ borderTopLeftRadius: '30px', borderTopRightRadius: '30px', borderBottomLeftRadius: '20px', borderBottomRightRadius: '20px'}}>
+      <MDBCard className='mb-4' style={{ borderTopLeftRadius: '30px', borderTopRightRadius: '30px', borderBottomLeftRadius: '20px', borderBottomRightRadius: '20px', height: '610px', overflow: 'auto'}}>
          
          {/* Botões das Abas */}
 
@@ -84,13 +84,13 @@ function QuadroLista({ usuarios, activeTab, selectedUser, handleUserClick, setAc
 
           </MDBListGroup>
           {usuarios.length > postsPerPage && (
-            <div className="pag">
-              <Pagination
-                postsPerPage={postsPerPage}
-                totalPosts={searchedUsuarios.length}
-                paginate={paginate}
-              />
-            </div>
+            <div className="pag text-center d-flex justify-content-center">
+            <Pagination
+              postsPerPage={postsPerPage}
+              totalPosts={searchedUsuarios.length}
+              paginate={paginate}
+            />
+          </div>
           )}
         </MDBCardBody>
       </MDBCard>
@@ -145,8 +145,8 @@ function QuadroFicha({ selectedUser }) {
         </MDBCard>
       )}
       {!selectedUser && (
-        <div className="text-center">
-          <p style={{ fontSize: '1.5rem' }}> Selecione um Usuário</p>
+        <div className="text-center d-flex justify-content-center align-items-center" style={{ height: '80vh' }}>
+          <p style={{ fontSize: '1.5rem' }}>Selecione um Usuário</p>
         </div>
       )}
     </MDBCol>

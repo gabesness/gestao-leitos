@@ -82,8 +82,8 @@ function ModalDevolverMedico({ isOpen, onClose, selectedPaciente, formValue }) {
 
           </MDBModalBody>
           <MDBModalFooter>
-            <MDBBtn color='danger'>Cancelar</MDBBtn>
-            <MDBBtn onClick={handleDevolver} >Devolver</MDBBtn>
+          <MDBBtn color='danger' onClick={handleClose}>Cancelar</MDBBtn>
+          <MDBBtn onClick={handleDevolver} >Devolver</MDBBtn>
           </MDBModalFooter>
         </MDBModalContent>
       </MDBModalDialog>
@@ -133,8 +133,8 @@ function ModalEnviarRegulacao({ isOpen, onClose, selectedPaciente, formValue }) 
 
           </MDBModalBody>
           <MDBModalFooter>
-            <MDBBtn color='danger'>Cancelar</MDBBtn>
-            <MDBBtn onClick={handleEnviar} >Enviar</MDBBtn>
+          <MDBBtn color='danger' onClick={handleClose}>Cancelar</MDBBtn>
+          <MDBBtn onClick={handleEnviar} >Enviar</MDBBtn>
           </MDBModalFooter>
         </MDBModalContent>
       </MDBModalDialog>
@@ -169,7 +169,7 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
   
   return (
     <MDBCol md='4'>
-      <MDBCard className='mb-4' style={{ borderTopLeftRadius: '30px', borderTopRightRadius: '30px', borderBottomLeftRadius: '20px', borderBottomRightRadius: '20px'}}>
+      <MDBCard className='mb-4' style={{ borderTopLeftRadius: '30px', borderTopRightRadius: '30px', borderBottomLeftRadius: '20px', borderBottomRightRadius: '20px', height: '610px', overflow: 'auto'}}>
          
          {/* Botões das Abas */}
 
@@ -193,13 +193,13 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
 
           </MDBListGroup>
           {pacientes.length > postsPerPage && (
-            <div className="pag">
-              <Pagination
-                postsPerPage={postsPerPage}
-                totalPosts={searchedPacientes.length}
-                paginate={paginate}
-              />
-            </div>
+            <div className="pag text-center d-flex justify-content-center">
+            <Pagination
+              postsPerPage={postsPerPage}
+              totalPosts={searchedPacientes.length}
+              paginate={paginate}
+            />
+          </div>
           )}
         </MDBCardBody>
       </MDBCard>
@@ -332,8 +332,8 @@ function QuadroFicha({ selectedPaciente, historico }) {
         </MDBCard>
  )}
     {!selectedPaciente && (
-      <div className="text-center">
-        <p style={{ fontSize: '1.5rem' }}> Selecione um Paciente</p>
+      <div className="text-center d-flex justify-content-center align-items-center" style={{ height: '80vh' }}>
+        <p style={{ fontSize: '1.5rem' }}>Selecione um Paciente</p>
       </div>
     )}
   

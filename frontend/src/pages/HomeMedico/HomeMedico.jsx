@@ -118,8 +118,8 @@ function ModalEnviarFarmacia({ isOpen, onClose, onSubmit }) {
 
           </MDBModalBody>
           <MDBModalFooter>
-            <MDBBtn color='danger'>Cancelar</MDBBtn>
-            <MDBBtn onClick={onSubmit}>Encaminhar</MDBBtn>
+          <MDBBtn color='danger' onClick={handleClose}>Cancelar</MDBBtn>
+          <MDBBtn onClick={onSubmit}>Encaminhar</MDBBtn>
           </MDBModalFooter>
         </MDBModalContent>
       </MDBModalDialog>
@@ -168,8 +168,8 @@ function ModalAltaObito({ isOpen, onClose, selectedPaciente }) {
 
           </MDBModalBody>
           <MDBModalFooter>
-            <MDBBtn color='danger'>Cancelar</MDBBtn>
-            <MDBBtn onClick={handleAltaObito} >Confirmar Alta</MDBBtn>
+          <MDBBtn color='danger' onClick={handleClose}>Cancelar</MDBBtn>
+          <MDBBtn onClick={handleAltaObito} >Confirmar Alta</MDBBtn>
           </MDBModalFooter>
         </MDBModalContent>
       </MDBModalDialog>
@@ -263,8 +263,8 @@ function ModalAltaDefinitiva({ isOpen, onClose, selectedPaciente }) {
 
           </MDBModalBody>
           <MDBModalFooter>
-            <MDBBtn color='danger'>Cancelar</MDBBtn>
-            <MDBBtn onClick={handleAltaDefinitiva} >Confirmar Alta</MDBBtn>
+          <MDBBtn color='danger' onClick={handleClose}>Cancelar</MDBBtn>
+          <MDBBtn onClick={handleAltaDefinitiva} >Confirmar Alta</MDBBtn>
           </MDBModalFooter>
         </MDBModalContent>
       </MDBModalDialog>
@@ -313,7 +313,7 @@ function ModalTransferencia({ isOpen, onClose, selectedPaciente, formValue }) {
 
           </MDBModalBody>
           <MDBModalFooter>
-            <MDBBtn color='danger'>Cancelar</MDBBtn>
+            <MDBBtn color='danger' onClick={handleClose}>Cancelar</MDBBtn>
             <MDBBtn onClick={handleAuthorizeTransfer}>Autorizar transferência</MDBBtn>
           </MDBModalFooter>
         </MDBModalContent>
@@ -364,7 +364,7 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
 
   return (
     <MDBCol md='4'>
-      <MDBCard className='mb-4' style={{ borderTopLeftRadius: '30px', borderTopRightRadius: '30px', borderBottomLeftRadius: '20px', borderBottomRightRadius: '20px'}}>
+      <MDBCard className='mb-4' style={{ borderTopLeftRadius: '30px', borderTopRightRadius: '30px', borderBottomLeftRadius: '20px', borderBottomRightRadius: '20px', height: '610px', overflow: 'auto' }}>
         {/* Botões das Abas */}
         <div className="text-center mb-2"> {/* Ajuste a margem inferior */}
           <MDBBtn className="w-50" style={{ borderTopLeftRadius: '20px', borderTopRightRadius: '0px', borderBottomRightRadius: '0px', borderBottomLeftRadius: '0px' }} color={activeTab === 'pendentes' ? 'light' : 'dark'} rippleColor='dark' onClick={() => setActiveTab('pendentes')}>
@@ -407,13 +407,13 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
           </MDBListGroup>
   
           {filteredPacientes.length > postsPerPage && (
-            <div className="pag">
-              <Pagination
-                postsPerPage={postsPerPage}
-                totalPosts={searchedPacientes.length}
-                paginate={paginate}
-              />
-            </div>
+           <div className="pag text-center d-flex justify-content-center">
+           <Pagination
+             postsPerPage={postsPerPage}
+             totalPosts={searchedPacientes.length}
+             paginate={paginate}
+           />
+         </div>
           )}
         </MDBCardBody>
       </MDBCard>
@@ -679,8 +679,8 @@ function QuadroFicha({ selectedPaciente, historico }) {
         </MDBCard>
  )}
     {!selectedPaciente && (
-      <div className="text-center">
-        <p style={{ fontSize: '1.5rem' }}> Selecione um Paciente</p>
+      <div className="text-center d-flex justify-content-center align-items-center" style={{ height: '80vh' }}>
+        <p style={{ fontSize: '1.5rem' }}>Selecione um Paciente</p>
       </div>
     )}
 
