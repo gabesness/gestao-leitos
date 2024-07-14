@@ -109,7 +109,7 @@ function QuadroFicha({ selectedUser }) {
   return (
     <MDBCol md='8'>
       {selectedUser && (
-        <MDBCard style={{ borderTopLeftRadius: '20px', borderTopRightRadius: '20px', borderBottomLeftRadius: '20px', borderBottomRightRadius: '20px'}}>
+      <MDBCard style={{ borderTopLeftRadius: '20px', borderTopRightRadius: '20px', borderBottomLeftRadius: '20px', borderBottomRightRadius: '20px', height: '610px'}}>
   
           {/* Cabeçalho */}
   
