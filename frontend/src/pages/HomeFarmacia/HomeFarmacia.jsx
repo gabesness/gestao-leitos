@@ -243,7 +243,7 @@ function QuadroFicha({ selectedPaciente, historico }) {
 
       <div className="col-md-6">
       <h4>Histórico</h4>
-      <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
+      <div style={{ height: '360px', overflowY: 'auto' }}>
       {historico.map((registro, index) => {
                     const { dataFormatada, horaFormatada } = formatarData(registro.criado_em);
                     return (

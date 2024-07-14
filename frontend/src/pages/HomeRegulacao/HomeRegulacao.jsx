@@ -553,7 +553,7 @@ function QuadroFicha({ selectedPaciente, historico }) {
                     }}
                     onClick={() => handleSelectLeito(leito)}
                   />
-                  <p style={{ textAlign: 'center', fontSize: '8px' }}>Leito {leito.numero}</p>
+                  <p style={{ textAlign: 'center', fontSize: '8px' }}> {leito.numero}</p>
                 </div>
               ))}
             </div>

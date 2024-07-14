@@ -37,6 +37,8 @@ import PacienteCard from '../../components/Cards/PacienteCard';
 import HistoricoCard from '../../components/Cards/HistoricoCard';
 import CabecalhoHistorico from '../../components/Ficha/CabecalhoHistorico';
 import formatarData from '../../utils/FormatarData';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 
@@ -64,11 +66,15 @@ function ModalCriarPaciente({ isOpen, onClose }) {
     
     try {
       const response = await axios.post('http://localhost:8000/pacientes/cadastrar_paciente/', formData);
-      if (response.status === 200) {
-      window.location.href = '/pacientes';
+      if (response.status === 201) {
+      toast.success('Paciente cadastrado!');
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
       }
     } catch (error) {
       console.error('Erro ao criar paciente:', error);
+      toast.error(error.response.data.erro);
     }
   }
 
@@ -117,6 +123,7 @@ function ModalCriarPaciente({ isOpen, onClose }) {
           </MDBModalFooter>
         </MDBModalContent>
       </MDBModalDialog>
+      <ToastContainer />
     </MDBModal>
   );
 }
@@ -217,7 +224,7 @@ function QuadroFicha({ selectedPaciente, historico }) {
   return (
     <MDBCol md='8'>
       {selectedPaciente && (
-        <MDBCard style={{ borderTopLeftRadius: '20px', borderTopRightRadius: '20px', borderBottomLeftRadius: '20px', borderBottomRightRadius: '20px' }}>
+        <MDBCard style={{ borderTopLeftRadius: '20px', borderTopRightRadius: '20px', borderBottomLeftRadius: '20px', borderBottomRightRadius: '20px', height: '610px'}}>
   
           {/* Cabeçalho */}
           <CabecalhoHistorico selectedPaciente={selectedPaciente} />
@@ -251,7 +258,7 @@ function QuadroFicha({ selectedPaciente, historico }) {
   
             {/* Histórico */}
             <h4 style={{ textAlign: 'center' }}>Histórico</h4>
-            <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
+            <div style={{ height: '360px', overflowY: 'auto' }}>
             {historico.map((registro, index) => {
                     const { dataFormatada, horaFormatada } = formatarData(registro.criado_em);
                     return (
@@ -330,7 +337,7 @@ function Pacientes() {
           </MDBRow>
         </MDBCardBody>
       </MDBCard>
-
+      <ToastContainer />
     </MDBContainer>
   );
 }
