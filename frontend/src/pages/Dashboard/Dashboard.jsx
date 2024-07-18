@@ -110,7 +110,6 @@ function Dashboard() {
             </MDBDropdownMenu>
           </MDBDropdown>
         </div>
-        <hr style={{ margin: '0 10px' }} />
         <MDBCardBody className='p-5'>
           {/* Gráfico de Linhas (3 Linhas) */}
           <MDBCard className='mb-4' style={{ borderTopLeftRadius: '30px', borderTopRightRadius: '30px', borderBottomLeftRadius: '20px', borderBottomRightRadius: '20px' }}>

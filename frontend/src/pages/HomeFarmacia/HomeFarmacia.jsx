@@ -169,42 +169,34 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
   
   return (
     <MDBCol md='4'>
-      <MDBCard className='mb-4' style={{ borderTopLeftRadius: '30px', borderTopRightRadius: '30px', borderBottomLeftRadius: '20px', borderBottomRightRadius: '20px', height: '610px', overflow: 'auto'}}>
-         
-         {/* Botões das Abas */}
+      <MDBCard className='mb-4' style={{ borderTopLeftRadius: '30px', borderTopRightRadius: '30px', borderBottomLeftRadius: '20px', borderBottomRightRadius: '20px', height: '610px', overflow: 'auto' }}>
+        <MDBCardBody className="p-4">
 
-        <div className="text-center mb-4">
-        </div>
-
-        {/* Conteúdo */}
-
-        <MDBCardBody>
-
-          {/* Cabeçalho */}
-
-          <MDBInput type="text" label="Pesquisar" value={searchTerm} onChange={handleSearchChange} className="flex-grow-1" style={{ height: '40px' }} />
-          <MDBListGroup light>
+          {/* Barra de Pesquisa */}
+          <MDBInput type="text" label="Pesquisar" value={searchTerm} onChange={handleSearchChange} className="mb-3" style={{ height: '40px' }} />
 
           {/* Listagem */}
-
-          {currentPacientes.map((paciente, index) => (
+          <MDBListGroup light>
+            {currentPacientes.map((paciente, index) => (
               <PacienteCard key={index} paciente={paciente} selectedPaciente={selectedPaciente} handlePacienteClick={handlePacienteClick} />
             ))}
-
           </MDBListGroup>
+
+          {/* Paginação */}
           {pacientes.length > postsPerPage && (
-            <div className="pag text-center d-flex justify-content-center">
-            <Pagination
-              postsPerPage={postsPerPage}
-              totalPosts={searchedPacientes.length}
-              paginate={paginate}
-            />
-          </div>
+            <div className="pag text-center d-flex justify-content-center mt-3">
+              <Pagination
+                postsPerPage={postsPerPage}
+                totalPosts={searchedPacientes.length}
+                paginate={paginate}
+              />
+            </div>
           )}
         </MDBCardBody>
       </MDBCard>
     </MDBCol>
   );
+
 }
 
 function QuadroFicha({ selectedPaciente, historico }) {
@@ -379,7 +371,6 @@ function HomeFarmacia() {
     <MDBContainer fluid className='p-1 background-radial-gradient overflow-hidden d-flex justify-content-center'  style={{ minHeight: '100vh' }}>
       <MDBCard className='my-5 bg-glass max-width-card' style={{ width: '100%', maxWidth: '1200px' }}>
       <h2 style={{ marginTop: '10px', marginLeft: '10px', marginBottom: '-8px' }}>Acompanhamento</h2>
-      <hr style={{ marginBottom: '10px' }} />
       <MDBCardBody className='p-5'>
           <MDBRow>
           <QuadroLista

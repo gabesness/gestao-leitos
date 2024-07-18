@@ -366,14 +366,45 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
     <MDBCol md='4'>
       <MDBCard className='mb-4' style={{ borderTopLeftRadius: '30px', borderTopRightRadius: '30px', borderBottomLeftRadius: '20px', borderBottomRightRadius: '20px', height: '610px', overflow: 'auto' }}>
         {/* Botões das Abas */}
+        
         <div className="text-center mb-2"> {/* Ajuste a margem inferior */}
-          <MDBBtn className="w-50" style={{ borderTopLeftRadius: '20px', borderTopRightRadius: '0px', borderBottomRightRadius: '0px', borderBottomLeftRadius: '0px' }} color={activeTab === 'pendentes' ? 'light' : 'dark'} rippleColor='dark' onClick={() => setActiveTab('pendentes')}>
+  
+          <MDBBtn 
+            className="w-50" 
+            style={{ 
+              borderTopLeftRadius: '20px', 
+              borderTopRightRadius: '0px', 
+              borderBottomRightRadius: '0px', 
+              borderBottomLeftRadius: '0px',
+              boxShadow: 'none', // Remove a sombra
+              color: activeTab === 'pendentes' ? '#000000' : '#6c757d', // Texto normal quando ativado, cinza quando desativado
+              backgroundColor: activeTab === 'pendentes' ? 'white' : '#D3D3D3' // Ajuste a cor de fundo para corresponder ao estado ativo/desativado
+            }} 
+            color={activeTab === 'pendentes' ? 'white' : 'dark'} 
+            onClick={() => setActiveTab('pendentes')}
+          >
             Pendentes
           </MDBBtn>
-          <MDBBtn className="w-50" style={{ borderTopLeftRadius: '0px', borderTopRightRadius: '20px', borderBottomLeftRadius: '0px', borderBottomRightRadius: '0px' }} color={activeTab === 'internados' ? 'light' : 'dark'} onClick={() => setActiveTab('internados')}>
+
+          <MDBBtn 
+            className="w-50" 
+            style={{ 
+              borderTopLeftRadius: '0px', 
+              borderTopRightRadius: '20px', 
+              borderBottomLeftRadius: '0px', 
+              borderBottomRightRadius: '0px',
+              boxShadow: 'none', // Remove a sombra
+              color: activeTab === 'internados' ? '#000000' : '#6c757d', // Texto normal quando ativado, cinza quando desativado
+              backgroundColor: activeTab === 'internados' ? 'white' : '#D3D3D3' // Ajuste a cor de fundo para corresponder ao estado ativo/desativado
+            }} 
+            color={activeTab === 'internados' ? 'white' : 'dark'} 
+            onClick={() => setActiveTab('internados')}
+          >
             Internados
           </MDBBtn>
         </div>
+
+
   
         {/* Conteúdo */}
         <MDBCardBody>
@@ -390,7 +421,8 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
               }}
               color="primary"
             >
-              <MDBIcon fas icon="plus" />
+               <MDBIcon fas icon="plus" style={{ fontSize: '16px' }} />
+
             </MDBBtn>
           </div>
   
@@ -558,7 +590,7 @@ function QuadroFicha({ selectedPaciente, historico }) {
   return (
   <MDBCol md='8'>
   {selectedPaciente && (
-  <MDBCard style={{ borderTopLeftRadius: '20px', borderTopRightRadius: '20px', borderBottomLeftRadius: '20px', borderBottomRightRadius: '20px', height: '610px'}}>
+  <MDBCard style={{ borderTopLeftRadius: '20px', borderTopRightRadius: '20px', borderBottomLeftRadius: '20px', borderBottomRightRadius: '20px'}}>
 
     {/* Cabeçalho */}
 
@@ -662,7 +694,9 @@ function QuadroFicha({ selectedPaciente, historico }) {
     <div style={{ padding: '20px', marginTop: '10px', display: 'flex', justifyContent: 'space-between', borderTop: '1px solid rgba(0,0,0,.125)' }}>
             <div>
               {selectedPaciente.estagio_atual === 'ALTA_NORMAL' && (
-                <MDBBtn color='success' style={{ marginLeft: '10px' }}onClick={CriarSegundaPrescricao}>INICIAR NOVA SESSÃO</MDBBtn>
+                <>
+                <MDBBtn color='success' style={{ marginLeft: '10px' }} onClick={CriarSegundaPrescricao}>INICIAR NOVA SESSÃO</MDBBtn>
+              </>
               )}
               {selectedPaciente.estagio_atual === 'INTERNADO' && (
                 <>
@@ -730,7 +764,6 @@ function HomeMedico() {
     <MDBContainer fluid className='p-1 background-radial-gradient overflow-hidden d-flex justify-content-center'  style={{ minHeight: '100vh' }}>
       <MDBCard className='my-5 bg-glass max-width-card' style={{ width: '100%', maxWidth: '1200px' }}>
       <h2 style={{ marginTop: '10px', marginLeft: '10px', marginBottom: '-8px' }}>Acompanhamento</h2>
-      <hr style={{ marginBottom: '10px' }} />
       <MDBCardBody className='p-5'>
           <MDBRow>
           <QuadroLista

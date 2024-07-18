@@ -92,9 +92,9 @@ export default function Navbar() {
 
 
   return (
-    <MDBNavbar expand='lg' light bgColor='light'>
+    <MDBNavbar expand='lg' light>
       <MDBContainer fluid>
-      <MDBNavbarBrand href='#'>Sistema</MDBNavbarBrand>
+        <MDBNavbarBrand href='#'>Sistema</MDBNavbarBrand>
         {!isHomePage && (
           <>
             <MDBNavbarToggler
@@ -112,36 +112,35 @@ export default function Navbar() {
                     onClick={handleHomeClick}
                     className={location.pathname.includes('/home') ? 'active' : ''}
                   >
-                    <MDBIcon icon='home' fas style={{ fontSize: '1.2rem' }} />
+                    <MDBIcon icon='home' fas style={{ fontSize: '1.4rem' }} />
                   </MDBNavbarLink>
                 )}
-
-<MDBNavbarLink
+  
+                <MDBNavbarLink
                   href='#'
                   onClick={handlePacientesClick}
                   className={location.pathname === '/pacientes' ? 'active' : ''}
                 >
-                  <MDBIcon icon="user-friends" fas style={{ fontSize: '1.2rem' }} />
+                  <MDBIcon icon="user-friends" fas style={{ fontSize: '1.4rem' }} />
                 </MDBNavbarLink>
-                
-
+  
                 <MDBNavbarLink
                   href='#'
                   onClick={handleKanbanClick}
                   className={location.pathname === '/kanban' ? 'active' : ''}
                 >
-                  <MDBIcon icon='columns' fas style={{ fontSize: '1.2rem' }} />
+                  <MDBIcon icon='columns' fas style={{ fontSize: '1.4rem' }} />
                 </MDBNavbarLink>
-
+  
                 <MDBNavbarLink
                   href='#'
                   onClick={handleDashboardClick}
                   className={location.pathname === '/dashboard' ? 'active' : ''}
                 >
-                  <MDBIcon icon='chart-area' fas style={{ fontSize: '1.2rem' }} />
+                  <MDBIcon icon='chart-area' fas style={{ fontSize: '1.4rem' }} />
                 </MDBNavbarLink>
               </MDBNavbarNav>
-
+  
               <div className="ms-auto d-flex align-items-center">
                 <MDBNavbarNav right className="d-flex align-items-center">
                   <span style={{ fontSize: '1.2rem', marginRight: '5px' }}>{nome}</span>
@@ -152,7 +151,7 @@ export default function Navbar() {
                     <MDBIcon
                       icon='user-circle'
                       fas
-                      style={{ fontSize: '1.5rem' }}
+                      style={{ fontSize: '1.6rem' }}
                     />
                   </MDBNavbarLink>
                   <MDBNavbarLink
@@ -162,7 +161,7 @@ export default function Navbar() {
                     <MDBIcon
                       icon='sign-out-alt'
                       fas
-                      style={{ fontSize: '1.2rem' }}
+                      style={{ fontSize: '1.4rem' }}
                     />
                   </MDBNavbarLink>
                 </MDBNavbarNav>
@@ -173,4 +172,5 @@ export default function Navbar() {
       </MDBContainer>
     </MDBNavbar>
   );
+  
 }
