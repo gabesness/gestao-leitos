@@ -166,7 +166,7 @@ function Kanban() {
   return (
     <MDBContainer fluid className='p-1 background-radial-gradient overflow-hidden d-flex justify-content-center'  style={{ minHeight: '100vh' }}>
       <MDBCard className='my-5 bg-glass max-width-card' style={{ width: '100%', maxWidth: '1200px' }}>
-        <h2 style={{ marginTop: '10px', marginLeft: '10px', marginBottom: '-8px' }}>Acompanhamento</h2>
+      <h2 style={{ marginTop: '15px', marginLeft: '50px', marginBottom: '10px' }}>Kanban</h2>
         <MDBCardBody className='p-3'>
           <MDBRow className='g-2'>
             {/* Coluna de Médico */}

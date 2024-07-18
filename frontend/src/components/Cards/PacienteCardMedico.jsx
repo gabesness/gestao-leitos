@@ -9,7 +9,7 @@ function PacienteCardMedico({ paciente, selectedPaciente, handlePacienteClick })
     tagContent = 'Nova';
     tagColor = 'primary';
   } else if (paciente.estagio_atual === 'DEVOLVIDO_PELA_FARMACIA') {
-    tagContent = 'Da Farmácia';
+    tagContent = 'Farmácia';
     tagColor = 'success';
   } else if (paciente.estagio_atual === 'DEVOLVIDO_PELA_REGULACAO') {
     tagContent = 'Transferência';
@@ -32,8 +32,8 @@ function PacienteCardMedico({ paciente, selectedPaciente, handlePacienteClick })
       </div>
       {tagContent && (
         <span className={`badge bg-${tagColor} me-2`}>
-          {tagContent === 'Nova' && <MDBIcon far icon="file-alt" className="me-1" />}
-          {tagContent === 'Da Farmácia' && <MDBIcon fas icon="undo-alt" className="me-1" />}
+          {tagContent === 'Nova' && <MDBIcon fas icon="plus-circle" className="me-1" />}
+          {tagContent === 'Farmácia' && <MDBIcon fas icon="pills" className="me-1" />}
           {tagContent === 'Transferência' && <MDBIcon fas icon="exchange-alt" className="me-1" />}
           {tagContent === 'Internado' && <MDBIcon fas icon="bed" className="me-1" />}
           {tagContent}
