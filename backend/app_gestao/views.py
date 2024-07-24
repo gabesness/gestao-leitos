@@ -26,9 +26,6 @@ class PacienteViewSet(GenericViewSet):
         queryset = self.get_queryset()
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
-        queryset = self.get_object()
-        serializer = self.get_serializer(queryset)
-        return Response(serializer.data)
 
     @extend_schema(
         summary="Pacientes do médico",
@@ -67,7 +64,6 @@ class PacienteViewSet(GenericViewSet):
             'ENCAMINHADO_PARA_AGENDAMENTO',
             'AGENDADO',
             'AUTORIZADO_PARA_TRANSFERENCIA',
-            'ALTA_NORMAL',
             ]
         queryset = self.get_queryset().filter(estagio_atual__in=estagios)
         serializer = self.get_serializer(queryset, many=True)
@@ -80,12 +76,15 @@ class PacienteViewSet(GenericViewSet):
     @action(detail=False, methods=['POST'])
     def cadastrar_paciente(self, request):
         try:
+            paciente = Paciente.objects.get(prontuario=request.data['prontuario'])
+            return Response({'Erro': 'Já existe paciente cadastrado com este prontuário!'}, status=status.HTTP_400_BAD_REQUEST)
+        except Paciente.DoesNotExist:
             serializer = self.get_serializer(data=request.data)
             if serializer.is_valid(raise_exception=True):
                 serializer.save()
                 return Response({'OK': 'Paciente cadastrado com sucesso!'}, status=status.HTTP_201_CREATED)
             else:
-                return Response(status=status.HTTP_400_BAD_REQUEST)
+                return Response({'Erro': 'Dados inválidos, tente novamente.'}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response({'error': str(e)})
         
@@ -174,7 +173,7 @@ class PrescricaoViewSet(GenericViewSet):
                     serializer.atualizar_estagio(obj=paciente, usuario=user, estagio='PRESCRICAO_CRIADA', mensagem='Prescrição criada!')
                     return Response(status=status.HTTP_204_NO_CONTENT)
                 else:
-                    return Response({'erro': 'estagio_atual inválido'},status=status.HTTP_400_BAD_REQUEST)
+                    return Response({'erro': 'Já existe prescrição para este paciente!'},status=status.HTTP_400_BAD_REQUEST)
             else: raise User.DoesNotExist
         except Paciente.DoesNotExist: return Response({'erro': 'Paciente não encontrado'}, status=status.HTTP_400_BAD_REQUEST)
         except User.DoesNotExist: return Response({'erro': 'Usuário não encontrado'}, status=status.HTTP_404_NOT_FOUND)
@@ -235,9 +234,9 @@ class PrescricaoViewSet(GenericViewSet):
                         plano_terapeutico = plano_serializer.update(obj=Plano_terapeutico.objects.get(id=plano_serializer['id']), validated_data=plano_json)
                 
                     paciente_serializer.atualizar_estagio(obj=paciente, usuario=user, estagio='ENCAMINHADO_PARA_FARMACIA', mensagem=request.data['mensagem'])
-                    return Response({'OK': 'Plano terapeutico criado e paciente encaminhado aa Farmacia'}, status=status.HTTP_200_OK)
+                    return Response({'OK': 'Plano terapêutico criado e paciente encaminhado à Farmacia'}, status=status.HTTP_200_OK)
                 else:
-                    return Response({'erro': 'estagio_atual invalido'}, status=status.HTTP_400_BAD_REQUEST)
+                    return Response({'erro': 'Paciente já foi encaminhado à farmácia!'}, status=status.HTTP_400_BAD_REQUEST)
             else: raise User.DoesNotExist
         except User.DoesNotExist: return Response({'Erro': 'Usuário inválido'}, status=status.HTTP_401_UNAUTHORIZED)
         except Exception as e: return Response({'Erro': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -309,20 +308,28 @@ class PrescricaoViewSet(GenericViewSet):
             paciente = self.get_object()
             serializer = self.get_serializer(paciente)
             user = User.objects.get(id=request.data['id_usuario'])
-            if user:
-                if serializer.data['estagio_atual'] == 'ENCAMINHADO_PARA_AGENDAMENTO':
-                    serializer.alocar_leito(obj=paciente, id_leito=id_leito)
-                    serializer.atualizar_estagio(
-                        obj=paciente,
-                        usuario=user,
-                        estagio='AGENDADO',
-                        mensagem=f"Paciente agendado para internação."
-                        )
-                    return Response({'OK': 'Agendado com sucesso'}, status=status.HTTP_200_OK)
-                else:
-                    return Response({'erro': 'estagio_atual inválido'}, status=status.HTTP_400_BAD_REQUEST)
-            else: raise User.DoesNotExist
+            if id_leito is None:
+                raise Leito.DoesNotExist
+            else:
+                leito = Leito.objects.get(id=id_leito)
+                if user:
+                    if serializer.data['estagio_atual'] == 'ENCAMINHADO_PARA_AGENDAMENTO':
+                        if leito.ocupado:
+                            return Response({'Erro': 'Este leito já está ocupado!'}, status=status.HTTP_400_BAD_REQUEST)
+                        else:
+                            serializer.alocar_leito(obj=paciente, id_leito=id_leito)
+                            serializer.atualizar_estagio(
+                                obj=paciente,
+                                usuario=user,
+                                estagio='AGENDADO',
+                                mensagem=f"Paciente {paciente.nome} agendado para internação."
+                                )
+                            return Response({'OK': 'Agendado com sucesso'}, status=status.HTTP_200_OK)
+                    else:
+                        return Response({'erro': 'estagio_atual inválido'}, status=status.HTTP_400_BAD_REQUEST)
+                else: raise User.DoesNotExist
         except User.DoesNotExist: return Response({'Erro': 'Usuário inválido'}, status=status.HTTP_401_UNAUTHORIZED)
+        except Leito.DoesNotExist: return Response({'Erro': 'Nenhum leito selecionado'}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response({'Erro': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -441,8 +448,11 @@ class PrescricaoViewSet(GenericViewSet):
             user = User.objects.get(id=request.data['id_usuario'])
             if user:
                 if serializer.data['estagio_atual'] == 'ENCAMINHADO_PARA_FARMACIA':
-                    serializer.atualizar_estagio(obj=paciente, usuario=user, estagio='DEVOLVIDO_PELA_FARMACIA', mensagem=request.data['mensagem'])
-                    return Response({'OK': 'devolvido com sucesso'}, status=status.HTTP_204_NO_CONTENT)
+                    if request.data['mensagem'] == '':
+                        return Response({'Erro': 'O campo "mensagem" precisa ser preenchido'}, status=status.HTTP_400_BAD_REQUEST)
+                    else:
+                        serializer.atualizar_estagio(obj=paciente, usuario=user, estagio='DEVOLVIDO_PELA_FARMACIA', mensagem=request.data['mensagem'])
+                        return Response({'OK': 'devolvido com sucesso'}, status=status.HTTP_204_NO_CONTENT)
                 else:
                     return Response({'erro': 'estagio_atual invalido'}, status=status.HTTP_400_BAD_REQUEST)
             else: raise User.DoesNotExist
