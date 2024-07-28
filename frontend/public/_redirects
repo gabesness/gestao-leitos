@@ -1,0 +1,7 @@
+/pacientes/*  http://54.207.17.232:8000/pacientes/:splat  200
+/leitos/*     http://54.207.17.232:8000/leitos/:splat     200
+/prescricoes/* http://54.207.17.232:8000/prescricoes/:splat 200
+/usuarios/*   http://54.207.17.232:8000/usuarios/:splat   200
+
+# Fallback for SPA routing
+/*  /index.html  200

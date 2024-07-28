@@ -183,6 +183,7 @@ function HomeAdm() {
     const fetchUsuarios = async () => {
       try {
         const response = await axios.get(`${AxiosURL}/usuarios/lista/`);
+
         setUsuarios(response.data);
       } catch (error) {
         console.error("Erro ao buscar os usuários:", error);
