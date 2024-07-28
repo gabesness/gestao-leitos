@@ -163,53 +163,82 @@ function QuadroLista({ pacientes, selectedPaciente, handlePacienteClick, }) {
 
   return (
     <MDBCol md='4'>
-      <MDBCard className='mb-4' style={{ borderTopLeftRadius: '30px', borderTopRightRadius: '30px', borderBottomLeftRadius: '20px', borderBottomRightRadius: '20px', height: '610px', overflow: 'auto'}}>
-
+      <MDBCard
+        className='mb-4'
+        style={{
+          borderTopLeftRadius: '30px',
+          borderTopRightRadius: '30px',
+          borderBottomLeftRadius: '20px',
+          borderBottomRightRadius: '20px',
+          height: '610px',
+          overflow: 'auto',
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
         {/* Conteúdo */}
-        <MDBCardBody>
+        <MDBCardBody
+          className="d-flex flex-column"
+          style={{ flex: '1 1 auto', minHeight: '0' }}
+        >
           {/* Cabeçalho */}
-
           <div className="d-flex align-items-center mb-3">
-          <MDBInput type="text" label="Pesquisar" value={searchTerm} onChange={handleSearchChange} className="flex-grow-1" style={{ height: '40px' }} />
+            <MDBInput
+              type="text"
+              label={
+                <div className="d-flex align-items-center">
+                  <MDBIcon fas icon="search" className="me-2" />
+                  Pesquisar
+                </div>
+              }
+              value={searchTerm}
+              onChange={handleSearchChange}
+              className="flex-grow-1"
+              style={{ height: '40px' }}
+            />
             {cargo === 'Recepção' || cargo === 'Regulação' ? (
               <MDBBtn
-              onClick={toggleOpen}
-              className="ms-2 d-flex justify-content-center align-items-center btn-sm"
-              style={{
-                minWidth: '40px',
-                height: '40px',
-                margin: '0',
-              }}
-              color="primary"
-            >
-               <MDBIcon fas icon="plus" style={{ fontSize: '16px' }} />
-               </MDBBtn>
+                onClick={toggleOpen}
+                className="ms-2 d-flex justify-content-center align-items-center btn-sm"
+                style={{
+                  minWidth: '40px',
+                  height: '40px',
+                  margin: '0',
+                }}
+                color="primary"
+              >
+                <MDBIcon fas icon="plus" style={{ fontSize: '16px' }} />
+              </MDBBtn>
             ) : null}
           </div>
-          
-          <MDBListGroup light>
-
-          {/* Listagem */}
-
-          {currentPacientes.map((paciente, index) => (
-              <PacienteCard key={index} paciente={paciente} selectedPaciente={selectedPaciente} handlePacienteClick={handlePacienteClick} />
+  
+          <MDBListGroup light style={{ flex: '1 1 auto', overflowY: 'auto' }}>
+            {/* Listagem */}
+            {currentPacientes.map((paciente, index) => (
+              <PacienteCard
+                key={index}
+                paciente={paciente}
+                selectedPaciente={selectedPaciente}
+                handlePacienteClick={handlePacienteClick}
+              />
             ))}
-
           </MDBListGroup>
+  
           {pacientes.length > postsPerPage && (
-            <div className="pag text-center d-flex justify-content-center">
-           <Pagination
-             postsPerPage={postsPerPage}
-             totalPosts={searchedPacientes.length}
-             paginate={paginate}
-           />
-         </div>
+            <div className="pag text-center d-flex justify-content-center mt-auto">
+              <Pagination
+                postsPerPage={postsPerPage}
+                totalPosts={searchedPacientes.length}
+                paginate={paginate}
+              />
+            </div>
           )}
         </MDBCardBody>
       </MDBCard>
       <ModalCriarPaciente isOpen={basicModal} onClose={toggleOpen} />
     </MDBCol>
   );
+  
 }
 
 function QuadroFicha({ selectedPaciente, historico }) {

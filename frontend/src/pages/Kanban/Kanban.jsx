@@ -85,6 +85,7 @@ function ModalFicha({ isOpen, onClose, selectedPaciente, historico}) {
                     label="Medicamentos" 
                     id="textAreaExample" 
                     rows={4} 
+                    style={{ resize: 'none' }}
                     className="mb-3" 
                     value={medicamentos}
                     disabled 

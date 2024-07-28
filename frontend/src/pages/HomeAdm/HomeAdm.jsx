@@ -59,44 +59,64 @@ function QuadroLista({ usuarios, activeTab, selectedUser, handleUserClick, setAc
 
   const currentUsuarios = searchedUsuarios.slice(indexOfFirstPost, indexOfLastPost);
 
-
   return (
     <MDBCol md='4'>
-      <MDBCard className='mb-4' style={{ borderTopLeftRadius: '30px', borderTopRightRadius: '30px', borderBottomLeftRadius: '20px', borderBottomRightRadius: '20px', height: '610px', overflow: 'auto'}}>
-         
-         {/* Botões das Abas */}
-
-
+      <MDBCard
+        className='mb-4'
+        style={{
+          borderTopLeftRadius: '30px',
+          borderTopRightRadius: '30px',
+          borderBottomLeftRadius: '20px',
+          borderBottomRightRadius: '20px',
+          height: '610px',
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
         {/* Conteúdo */}
-
-        <MDBCardBody>
-
+        <MDBCardBody className="p-4 d-flex flex-column" style={{ flex: '1 1 auto', minHeight: '0' }}>
           {/* Cabeçalho */}
-
-          <MDBInput type="text" label="Pesquisar" value={searchTerm} onChange={handleSearchChange} className="flex-grow-1" style={{ height: '40px' }} />
-          <MDBListGroup light>
-
+          <MDBInput
+            type="text"
+            label={
+              <div className="d-flex align-items-center">
+                <MDBIcon fas icon="search" className="me-2" />
+                Pesquisar
+              </div>
+            }
+            value={searchTerm}
+            onChange={handleSearchChange}
+            className="flex-grow-1 mb-3"
+            style={{ height: '32px' }}
+          />
+  
           {/* Listagem */}
-
-          {currentUsuarios.map((usuario, index) => (
-              <UsuarioCard key={index} user={usuario} selectedUser={selectedUser} handleUserClick={handleUserClick} />
+          <MDBListGroup light style={{ flex: '1 1 auto', overflowY: 'auto' }}>
+            {currentUsuarios.map((usuario, index) => (
+              <UsuarioCard
+                key={index}
+                user={usuario}
+                selectedUser={selectedUser}
+                handleUserClick={handleUserClick}
+              />
             ))}
-
           </MDBListGroup>
+  
+          {/* Paginação */}
           {usuarios.length > postsPerPage && (
-            <div className="pag text-center d-flex justify-content-center">
-            <Pagination
-              postsPerPage={postsPerPage}
-              totalPosts={searchedUsuarios.length}
-              paginate={paginate}
-            />
-          </div>
+            <div className="pag text-center d-flex justify-content-center mt-auto">
+              <Pagination
+                postsPerPage={postsPerPage}
+                totalPosts={searchedUsuarios.length}
+                paginate={paginate}
+              />
+            </div>
           )}
         </MDBCardBody>
       </MDBCard>
-
     </MDBCol>
   );
+  
 }
 
 function QuadroFicha({ selectedUser }) {

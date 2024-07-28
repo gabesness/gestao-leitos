@@ -143,8 +143,8 @@ export default function Navbar() {
   
               <div className="ms-auto d-flex align-items-center">
                 <MDBNavbarNav right className="d-flex align-items-center">
-                  <span style={{ fontSize: '1.2rem', marginRight: '5px' }}>{nome}</span>
-                  <MDBNavbarLink
+                <span style={{ fontSize: '1.2rem', marginRight: '5px', color: '#0000008C' }}>{nome}</span>
+                <MDBNavbarLink
                     style={{ cursor: 'pointer' }}
                     onClick={handleMinhaContaClick}
                   >

@@ -31,7 +31,7 @@ function PacienteCardMedico({ paciente, selectedPaciente, handlePacienteClick })
         Prontuário: {paciente.prontuario}
       </div>
       {tagContent && (
-        <span className={`badge bg-${tagColor} me-2`}>
+      <span className={`badge bg-${tagColor} rounded-pill me-2`}>
           {tagContent === 'Nova' && <MDBIcon fas icon="plus-circle" className="me-1" />}
           {tagContent === 'Farmácia' && <MDBIcon fas icon="pills" className="me-1" />}
           {tagContent === 'Transferência' && <MDBIcon fas icon="exchange-alt" className="me-1" />}

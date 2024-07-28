@@ -331,63 +331,89 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
 
   const currentPacientes = searchedPacientes.slice(indexOfFirstPost, indexOfLastPost);
 
- return (
+  return (
     <MDBCol md='4'>
-      <MDBCard className='mb-4' style={{ borderTopLeftRadius: '30px', borderTopRightRadius: '30px', borderBottomLeftRadius: '20px', borderBottomRightRadius: '20px', height: '610px', overflow: 'auto' }}>
-         
+      <MDBCard
+        className='mb-4'
+        style={{
+          borderTopLeftRadius: '30px',
+          borderTopRightRadius: '30px',
+          borderBottomLeftRadius: '20px',
+          borderBottomRightRadius: '20px',
+          height: '610px',
+          overflow: 'auto',
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
         {/* Botões das Abas */}
-
-        <div className="text-center mb-2"> {/* Ajuste a margem inferior */}
-  
-          <MDBBtn 
-            className="w-50" 
-            style={{ 
-              borderTopLeftRadius: '20px', 
-              borderTopRightRadius: '0px', 
-              borderBottomRightRadius: '0px', 
+        <div className="text-center mb-2">
+          <MDBBtn
+            className="w-50"
+            style={{
+              borderTopLeftRadius: '20px',
+              borderTopRightRadius: '0px',
+              borderBottomRightRadius: '0px',
               borderBottomLeftRadius: '0px',
-              boxShadow: 'none', // Remove a sombra
-              color: activeTab === 'pendentes' ? '#000000' : '#6c757d', // Texto normal quando ativado, cinza quando desativado
-              backgroundColor: activeTab === 'pendentes' ? 'white' : '#D3D3D3' // Ajuste a cor de fundo para corresponder ao estado ativo/desativado
-            }} 
-            color={activeTab === 'pendentes' ? 'white' : 'dark'} 
+              boxShadow: 'none',
+              color: activeTab === 'pendentes' ? '#000000' : '#6c757d',
+              backgroundColor: activeTab === 'pendentes' ? 'white' : '#D3D3D3'
+            }}
+            color={activeTab === 'pendentes' ? 'white' : 'dark'}
             onClick={() => setActiveTab('pendentes')}
           >
             Pendentes
           </MDBBtn>
-
-          <MDBBtn 
-            className="w-50" 
-            style={{ 
-              borderTopLeftRadius: '0px', 
-              borderTopRightRadius: '20px', 
-              borderBottomLeftRadius: '0px', 
+  
+          <MDBBtn
+            className="w-50"
+            style={{
+              borderTopLeftRadius: '0px',
+              borderTopRightRadius: '20px',
+              borderBottomLeftRadius: '0px',
               borderBottomRightRadius: '0px',
-              boxShadow: 'none', // Remove a sombra
-              color: activeTab === 'agendados' ? '#000000' : '#6c757d', // Texto normal quando ativado, cinza quando desativado
-              backgroundColor: activeTab === 'agendados' ? 'white' : '#D3D3D3' // Ajuste a cor de fundo para corresponder ao estado ativo/desativado
-            }} 
-            color={activeTab === 'agendados' ? 'white' : 'dark'} 
+              boxShadow: 'none',
+              color: activeTab === 'agendados' ? '#000000' : '#6c757d',
+              backgroundColor: activeTab === 'agendados' ? 'white' : '#D3D3D3'
+            }}
+            color={activeTab === 'agendados' ? 'white' : 'dark'}
             onClick={() => setActiveTab('agendados')}
           >
             Agendados
           </MDBBtn>
         </div>
-
+  
         {/* Conteúdo */}
-        <MDBCardBody className="p-2">
-
+        <MDBCardBody className="p-2 d-flex flex-column" style={{ flex: '1 1 auto', minHeight: '0' }}>
           {/* Cabeçalho */}
-          <MDBInput type="text" label="Pesquisar" value={searchTerm} onChange={handleSearchChange} className="flex-grow-1 mb-2 mt-0" style={{ height: '40px' }} />
-
+          <MDBInput
+            type="text"
+            label={
+              <div className="d-flex align-items-center">
+                <MDBIcon fas icon="search" className="me-2" />
+                Pesquisar
+              </div>
+            }
+            value={searchTerm}
+            onChange={handleSearchChange}
+            className="flex-grow-1 mb-2 mt-0"
+            style={{ height: '32px' }}
+          />
           {/* Listagem */}
-          <MDBListGroup light>
+          <MDBListGroup light style={{ flex: '1 1 auto', overflowY: 'auto' }}>
             {currentPacientes.map((paciente, index) => (
-              <PacienteRegulacaoCard key={index} paciente={paciente} selectedPaciente={selectedPaciente} handlePacienteClick={handlePacienteClick} />
+              <PacienteRegulacaoCard
+                key={index}
+                paciente={paciente}
+                selectedPaciente={selectedPaciente}
+                handlePacienteClick={handlePacienteClick}
+              />
             ))}
           </MDBListGroup>
+  
+          {/* Paginação */}
           {searchedPacientes.length > postsPerPage && (
-            <div className="pag text-center d-flex justify-content-center mt-2">
+            <div className="pag text-center d-flex justify-content-center mt-auto">
               <Pagination
                 postsPerPage={postsPerPage}
                 totalPosts={searchedPacientes.length}
@@ -399,6 +425,7 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
       </MDBCard>
     </MDBCol>
   );
+  
 }
 
 function QuadroFicha({ selectedPaciente, historico }) {
@@ -595,6 +622,7 @@ function QuadroFicha({ selectedPaciente, historico }) {
                     label="Observações" 
                     id="textAreaExample" 
                     rows={4}
+                    style={{ resize: 'none' }}
                     name="mensagem"
                     value={formValue.mensagem} 
                     onChange={onChange}
