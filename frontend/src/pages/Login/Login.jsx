@@ -121,6 +121,7 @@ function Login() {
               color='tertiary'
               rippleColor='light'
               onClick={handleConvidadoLogin}
+              disabled
             >
               Esqueci minha senha
             </MDBBtn>

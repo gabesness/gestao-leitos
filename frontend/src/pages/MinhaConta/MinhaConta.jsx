@@ -72,7 +72,7 @@ function QuadroFicha({ selectedUser }) {
 
       <div style={{ padding: '20px', marginTop: '10px', display: 'flex', justifyContent: 'space-between', borderTop: '1px solid rgba(0,0,0,.125)' }}>
       <div>
-        <MDBBtn style={{ marginLeft: '10px' }}>ALTERAR</MDBBtn>
+        <MDBBtn style={{ marginLeft: '10px' }} disabled>ALTERAR</MDBBtn>
       </div>
     </div>
 

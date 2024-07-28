@@ -486,7 +486,7 @@ function QuadroFicha({ selectedPaciente, historico }) {
   useEffect(() => {
     const fetchLeitos = async () => {
       try {
-        const response = await axios.get('${AxiosURL}/leitos/lista/');
+        const response = await axios.get(`${AxiosURL}/leitos/lista/`);
         setLeitos(response.data);
         console.log(response.data);
 
