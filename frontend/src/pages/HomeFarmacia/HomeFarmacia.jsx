@@ -47,7 +47,7 @@ function ModalDevolverMedico({ isOpen, onClose, selectedPaciente, formValue }) {
     if (!selectedPaciente) return;
   
     try {
-      const response = await axios.patch(`http://localhost:8000/prescricoes/${selectedPaciente.id}/devolver_farmacia/`, {
+      const response = await axios.patch(`http://18.230.66.70:8000/prescricoes/${selectedPaciente.id}/devolver_farmacia/`, {
         id_usuario: localStorage.getItem('idUser'),
         mensagem: formValue.mensagem  // Incluir a mensagem no corpo da requisição
       });
@@ -98,7 +98,7 @@ function ModalEnviarRegulacao({ isOpen, onClose, selectedPaciente, formValue }) 
     if (!selectedPaciente) return;
   
     try {
-      const response = await axios.patch(`http://localhost:8000/prescricoes/${selectedPaciente.id}/encaminhar_agendamento/`, {
+      const response = await axios.patch(`http://18.230.66.70:8000/prescricoes/${selectedPaciente.id}/encaminhar_agendamento/`, {
         id_usuario: localStorage.getItem('idUser'),
         mensagem: formValue.mensagem  // Incluir a mensagem no corpo da requisição
       });
@@ -355,7 +355,7 @@ function HomeFarmacia() {
   useEffect(() => {
     const fetchPacientes = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/pacientes/lista_farmacia/');
+        const response = await axios.get('http://18.230.66.70:8000/pacientes/lista_farmacia/');
         setPacientes(response.data);
       } catch (error) {
         console.error("Erro ao buscar os usuários:", error);
@@ -367,7 +367,7 @@ function HomeFarmacia() {
   const handlePacienteClick = async (paciente) => {
     setSelectedPaciente(paciente);
     try {
-      const response = await axios.get(`http://localhost:8000/pacientes/${paciente.id}/historico_atual/`);
+      const response = await axios.get(`http://18.230.66.70:8000/pacientes/${paciente.id}/historico_atual/`);
       setHistorico(response.data);
       console.log('Histórico do paciente:', response.data);
     } catch (error) {

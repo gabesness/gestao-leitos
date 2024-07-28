@@ -29,7 +29,7 @@ function Login() {
     formData.append('password', formValue.password);
     
     try {
-      const response = await axios.post('http://localhost:8000/usuarios/login/', formData);
+      const response = await axios.post('http://18.230.66.70:8000/usuarios/login/', formData);
       if (response.status === 200) {
       localStorage.setItem('idUser', response.data.id);
       localStorage.setItem('nome', response.data.nome);

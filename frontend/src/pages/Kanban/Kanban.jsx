@@ -137,7 +137,7 @@ function Kanban() {
   useEffect(() => {
     const fetchPacientes = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/pacientes/lista/');
+        const response = await axios.get('http://18.230.66.70:8000/pacientes/lista/');
         setPacientes(response.data);
       } catch (error) {
         console.error("Erro ao buscar os usuários:", error);
@@ -150,7 +150,7 @@ function Kanban() {
     setSelectedPaciente(paciente);
     toggleOpen();
     try {
-      const response = await axios.get(`http://localhost:8000/pacientes/${paciente.id}/historico_atual/`);
+      const response = await axios.get(`http://18.230.66.70:8000/pacientes/${paciente.id}/historico_atual/`);
       setHistorico(response.data);
       console.log('Histórico do paciente:', response.data);
     } catch (error) {
