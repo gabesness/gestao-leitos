@@ -71,7 +71,9 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    '*'
+    'http://localhost:3000',
+    'https://oncohu.netlify.app',
+    'https://oncohu.netlify.app:3000'
 ]
 
 CORS_ALLOWED_CREDENTIALS = True
@@ -80,7 +82,9 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 
 CSRF_ALLOWED_ORIGINS = [
-    '*'
+    'http://localhost:3000',
+    'https://oncohu.netlify.app',
+    'https://oncohu.netlify.app:3000',
 ]
 
 
