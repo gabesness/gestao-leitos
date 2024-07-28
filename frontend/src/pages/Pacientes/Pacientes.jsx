@@ -63,7 +63,7 @@ function ModalCriarPaciente({ isOpen, onClose }) {
     formData.append('prontuario', formValue.prontuario);
     
     try {
-      const response = await axios.post('http://18.230.66.70:8000/pacientes/cadastrar_paciente/', formData);
+      const response = await axios.post('http://54.207.17.232:8000/pacientes/cadastrar_paciente/', formData);
       if (response.status === 200) {
       window.location.href = '/pacientes';
       }
@@ -288,7 +288,7 @@ function Pacientes() {
   useEffect(() => {
     const fetchPacientes = async () => {
       try {
-        const response = await axios.get('http://18.230.66.70:8000/pacientes/lista/');
+        const response = await axios.get('http://54.207.17.232:8000/pacientes/lista/');
         setPacientes(response.data);
       } catch (error) {
         console.error("Erro ao buscar os usuários:", error);
@@ -300,7 +300,7 @@ function Pacientes() {
   const handlePacienteClick = async (paciente) => {
     setselectedPaciente(paciente);
     try {
-      const response = await axios.get(`http://18.230.66.70:8000/pacientes/${paciente.id}/historico_completo/`);
+      const response = await axios.get(`http://54.207.17.232:8000/pacientes/${paciente.id}/historico_completo/`);
       setHistorico(response.data);
       console.log('Histórico do paciente:', response.data);
     } catch (error) {

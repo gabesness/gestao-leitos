@@ -76,7 +76,7 @@ export default function Navbar() {
 
   const handleSignOutClick = async () => {
     try {
-      const response = await axios.post('http://18.230.66.70:8000/usuarios/logout/');
+      const response = await axios.post('http://54.207.17.232:8000/usuarios/logout/');
       if (response.status === 200) {
         localStorage.clear();
         window.location.href = '/'; 

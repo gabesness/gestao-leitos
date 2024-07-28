@@ -162,7 +162,7 @@ function HomeAdm() {
   useEffect(() => {
     const fetchUsuarios = async () => {
       try {
-        const response = await axios.get('http://18.230.66.70:8000/usuarios/lista/');
+        const response = await axios.get('http://54.207.17.232:8000/usuarios/lista/');
         setUsuarios(response.data);
       } catch (error) {
         console.error("Erro ao buscar os usuários:", error);
