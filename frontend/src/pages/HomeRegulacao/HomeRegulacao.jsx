@@ -38,6 +38,7 @@ import HistoricoCard from '../../components/Cards/HistoricoCard';
 import CabecalhoPaciente from '../../components/Ficha/CabecalhoPaciente';
 import formatarData from '../../utils/FormatarData';
 import { ToastContainer, toast } from 'react-toastify';
+import { AxiosURL } from '../../axios/Config';
 import 'react-toastify/dist/ReactToastify.css';
 
 
@@ -47,7 +48,7 @@ function ModalDevolverMedico({ isOpen, onClose, selectedPaciente, formValue }) {
     if (!selectedPaciente) return;
 
     try {
-      const response = await axios.patch(`http://localhost:8000/prescricoes/${selectedPaciente.id}/devolver_regulacao/`, {
+      const response = await axios.patch(`${AxiosURL}/prescricoes/${selectedPaciente.id}/devolver_regulacao/`, {
         id_usuario: localStorage.getItem('idUser'),
         mensagem: formValue.mensagem  // Incluir a mensagem no corpo da requisição
       });
@@ -102,7 +103,7 @@ function ModalAgendamento({ isOpen, onClose, selectedPaciente, selectedLeito, fo
     if (!selectedPaciente) return;
 
     try {
-      const response = await axios.patch(`http://localhost:8000/prescricoes/${selectedPaciente.id}/agendar_paciente/${selectedLeito.id}/`, {
+      const response = await axios.patch(`${AxiosURL}/prescricoes/${selectedPaciente.id}/agendar_paciente/${selectedLeito.id}/`, {
         id_usuario: localStorage.getItem('idUser'),
         mensagem: formValue.mensagem  // Incluir a mensagem no corpo da requisição
       });
@@ -155,7 +156,7 @@ function ModalInternacao({ isOpen, onClose, selectedPaciente }) {
     if (!selectedPaciente) return;
 
     try {
-      const response = await axios.patch(`http://localhost:8000/prescricoes/${selectedPaciente.id}/internar/`, {
+      const response = await axios.patch(`${AxiosURL}/prescricoes/${selectedPaciente.id}/internar/`, {
         id_usuario: localStorage.getItem('idUser'),
       });
       console.log("Prescrição devolvida com sucesso:", response.data);
@@ -205,7 +206,7 @@ function ModalTransferencia({ isOpen, onClose, selectedPaciente, formValue }) {
     if (!selectedPaciente) return;
 
     try {
-      const response = await axios.patch(`http://localhost:8000/prescricoes/${selectedPaciente.id}/transferir/`, {
+      const response = await axios.patch(`${AxiosURL}/prescricoes/${selectedPaciente.id}/transferir/`, {
         id_usuario: localStorage.getItem('idUser'),
         mensagem: formValue.mensagem  
       });
@@ -255,7 +256,7 @@ function ModalAltaObito({ isOpen, onClose, selectedPaciente }) {
       if (!selectedPaciente) return;
   
       try {
-        const response = await axios.patch(`http://localhost:8000/prescricoes/${selectedPaciente.id}/dar_alta/2/`, {
+        const response = await axios.patch(`${AxiosURL}/prescricoes/${selectedPaciente.id}/dar_alta/2/`, {
           id_usuario: localStorage.getItem('idUser'),
         });
         toast.success('Prescrição atualizada!');
@@ -485,7 +486,7 @@ function QuadroFicha({ selectedPaciente, historico }) {
   useEffect(() => {
     const fetchLeitos = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/leitos/lista/');
+        const response = await axios.get('${AxiosURL}/leitos/lista/');
         setLeitos(response.data);
         console.log(response.data);
 
@@ -675,7 +676,7 @@ function HomeRegulacao() {
   useEffect(() => {
     const fetchPacientes = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/pacientes/lista_regulacao/');
+        const response = await axios.get(`${AxiosURL}/pacientes/lista_regulacao/`);
         setPacientes(response.data);
       } catch (error) {
         console.error("Erro ao buscar os usuários:", error);
@@ -687,7 +688,7 @@ function HomeRegulacao() {
   const handlePacienteClick = async (paciente) => {
     setSelectedPaciente(paciente);
     try {
-      const response = await axios.get(`http://localhost:8000/pacientes/${paciente.id}/historico_atual/`);
+      const response = await axios.get(`${AxiosURL}/pacientes/${paciente.id}/historico_atual/`);
       setHistorico(response.data);
       console.log('Histórico do paciente:', response.data);
     } catch (error) {

@@ -12,6 +12,7 @@ import {
 } from 'mdb-react-ui-kit';
 import './Login.css';
 import { ToastContainer, toast } from 'react-toastify';
+import { AxiosURL } from '../../axios/Config';
 import 'react-toastify/dist/ReactToastify.css';
 
 function Login() {
@@ -32,7 +33,7 @@ function Login() {
     formData.append('password', formValue.password);
     
     try {
-      const response = await axios.post('http://localhost:8000/usuarios/login/', formData);
+      const response = await axios.post(`${AxiosURL}/usuarios/login/`, formData);
       if (response.status === 200) {
       localStorage.setItem('idUser', response.data.id);
       localStorage.setItem('nome', response.data.nome);

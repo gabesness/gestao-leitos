@@ -37,6 +37,7 @@ import PacienteCard from '../../components/Cards/PacienteCard';
 import HistoricoCard from '../../components/Cards/HistoricoCard';
 import CabecalhoHistorico from '../../components/Ficha/CabecalhoHistorico';
 import formatarData from '../../utils/FormatarData';
+import { AxiosURL } from '../../axios/Config';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -65,7 +66,7 @@ function ModalCriarPaciente({ isOpen, onClose }) {
     formData.append('prontuario', formValue.prontuario);
     
     try {
-      const response = await axios.post('http://localhost:8000/pacientes/cadastrar_paciente/', formData);
+      const response = await axios.post(`${AxiosURL}/pacientes/cadastrar_paciente/`, formData);
       if (response.status === 201) {
       toast.success('Paciente cadastrado!');
       setTimeout(() => {
@@ -324,7 +325,7 @@ function Pacientes() {
   useEffect(() => {
     const fetchPacientes = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/pacientes/lista/');
+        const response = await axios.get(`${AxiosURL}/pacientes/lista/`);
         setPacientes(response.data);
       } catch (error) {
         console.error("Erro ao buscar os usuários:", error);
@@ -336,7 +337,7 @@ function Pacientes() {
   const handlePacienteClick = async (paciente) => {
     setselectedPaciente(paciente);
     try {
-      const response = await axios.get(`http://localhost:8000/pacientes/${paciente.id}/historico_completo/`);
+      const response = await axios.get(`${AxiosURL}/pacientes/${paciente.id}/historico_completo/`);
       setHistorico(response.data);
       console.log('Histórico do paciente:', response.data);
     } catch (error) {

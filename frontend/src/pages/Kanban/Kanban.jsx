@@ -30,6 +30,8 @@ import PacienteCard from '../../components/Cards/PacienteCard';
 import HistoricoCard from '../../components/Cards/HistoricoCard';
 import CabecalhoPacienteModal from '../../components/Ficha/CabecalhoPacienteModal';
 import formatarData from '../../utils/FormatarData';
+import { AxiosURL } from '../../axios/Config';
+
 
 
 function ModalFicha({ isOpen, onClose, selectedPaciente, historico}) {
@@ -138,7 +140,7 @@ function Kanban() {
   useEffect(() => {
     const fetchPacientes = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/pacientes/lista/');
+        const response = await axios.get(`${AxiosURL}/pacientes/lista/`);
         setPacientes(response.data);
       } catch (error) {
         console.error("Erro ao buscar os usuários:", error);
@@ -151,7 +153,7 @@ function Kanban() {
     setSelectedPaciente(paciente);
     toggleOpen();
     try {
-      const response = await axios.get(`http://localhost:8000/pacientes/${paciente.id}/historico_atual/`);
+      const response = await axios.get(`${AxiosURL}/pacientes/${paciente.id}/historico_atual/`);
       setHistorico(response.data);
       console.log('Histórico do paciente:', response.data);
     } catch (error) {

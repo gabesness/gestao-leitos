@@ -16,6 +16,7 @@ import {
   MDBDropdownToggle,
   MDBDropdownItem
 } from 'mdb-react-ui-kit';
+import { AxiosURL } from '../../axios/Config';
 
 export default function Navbar() {
   const [openNavSecond, setOpenNavSecond] = useState(false);
@@ -76,7 +77,7 @@ export default function Navbar() {
 
   const handleSignOutClick = async () => {
     try {
-      const response = await axios.post('http://localhost:8000/usuarios/logout/');
+      const response = await axios.post(`${AxiosURL}/usuarios/logout/`);
       if (response.status === 200) {
         localStorage.clear();
         window.location.href = '/'; 

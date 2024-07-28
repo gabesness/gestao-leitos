@@ -38,6 +38,7 @@ import HistoricoCard from '../../components/Cards/HistoricoCard';
 import CabecalhoPaciente from '../../components/Ficha/CabecalhoPaciente';
 import formatarData from '../../utils/FormatarData';
 import { ToastContainer, toast } from 'react-toastify';
+import { AxiosURL } from '../../axios/Config';
 import 'react-toastify/dist/ReactToastify.css';
 
 
@@ -58,7 +59,7 @@ function ModalNovaPrescricao({ isOpen, onClose }) {
     event.preventDefault();
     
     try {
-      const response = await axios.patch(`http://localhost:8000/prescricoes/${prontuario}/criar_prescricao/`, {
+      const response = await axios.patch(`${AxiosURL}/prescricoes/${prontuario}/criar_prescricao/`, {
         id_usuario: localStorage.getItem('idUser'),
       });
       if (response.status === 204) {
@@ -133,7 +134,7 @@ function ModalAltaObito({ isOpen, onClose, selectedPaciente }) {
     if (!selectedPaciente) return;
 
     try {
-      const response = await axios.patch(`http://localhost:8000/prescricoes/${selectedPaciente.id}/dar_alta/2/`, {
+      const response = await axios.patch(`${AxiosURL}/prescricoes/${selectedPaciente.id}/dar_alta/2/`, {
         id_usuario: localStorage.getItem('idUser'),
       });
       toast.success('Prescrição Atualizada!');
@@ -184,7 +185,7 @@ function ModalAltaNormal({ isOpen, onClose, selectedPaciente }) {
     if (!selectedPaciente) return;
 
     try {
-      const response = await axios.patch(`http://localhost:8000/prescricoes/${selectedPaciente.id}/dar_alta/0/`, {
+      const response = await axios.patch(`${AxiosURL}/prescricoes/${selectedPaciente.id}/dar_alta/0/`, {
         id_usuario: localStorage.getItem('idUser'),
       });
       toast.success('Prescrição Atualizada!');
@@ -228,7 +229,7 @@ function ModalAltaDefinitiva({ isOpen, onClose, selectedPaciente }) {
   
   const handleAltaDefinitiva = async () => {
     try {
-      const response = await axios.patch(`http://localhost:8000/prescricoes/${selectedPaciente.id}/dar_alta/1/`, {
+      const response = await axios.patch(`${AxiosURL}/prescricoes/${selectedPaciente.id}/dar_alta/1/`, {
         id_usuario: localStorage.getItem('idUser'),
       });
       toast.success('Prescrição Atualizada!');
@@ -278,7 +279,7 @@ function ModalTransferencia({ isOpen, onClose, selectedPaciente, formValue }) {
     if (!selectedPaciente) return;
 
     try {
-      const response = await axios.patch(`http://localhost:8000/prescricoes/${selectedPaciente.id}/autorizar_transferencia/`, {
+      const response = await axios.patch(`${AxiosURL}/prescricoes/${selectedPaciente.id}/autorizar_transferencia/`, {
         id_usuario: localStorage.getItem('idUser'),
         mensagem: formValue.mensagem  // Incluir a mensagem no corpo da requisição
       });
@@ -565,7 +566,7 @@ function QuadroFicha({ selectedPaciente, historico }) {
     event.preventDefault();
     
     try {
-      const response = await axios.patch(`http://localhost:8000/prescricoes/${selectedPaciente.id}/encaminhar_farmacia/`, {
+      const response = await axios.patch(`${AxiosURL}/prescricoes/${selectedPaciente.id}/encaminhar_farmacia/`, {
         plano_terapeutico: {
           sessoes_prescritas: formValue.sessoes_prescritas,
           dias_intervalo: formValue.dias_intervalo,
@@ -592,7 +593,7 @@ function QuadroFicha({ selectedPaciente, historico }) {
     event.preventDefault();
   
     try {
-      const response = await axios.patch(`http://localhost:8000/prescricoes/${selectedPaciente.prontuario}/criar_prescricao/`, {
+      const response = await axios.patch(`${AxiosURL}/prescricoes/${selectedPaciente.prontuario}/criar_prescricao/`, {
         id_usuario: localStorage.getItem('idUser'),
       });
       if (response.status === 204) {
@@ -763,7 +764,7 @@ function HomeMedico() {
   useEffect(() => {
     const fetchPacientes = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/pacientes/lista_medico/');
+        const response = await axios.get(`${AxiosURL}/pacientes/lista_medico/`);
         setPacientes(response.data);
         console.log("Lista de pacientes:", response.data);
       } catch (error) {
@@ -776,7 +777,7 @@ function HomeMedico() {
   const handlePacienteClick = async (paciente) => {
     setSelectedPaciente(paciente);
     try {
-      const response = await axios.get(`http://localhost:8000/pacientes/${paciente.id}/historico_atual/`);
+      const response = await axios.get(`${AxiosURL}/pacientes/${paciente.id}/historico_atual/`);
       setHistorico(response.data);
       console.log('Histórico do paciente:', response.data);
     } catch (error) {
