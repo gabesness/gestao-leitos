@@ -25,7 +25,7 @@ function PacienteCardMedico({ paciente, selectedPaciente, handlePacienteClick })
         Prontuário: {paciente.prontuario}
       </div>
       {tagContent && (
-        <span className={`badge bg-${tagColor} me-2`}>{tagContent}</span>
+              <span className={`badge bg-${tagColor} rounded-pill me-2`}>{tagContent}</span>
       )}
     </MDBListGroupItem>
   );

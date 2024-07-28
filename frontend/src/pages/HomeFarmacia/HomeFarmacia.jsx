@@ -38,6 +38,7 @@ import HistoricoCard from '../../components/Cards/HistoricoCard';
 import CabecalhoPaciente from '../../components/Ficha/CabecalhoPaciente';
 import formatarData from '../../utils/FormatarData';
 import { ToastContainer, toast } from 'react-toastify';
+import { AxiosURL } from '../../axios/Config';
 import 'react-toastify/dist/ReactToastify.css';
 
 
@@ -47,7 +48,7 @@ function ModalDevolverMedico({ isOpen, onClose, selectedPaciente, formValue }) {
     if (!selectedPaciente) return;
   
     try {
-      const response = await axios.patch(`http://54.207.17.232:8000/prescricoes/${selectedPaciente.id}/devolver_farmacia/`, {
+      const response = await axios.patch(`${AxiosURL}/prescricoes/${selectedPaciente.id}/devolver_farmacia/`, {
         id_usuario: localStorage.getItem('idUser'),
         mensagem: formValue.mensagem  // Incluir a mensagem no corpo da requisição
       });
@@ -82,8 +83,8 @@ function ModalDevolverMedico({ isOpen, onClose, selectedPaciente, formValue }) {
 
           </MDBModalBody>
           <MDBModalFooter>
-            <MDBBtn color='danger'>Cancelar</MDBBtn>
-            <MDBBtn onClick={handleDevolver} >Devolver</MDBBtn>
+          <MDBBtn color='danger' onClick={handleClose}>Cancelar</MDBBtn>
+          <MDBBtn onClick={handleDevolver} >Devolver</MDBBtn>
           </MDBModalFooter>
         </MDBModalContent>
       </MDBModalDialog>
@@ -98,7 +99,7 @@ function ModalEnviarRegulacao({ isOpen, onClose, selectedPaciente, formValue }) 
     if (!selectedPaciente) return;
   
     try {
-      const response = await axios.patch(`http://54.207.17.232:8000/prescricoes/${selectedPaciente.id}/encaminhar_agendamento/`, {
+      const response = await axios.patch(`${AxiosURL}/prescricoes/${selectedPaciente.id}/encaminhar_agendamento/`, {
         id_usuario: localStorage.getItem('idUser'),
         mensagem: formValue.mensagem  // Incluir a mensagem no corpo da requisição
       });
@@ -133,8 +134,8 @@ function ModalEnviarRegulacao({ isOpen, onClose, selectedPaciente, formValue }) 
 
           </MDBModalBody>
           <MDBModalFooter>
-            <MDBBtn color='danger'>Cancelar</MDBBtn>
-            <MDBBtn onClick={handleEnviar} >Enviar</MDBBtn>
+          <MDBBtn color='danger' onClick={handleClose}>Cancelar</MDBBtn>
+          <MDBBtn onClick={handleEnviar} >Enviar</MDBBtn>
           </MDBModalFooter>
         </MDBModalContent>
       </MDBModalDialog>
@@ -169,31 +170,50 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
   
   return (
     <MDBCol md='4'>
-      <MDBCard className='mb-4' style={{ borderTopLeftRadius: '30px', borderTopRightRadius: '30px', borderBottomLeftRadius: '20px', borderBottomRightRadius: '20px'}}>
-         
-         {/* Botões das Abas */}
-
-        <div className="text-center mb-4">
-        </div>
-
-        {/* Conteúdo */}
-
-        <MDBCardBody>
-
-          {/* Cabeçalho */}
-
-          <MDBInput type="text" label="Pesquisar" value={searchTerm} onChange={handleSearchChange} className="flex-grow-1" style={{ height: '40px' }} />
-          <MDBListGroup light>
-
+      <MDBCard
+        className='mb-4'
+        style={{
+          borderTopLeftRadius: '30px',
+          borderTopRightRadius: '30px',
+          borderBottomLeftRadius: '20px',
+          borderBottomRightRadius: '20px',
+          height: '610px',
+          overflow: 'auto',
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
+        <MDBCardBody className="p-4 d-flex flex-column" style={{ flex: '1 1 auto', minHeight: '0' }}>
+          {/* Barra de Pesquisa */}
+          <MDBInput
+            type="text"
+            label={
+              <div className="d-flex align-items-center">
+                <MDBIcon fas icon="search" className="me-2" />
+                Pesquisar
+              </div>
+            }
+            value={searchTerm}
+            onChange={handleSearchChange}
+            className="mb-3"
+            style={{ height: '24px' }}
+          />
+  
           {/* Listagem */}
-
-          {currentPacientes.map((paciente, index) => (
-              <PacienteCard key={index} paciente={paciente} selectedPaciente={selectedPaciente} handlePacienteClick={handlePacienteClick} />
+          <MDBListGroup light style={{ flex: '1 1 auto', overflowY: 'auto' }}>
+            {currentPacientes.map((paciente, index) => (
+              <PacienteCard
+                key={index}
+                paciente={paciente}
+                selectedPaciente={selectedPaciente}
+                handlePacienteClick={handlePacienteClick}
+              />
             ))}
-
           </MDBListGroup>
+  
+          {/* Paginação */}
           {pacientes.length > postsPerPage && (
-            <div className="pag">
+            <div className="pag text-center d-flex justify-content-center mt-auto">
               <Pagination
                 postsPerPage={postsPerPage}
                 totalPosts={searchedPacientes.length}
@@ -205,6 +225,8 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
       </MDBCard>
     </MDBCol>
   );
+  
+
 }
 
 function QuadroFicha({ selectedPaciente, historico }) {
@@ -228,7 +250,7 @@ function QuadroFicha({ selectedPaciente, historico }) {
   return (
   <MDBCol md='8'>
   {selectedPaciente && (
-  <MDBCard style={{ borderTopLeftRadius: '20px', borderTopRightRadius: '20px', borderBottomLeftRadius: '20px', borderBottomRightRadius: '20px'}}>
+  <MDBCard style={{ borderTopLeftRadius: '20px', borderTopRightRadius: '20px', borderBottomLeftRadius: '20px', borderBottomRightRadius: '20px', height: '610px'}}>
 
     {/* Cabeçalho */}
 
@@ -243,7 +265,7 @@ function QuadroFicha({ selectedPaciente, historico }) {
 
       <div className="col-md-6">
       <h4>Histórico</h4>
-      <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
+      <div style={{ height: '360px', overflowY: 'auto' }}>
       {historico.map((registro, index) => {
                     const { dataFormatada, horaFormatada } = formatarData(registro.criado_em);
                     return (
@@ -271,6 +293,7 @@ function QuadroFicha({ selectedPaciente, historico }) {
                     label="Medicamentos" 
                     id="textAreaExample" 
                     rows={4} 
+                    style={{ resize: 'none' }}
                     className="mb-3" 
                     value={selectedPaciente.plano_terapeutico?.medicamentos || ''}
                     disabled 
@@ -310,6 +333,7 @@ function QuadroFicha({ selectedPaciente, historico }) {
                     label="Observações" 
                     id="textAreaExample" 
                     rows={4}
+                    style={{ resize: 'none' }}
                     name="mensagem"
                     value={formValue.mensagem} 
                     onChange={onChange}
@@ -332,8 +356,8 @@ function QuadroFicha({ selectedPaciente, historico }) {
         </MDBCard>
  )}
     {!selectedPaciente && (
-      <div className="text-center">
-        <p style={{ fontSize: '1.5rem' }}> Selecione um Paciente</p>
+      <div className="text-center d-flex justify-content-center align-items-center" style={{ height: '80vh' }}>
+        <p style={{ fontSize: '1.5rem' }}>Selecione um Paciente</p>
       </div>
     )}
   
@@ -355,7 +379,7 @@ function HomeFarmacia() {
   useEffect(() => {
     const fetchPacientes = async () => {
       try {
-        const response = await axios.get('http://54.207.17.232:8000/pacientes/lista_farmacia/');
+        const response = await axios.get(`${AxiosURL}/pacientes/lista_farmacia/`);
         setPacientes(response.data);
       } catch (error) {
         console.error("Erro ao buscar os usuários:", error);
@@ -367,7 +391,7 @@ function HomeFarmacia() {
   const handlePacienteClick = async (paciente) => {
     setSelectedPaciente(paciente);
     try {
-      const response = await axios.get(`http://54.207.17.232:8000/pacientes/${paciente.id}/historico_atual/`);
+      const response = await axios.get(`${AxiosURL}/pacientes/${paciente.id}/historico_atual/`);
       setHistorico(response.data);
       console.log('Histórico do paciente:', response.data);
     } catch (error) {
@@ -378,8 +402,7 @@ function HomeFarmacia() {
   return (
     <MDBContainer fluid className='p-1 background-radial-gradient overflow-hidden d-flex justify-content-center'  style={{ minHeight: '100vh' }}>
       <MDBCard className='my-5 bg-glass max-width-card' style={{ width: '100%', maxWidth: '1200px' }}>
-      <h2 style={{ marginTop: '10px', marginLeft: '10px', marginBottom: '-8px' }}>Acompanhamento</h2>
-      <hr style={{ marginBottom: '10px' }} />
+      <h2 style={{ marginTop: '15px', marginLeft: '50px', marginBottom: '-22px' }}>Prescrições</h2>
       <MDBCardBody className='p-5'>
           <MDBRow>
           <QuadroLista

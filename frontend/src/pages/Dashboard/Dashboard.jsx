@@ -94,9 +94,9 @@ function Dashboard() {
   return (
     <MDBContainer fluid className='p-1 background-radial-gradient overflow-hidden d-flex justify-content-center' style={{ minHeight: '100vh' }}>
       <MDBCard className='my-5 bg-glass max-width-card' style={{ width: '100%', maxWidth: '1200px' }}>
-        <div className='d-flex justify-content-between align-items-center' style={{ padding: '10px' }}>
-          <h2 style={{ margin: 0 }}>Dashboard</h2>
-          <MDBDropdown>
+        <div className='d-flex justify-content-between align-items-center' style={{ padding: '0px' }}>
+        <h2 style={{ marginTop: '15px', marginLeft: '50px', marginBottom: '-22px' }}>Dashboard</h2>
+        <MDBDropdown>
             <MDBDropdownToggle tag='a' className='btn btn-primary'>
               Últimos 180 dias
             </MDBDropdownToggle>
@@ -110,7 +110,6 @@ function Dashboard() {
             </MDBDropdownMenu>
           </MDBDropdown>
         </div>
-        <hr style={{ margin: '0 10px' }} />
         <MDBCardBody className='p-5'>
           {/* Gráfico de Linhas (3 Linhas) */}
           <MDBCard className='mb-4' style={{ borderTopLeftRadius: '30px', borderTopRightRadius: '30px', borderBottomLeftRadius: '20px', borderBottomRightRadius: '20px' }}>

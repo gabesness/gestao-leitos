@@ -30,6 +30,8 @@ import PacienteCard from '../../components/Cards/PacienteCard';
 import HistoricoCard from '../../components/Cards/HistoricoCard';
 import CabecalhoPacienteModal from '../../components/Ficha/CabecalhoPacienteModal';
 import formatarData from '../../utils/FormatarData';
+import { AxiosURL } from '../../axios/Config';
+
 
 
 function ModalFicha({ isOpen, onClose, selectedPaciente, historico}) {
@@ -85,6 +87,7 @@ function ModalFicha({ isOpen, onClose, selectedPaciente, historico}) {
                     label="Medicamentos" 
                     id="textAreaExample" 
                     rows={4} 
+                    style={{ resize: 'none' }}
                     className="mb-3" 
                     value={medicamentos}
                     disabled 
@@ -137,7 +140,7 @@ function Kanban() {
   useEffect(() => {
     const fetchPacientes = async () => {
       try {
-        const response = await axios.get('http://54.207.17.232:8000/pacientes/lista/');
+        const response = await axios.get(`${AxiosURL}/pacientes/lista/`);
         setPacientes(response.data);
       } catch (error) {
         console.error("Erro ao buscar os usuários:", error);
@@ -150,7 +153,7 @@ function Kanban() {
     setSelectedPaciente(paciente);
     toggleOpen();
     try {
-      const response = await axios.get(`http://54.207.17.232:8000/pacientes/${paciente.id}/historico_atual/`);
+      const response = await axios.get(`${AxiosURL}/pacientes/${paciente.id}/historico_atual/`);
       setHistorico(response.data);
       console.log('Histórico do paciente:', response.data);
     } catch (error) {
@@ -164,10 +167,9 @@ function Kanban() {
   const toggleOpen = () => setBasicModal(!basicModal);
 
   return (
-    <MDBContainer fluid className='p-4 background-radial-gradient overflow-hidden d-flex justify-content-center' style={{ minHeight: '100vh' }}>
+    <MDBContainer fluid className='p-1 background-radial-gradient overflow-hidden d-flex justify-content-center'  style={{ minHeight: '100vh' }}>
       <MDBCard className='my-5 bg-glass max-width-card' style={{ width: '100%', maxWidth: '1200px' }}>
-        <h2 style={{ marginTop: '10px', marginLeft: '10px', marginBottom: '-8px' }}>Acompanhamento</h2>
-        <hr style={{ marginBottom: '10px' }} />
+      <h2 style={{ marginTop: '15px', marginLeft: '50px', marginBottom: '10px' }}>Kanban</h2>
         <MDBCardBody className='p-3'>
           <MDBRow className='g-2'>
             {/* Coluna de Médico */}
@@ -179,8 +181,8 @@ function Kanban() {
                     <strong>Médico</strong>
                   </div>
                 </MDBCardHeader>
-                <MDBCardBody className='p-2'>
-                  {pacientes.filter(paciente => 
+                <MDBCardBody className='p-2' style={{ height: '600px', overflowY: 'auto' }}>
+                {pacientes.filter(paciente => 
                     paciente.estagio_atual === 'PRESCRICAO_CRIADA' ||
                     paciente.estagio_atual === 'DEVOLVIDO_PELA_FARMACIA' ||
                     paciente.estagio_atual === 'DEVOLVIDO_PELA_REGULACAO'
@@ -208,8 +210,8 @@ function Kanban() {
                     <strong>Farmácia</strong>
                   </div>
                 </MDBCardHeader>
-                <MDBCardBody className='p-2'>
-                  {pacientes.filter(paciente => paciente.estagio_atual === 'ENCAMINHADO_PARA_FARMACIA').map((paciente, index) => (
+                <MDBCardBody className='p-2' style={{ height: '600px', overflowY: 'auto' }}>
+                {pacientes.filter(paciente => paciente.estagio_atual === 'ENCAMINHADO_PARA_FARMACIA').map((paciente, index) => (
                     <div key={index}>
                       <PacienteCard
                         paciente={paciente}
@@ -233,7 +235,7 @@ function Kanban() {
                     <strong>Regulação</strong>
                   </div>
                 </MDBCardHeader>
-                <MDBCardBody className='p-2'>
+                <MDBCardBody className='p-2' style={{ height: '600px', overflowY: 'auto' }}>
                   {pacientes.filter(paciente => 
                     paciente.estagio_atual === 'ENCAMINHADO_PARA_AGENDAMENTO' ||
                     paciente.estagio_atual === 'AGENDADO' ||
@@ -262,7 +264,7 @@ function Kanban() {
                     <strong>Internação</strong>
                   </div>
                 </MDBCardHeader>
-                <MDBCardBody className='p-2'>
+                <MDBCardBody className='p-2' style={{ height: '600px', overflowY: 'auto' }}>
                   {pacientes.filter(paciente => paciente.estagio_atual === 'INTERNADO').map((paciente, index) => (
                     <div key={index}>
                       <PacienteCard
@@ -287,7 +289,7 @@ function Kanban() {
                     <strong>Alta</strong>
                   </div>
                 </MDBCardHeader>
-                <MDBCardBody className='p-2'>
+                <MDBCardBody className='p-2' style={{ height: '600px', overflowY: 'auto' }}>
                   {pacientes.filter(paciente => 
                     paciente.estagio_atual === 'ALTA_NORMAL' ||
                     paciente.estagio_atual === 'ALTA_OBITO' ||
@@ -316,7 +318,7 @@ function Kanban() {
                     <strong>Transferido</strong>
                   </div>
                 </MDBCardHeader>
-                <MDBCardBody className='p-2'>
+                <MDBCardBody className='p-2' style={{ height: '600px', overflowY: 'auto' }}>
                   {pacientes.filter(paciente => paciente.estagio_atual === 'TRANSFERIDO').map((paciente, index) => (
                     <div key={index}>
                       <PacienteCard

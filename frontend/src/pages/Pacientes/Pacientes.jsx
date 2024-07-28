@@ -37,6 +37,9 @@ import PacienteCard from '../../components/Cards/PacienteCard';
 import HistoricoCard from '../../components/Cards/HistoricoCard';
 import CabecalhoHistorico from '../../components/Ficha/CabecalhoHistorico';
 import formatarData from '../../utils/FormatarData';
+import { AxiosURL } from '../../axios/Config';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 
@@ -63,12 +66,16 @@ function ModalCriarPaciente({ isOpen, onClose }) {
     formData.append('prontuario', formValue.prontuario);
     
     try {
-      const response = await axios.post('http://54.207.17.232:8000/pacientes/cadastrar_paciente/', formData);
-      if (response.status === 200) {
-      window.location.href = '/pacientes';
+      const response = await axios.post(`${AxiosURL}/pacientes/cadastrar_paciente/`, formData);
+      if (response.status === 201) {
+      toast.success('Paciente cadastrado!');
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
       }
     } catch (error) {
       console.error('Erro ao criar paciente:', error);
+      toast.error(error.response.data.erro);
     }
   }
 
@@ -117,6 +124,7 @@ function ModalCriarPaciente({ isOpen, onClose }) {
           </MDBModalFooter>
         </MDBModalContent>
       </MDBModalDialog>
+      <ToastContainer />
     </MDBModal>
   );
 }
@@ -156,44 +164,72 @@ function QuadroLista({ pacientes, selectedPaciente, handlePacienteClick, }) {
 
   return (
     <MDBCol md='4'>
-      <MDBCard className='mb-4' style={{ borderTopLeftRadius: '30px', borderTopRightRadius: '30px', borderBottomLeftRadius: '20px', borderBottomRightRadius: '20px'}}>
-
+      <MDBCard
+        className='mb-4'
+        style={{
+          borderTopLeftRadius: '30px',
+          borderTopRightRadius: '30px',
+          borderBottomLeftRadius: '20px',
+          borderBottomRightRadius: '20px',
+          height: '610px',
+          overflow: 'auto',
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
         {/* Conteúdo */}
-        <MDBCardBody>
+        <MDBCardBody
+          className="d-flex flex-column"
+          style={{ flex: '1 1 auto', minHeight: '0' }}
+        >
           {/* Cabeçalho */}
-
           <div className="d-flex align-items-center mb-3">
-          <MDBInput type="text" label="Pesquisar" value={searchTerm} onChange={handleSearchChange} className="flex-grow-1" style={{ height: '40px' }} />
+            <MDBInput
+              type="text"
+              label={
+                <div className="d-flex align-items-center">
+                  <MDBIcon fas icon="search" className="me-2" />
+                  Pesquisar
+                </div>
+              }
+              value={searchTerm}
+              onChange={handleSearchChange}
+              className="flex-grow-1"
+              style={{ height: '40px' }}
+            />
             {cargo === 'Recepção' || cargo === 'Regulação' ? (
               <MDBBtn
-              onClick={toggleOpen}
-              className="ms-2 d-flex justify-content-center align-items-center btn-sm"
-              style={{
-                minWidth: '40px',
-                height: '40px',
-                margin: '0',
-              }}
-              color="primary"
-            >
-               <MDBIcon fas icon="plus" />
-            </MDBBtn>
+                onClick={toggleOpen}
+                className="ms-2 d-flex justify-content-center align-items-center btn-sm"
+                style={{
+                  minWidth: '40px',
+                  height: '40px',
+                  margin: '0',
+                }}
+                color="primary"
+              >
+                <MDBIcon fas icon="plus" style={{ fontSize: '16px' }} />
+              </MDBBtn>
             ) : null}
           </div>
-          
-          <MDBListGroup light>
-
-          {/* Listagem */}
-
-          {currentPacientes.map((paciente, index) => (
-              <PacienteCard key={index} paciente={paciente} selectedPaciente={selectedPaciente} handlePacienteClick={handlePacienteClick} />
+  
+          <MDBListGroup light style={{ flex: '1 1 auto', overflowY: 'auto' }}>
+            {/* Listagem */}
+            {currentPacientes.map((paciente, index) => (
+              <PacienteCard
+                key={index}
+                paciente={paciente}
+                selectedPaciente={selectedPaciente}
+                handlePacienteClick={handlePacienteClick}
+              />
             ))}
-
           </MDBListGroup>
+  
           {pacientes.length > postsPerPage && (
-            <div className="pag">
+            <div className="pag text-center d-flex justify-content-center mt-auto">
               <Pagination
                 postsPerPage={postsPerPage}
-                totalPosts={pacientes.length}
+                totalPosts={searchedPacientes.length}
                 paginate={paginate}
               />
             </div>
@@ -203,6 +239,7 @@ function QuadroLista({ pacientes, selectedPaciente, handlePacienteClick, }) {
       <ModalCriarPaciente isOpen={basicModal} onClose={toggleOpen} />
     </MDBCol>
   );
+  
 }
 
 function QuadroFicha({ selectedPaciente, historico }) {
@@ -217,7 +254,7 @@ function QuadroFicha({ selectedPaciente, historico }) {
   return (
     <MDBCol md='8'>
       {selectedPaciente && (
-        <MDBCard style={{ borderTopLeftRadius: '20px', borderTopRightRadius: '20px', borderBottomLeftRadius: '20px', borderBottomRightRadius: '20px' }}>
+        <MDBCard style={{ borderTopLeftRadius: '20px', borderTopRightRadius: '20px', borderBottomLeftRadius: '20px', borderBottomRightRadius: '20px', height: '610px'}}>
   
           {/* Cabeçalho */}
           <CabecalhoHistorico selectedPaciente={selectedPaciente} />
@@ -251,7 +288,7 @@ function QuadroFicha({ selectedPaciente, historico }) {
   
             {/* Histórico */}
             <h4 style={{ textAlign: 'center' }}>Histórico</h4>
-            <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
+            <div style={{ height: '360px', overflowY: 'auto' }}>
             {historico.map((registro, index) => {
                     const { dataFormatada, horaFormatada } = formatarData(registro.criado_em);
                     return (
@@ -270,9 +307,9 @@ function QuadroFicha({ selectedPaciente, historico }) {
         </MDBCard>
       )}
       {!selectedPaciente && (
-        <div className="text-center">
-          <p style={{ fontSize: '1.5rem' }}>Selecione um Paciente</p>
-        </div>
+      <div className="text-center d-flex justify-content-center align-items-center" style={{ height: '80vh' }}>
+        <p style={{ fontSize: '1.5rem' }}>Selecione um Paciente</p>
+      </div>
       )}
     </MDBCol>
   )
@@ -288,7 +325,7 @@ function Pacientes() {
   useEffect(() => {
     const fetchPacientes = async () => {
       try {
-        const response = await axios.get('http://54.207.17.232:8000/pacientes/lista/');
+        const response = await axios.get(`${AxiosURL}/pacientes/lista/`);
         setPacientes(response.data);
       } catch (error) {
         console.error("Erro ao buscar os usuários:", error);
@@ -300,7 +337,7 @@ function Pacientes() {
   const handlePacienteClick = async (paciente) => {
     setselectedPaciente(paciente);
     try {
-      const response = await axios.get(`http://54.207.17.232:8000/pacientes/${paciente.id}/historico_completo/`);
+      const response = await axios.get(`${AxiosURL}/pacientes/${paciente.id}/historico_completo/`);
       setHistorico(response.data);
       console.log('Histórico do paciente:', response.data);
     } catch (error) {
@@ -311,8 +348,7 @@ function Pacientes() {
   return (
     <MDBContainer fluid className='p-1 background-radial-gradient overflow-hidden d-flex justify-content-center'  style={{ minHeight: '100vh' }}>
       <MDBCard className='my-5 bg-glass max-width-card' style={{ width: '100%', maxWidth: '1200px' }}>
-      <h2 style={{ marginTop: '10px', marginLeft: '10px', marginBottom: '-8px' }}>Pacientes</h2>
-      <hr style={{ marginBottom: '10px' }} />
+      <h2 style={{ marginTop: '15px', marginLeft: '50px', marginBottom: '-22px' }}>Pacientes</h2>
       <MDBCardBody className='p-5'>
           <MDBRow>
           <QuadroLista
@@ -330,7 +366,7 @@ function Pacientes() {
           </MDBRow>
         </MDBCardBody>
       </MDBCard>
-
+      <ToastContainer />
     </MDBContainer>
   );
 }

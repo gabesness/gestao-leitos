@@ -5,10 +5,14 @@ import {
   MDBContainer,
   MDBCard,
   MDBCardBody,
-  MDBInput
+  MDBInput,
+  MDBIcon,
+  MDBRow,
+  MDBCol
 } from 'mdb-react-ui-kit';
 import './Login.css';
 import { ToastContainer, toast } from 'react-toastify';
+import { AxiosURL } from '../../axios/Config';
 import 'react-toastify/dist/ReactToastify.css';
 
 function Login() {
@@ -29,7 +33,7 @@ function Login() {
     formData.append('password', formValue.password);
     
     try {
-      const response = await axios.post('http://54.207.17.232:8000/usuarios/login/', formData);
+      const response = await axios.post(`${AxiosURL}/usuarios/login/`, formData);
       if (response.status === 200) {
       localStorage.setItem('idUser', response.data.id);
       localStorage.setItem('nome', response.data.nome);
@@ -74,28 +78,61 @@ function Login() {
   };
 
   return (
-    <MDBContainer fluid className='p-4 background-radial-gradient overflow-hidden d-flex align-items-center justify-content-center'  style={{ minHeight: '100vh', marginTop: '-100px' }}>
+    <MDBContainer fluid className='p-4 background-radial-gradient overflow-hidden d-flex align-items-center justify-content-center' style={{ minHeight: '100vh', marginTop: '-100px' }}>
       <MDBCard className='my-5 bg-glass max-width-card'>
         <MDBCardBody className='p-5 text-center'>
+        <h2>Bem-Vindo</h2> 
+        
           <form onSubmit={Logar}>
-            <MDBInput 
-              className="mb-4" 
-              name="username" 
-              id="username" 
-              label="Usuário" 
-              value={formValue.username} 
-              onChange={onChange} 
-            />
+            <MDBRow className='mb-4 align-items-center'>
+              <MDBCol size="auto" className='pe-0'>
+                <MDBIcon fas icon="user" />
+              </MDBCol>
+              <MDBCol className='ps-2'>
+                <MDBInput
+                  name="username"
+                  id="username"
+                  label="Usuário"
+                  value={formValue.username}
+                  onChange={onChange}
+                />
+              </MDBCol>
+            </MDBRow>
 
-            <MDBInput 
-              className="mb-4" 
-              type="password" 
-              name="password" 
-              id="password" 
-              label="password" 
-              value={formValue.password} 
-              onChange={onChange} 
-            />  
+            <MDBRow className='mb-0 align-items-center'>
+              <MDBCol size="auto" className='pe-0'>
+                <MDBIcon fas icon="key" />
+              </MDBCol>
+              <MDBCol className='ps-2'>
+                <MDBInput
+                  type="password"
+                  name="password"
+                  id="password"
+                  label="Senha"
+                  value={formValue.password}
+                  onChange={onChange}
+                />
+              </MDBCol>
+            </MDBRow>
+
+            <MDBBtn
+              className='mb-4 mx-2'
+              type="button"
+              color='tertiary'
+              rippleColor='light'
+              onClick={handleConvidadoLogin}
+              disabled
+            >
+              Esqueci minha senha
+            </MDBBtn>
+
+            <MDBBtn
+              className='w-100 mb-4'
+              size='md'
+              type="submit"
+            >
+              ENTRAR
+            </MDBBtn>
 
             <MDBBtn
               className='mx-2'
@@ -105,13 +142,6 @@ function Login() {
               onClick={handleConvidadoLogin}
             >
               Entrar como convidado
-            </MDBBtn>
-            <MDBBtn
-              className='w-100 mb-4'
-              size='md'
-              type="submit"
-            >
-              ENVIAR
             </MDBBtn>
           </form>
         </MDBCardBody>
