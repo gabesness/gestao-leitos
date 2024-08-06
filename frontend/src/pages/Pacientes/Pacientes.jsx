@@ -184,19 +184,21 @@ function QuadroLista({ pacientes, selectedPaciente, handlePacienteClick, }) {
         >
           {/* Cabeçalho */}
           <div className="d-flex align-items-center mb-3">
-            <MDBInput
-              type="text"
-              label={
-                <div className="d-flex align-items-center">
-                  <MDBIcon fas icon="search" className="me-2" />
-                  Pesquisar
-                </div>
-              }
-              value={searchTerm}
-              onChange={handleSearchChange}
-              className="flex-grow-1"
-              style={{ height: '40px' }}
-            />
+            
+          <MDBInput
+            type="text"
+            label={
+              <div className="d-flex align-items-center">
+                <MDBIcon fas icon="search" className="me-2" />
+                Pesquisar
+              </div>
+            }
+            value={searchTerm}
+            onChange={handleSearchChange}
+            className="flex-grow-1"
+            style={{ height: '40px', borderRadius: '20px' }}
+          />
+
             {cargo === 'Recepção' || cargo === 'Regulação' ? (
               <MDBBtn
                 onClick={toggleOpen}
@@ -290,17 +292,20 @@ function QuadroFicha({ selectedPaciente, historico }) {
             <h4 style={{ textAlign: 'center' }}>Histórico</h4>
             <div style={{ height: '360px', overflowY: 'auto' }}>
             {historico.map((registro, index) => {
-                    const { dataFormatada, horaFormatada } = formatarData(registro.criado_em);
-                    return (
-                      <HistoricoCard
-                        key={index}
-                        title={registro.estagio_atual}
-                        date={dataFormatada} // Data formatada
-                        time={horaFormatada} // Horário formatado
-                        text={registro.mensagem}
-                      />
-                    );
-                  })}
+            const { dataFormatada, horaFormatada } = formatarData(registro.criado_em);
+            return (
+              <div style={{ width: '400px', margin: '0 auto' }}>
+              <HistoricoCard
+                key={index}
+                title={registro.estagio_atual}
+                date={dataFormatada}
+                time={horaFormatada}
+                text={registro.mensagem}
+              />
+            </div>
+            );
+          })}
+
             </div>
           </MDBCardBody>
   
@@ -347,7 +352,7 @@ function Pacientes() {
 
   return (
     <MDBContainer fluid className='p-1 background-radial-gradient overflow-hidden d-flex justify-content-center'  style={{ minHeight: '100vh' }}>
-      <MDBCard className='my-5 bg-glass max-width-card' style={{ width: '100%', maxWidth: '1200px' }}>
+      <MDBCard className='my-5 bg-glass max-width-card' style={{ width: '100%', maxWidth: '1200px', borderRadius: '38px' }}>
       <h2 style={{ marginTop: '15px', marginLeft: '50px', marginBottom: '-22px' }}>Pacientes</h2>
       <MDBCardBody className='p-5'>
           <MDBRow>

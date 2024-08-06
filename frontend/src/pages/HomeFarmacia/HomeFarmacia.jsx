@@ -183,8 +183,8 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
           flexDirection: 'column',
         }}
       >
-        <MDBCardBody className="p-4 d-flex flex-column" style={{ flex: '1 1 auto', minHeight: '0' }}>
-          {/* Barra de Pesquisa */}
+        <MDBCardBody className="d-flex flex-column" style={{ flex: '1 1 auto', minHeight: '0' }}>
+        {/* Barra de Pesquisa */}
           <MDBInput
             type="text"
             label={
@@ -401,7 +401,7 @@ function HomeFarmacia() {
 
   return (
     <MDBContainer fluid className='p-1 background-radial-gradient overflow-hidden d-flex justify-content-center'  style={{ minHeight: '100vh' }}>
-      <MDBCard className='my-5 bg-glass max-width-card' style={{ width: '100%', maxWidth: '1200px' }}>
+      <MDBCard className='my-5 bg-glass max-width-card' style={{ width: '100%', maxWidth: '1200px', borderRadius: '38px' }}>
       <h2 style={{ marginTop: '15px', marginLeft: '50px', marginBottom: '-22px' }}>Prescrições</h2>
       <MDBCardBody className='p-5'>
           <MDBRow>

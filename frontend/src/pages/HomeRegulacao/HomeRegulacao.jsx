@@ -136,7 +136,7 @@ function ModalAgendamento({ isOpen, onClose, selectedPaciente, selectedLeito, fo
           </MDBModalHeader>
           <MDBModalBody>
 
-          O paciente será agendado.
+          O paciente {selectedPaciente ? ` ${selectedPaciente.nome}`  : ''} será agendado no leito {selectedLeito ? ` ${selectedLeito.numero}` : ''}
 
           </MDBModalBody>
           <MDBModalFooter>
@@ -385,7 +385,7 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
         </div>
   
         {/* Conteúdo */}
-        <MDBCardBody className="p-2 d-flex flex-column" style={{ flex: '1 1 auto', minHeight: '0' }}>
+        <MDBCardBody className="d-flex flex-column" style={{ flex: '1 1 auto', minHeight: '0' }}>
           {/* Cabeçalho */}
           <MDBInput
             type="text"
@@ -613,7 +613,7 @@ function QuadroFicha({ selectedPaciente, historico }) {
                 </div>
               ))}
             </div>
-            <p>Reservar: {selectedLeito ? `Leito ${selectedLeito.numero}` : ''}</p>
+            <p>Leito selecionado: {selectedLeito ? `Leito ${selectedLeito.numero}` : ''}</p>
           </>
         )}
 
@@ -698,7 +698,7 @@ function HomeRegulacao() {
 
   return (
     <MDBContainer fluid className='p-1 background-radial-gradient overflow-hidden d-flex justify-content-center'  style={{ minHeight: '100vh' }}>
-      <MDBCard className='my-5 bg-glass max-width-card' style={{ width: '100%', maxWidth: '1200px' }}>
+      <MDBCard className='my-5 bg-glass max-width-card' style={{ width: '100%', maxWidth: '1200px', borderRadius: '38px' }}>
       <h2 style={{ marginTop: '15px', marginLeft: '50px', marginBottom: '-22px' }}>Prescrições</h2>
       <MDBCardBody className='p-5'>
           <MDBRow>

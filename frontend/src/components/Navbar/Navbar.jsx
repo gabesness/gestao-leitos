@@ -72,7 +72,7 @@ export default function Navbar() {
     }
   };
 
-  const isHomePage = location.pathname === '/';
+  const isHomePage = location.pathname === '/' || location.pathname === '/esqueceusenha';
 
 
   const handleSignOutClick = async () => {
@@ -91,9 +91,10 @@ export default function Navbar() {
     }
   };
 
+  
 
   return (
-    <MDBNavbar expand='lg' light>
+    <MDBNavbar expand='lg' light style={{ backgroundColor: '#fff' }}>
       <MDBContainer fluid>
         <MDBNavbarBrand href='#'>Sistema</MDBNavbarBrand>
         {!isHomePage && (

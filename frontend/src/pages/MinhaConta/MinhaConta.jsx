@@ -35,13 +35,13 @@ import './MinhaConta.css';
 import Pagination from '../../components/Pagination/Pagination';
 import PacienteCard from '../../components/Cards/PacienteCard';
 import HistoricoCard from '../../components/Cards/HistoricoCard';
-import CabecalhoUsuario from '../../components/Ficha/CabecalhoUsuario';
+import CabecalhoMeuUsuario from '../../components/Ficha/CabecalhoMeuUsuario';
 
 
-function QuadroFicha({ selectedUser }) {
+function QuadroFicha() {
   return (
-  <MDBCard style={{ borderTopLeftRadius: '20px', borderTopRightRadius: '20px', borderBottomLeftRadius: '20px', borderBottomRightRadius: '20px'}}>
-    <CabecalhoUsuario selectedUser={selectedUser} />
+  <MDBCard style={{ borderTopLeftRadius: '20px', borderTopRightRadius: '20px', borderBottomLeftRadius: '20px', borderBottomRightRadius: '20px', width: '100%', maxWidth: '800px'}}>
+    <CabecalhoMeuUsuario />
     <MDBCardBody style={{ padding: '20px' }}>
       <MDBRow>
 
@@ -50,8 +50,6 @@ function QuadroFicha({ selectedUser }) {
       <div className="col-md-6">
       <h4>Perfil</h4>
       <MDBInput label="E-mail" id="SenhaAtual" style={{ marginBottom: '20px' }}/>
-
-      <MDBInput label="Telefone" id="SenhaAtual" style={{ marginBottom: '20px' }}/>
       
       </div>
 
@@ -97,16 +95,15 @@ function MinhaConta() {
 
 
   return (
-    <MDBContainer fluid className='p-1 background-radial-gradient overflow-hidden d-flex justify-content-center'  style={{ minHeight: '100vh' }}>
-      <MDBCard className='my-5 bg-glass max-width-card' style={{ width: '100%', maxWidth: '1200px' }}>
+    <MDBContainer fluid className='p-1 background-radial-gradient overflow-hidden d-flex justify-content-center' style={{ minHeight: '88vh' }}>
+      <MDBCard className='my-5 bg-glass max-width-card' style={{ width: '100%', maxWidth: '1200px', borderRadius: '38px' }}>
       <h2 style={{ marginTop: '15px', marginLeft: '50px', marginBottom: '-22px' }}>Minha Conta</h2>
-      <MDBCardBody className='p-5'>
-
-          <QuadroFicha selectedUser={selectedUser} />
-
+        <MDBCardBody className='p-5'>
+          <div className="d-flex justify-content-center">
+            <QuadroFicha selectedUser={selectedUser} />
+          </div>
         </MDBCardBody>
       </MDBCard>
-
     </MDBContainer>
   );
 }

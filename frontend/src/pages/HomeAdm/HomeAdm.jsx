@@ -74,7 +74,7 @@ function QuadroLista({ usuarios, activeTab, selectedUser, handleUserClick, setAc
         }}
       >
         {/* Conteúdo */}
-        <MDBCardBody className="p-4 d-flex flex-column" style={{ flex: '1 1 auto', minHeight: '0' }}>
+        <MDBCardBody className="d-flex flex-column" style={{ flex: '1 1 auto', minHeight: '0' }}>
           {/* Cabeçalho */}
           <MDBInput
             type="text"
@@ -198,7 +198,7 @@ function HomeAdm() {
 
   return (
     <MDBContainer fluid className='p-1 background-radial-gradient overflow-hidden d-flex justify-content-center'  style={{ minHeight: '100vh' }}>
-      <MDBCard className='my-5 bg-glass max-width-card' style={{ width: '100%', maxWidth: '1200px' }}>
+      <MDBCard className='my-5 bg-glass max-width-card' style={{ width: '100%', maxWidth: '1200px', borderRadius: '38px' }}>
       <h2 style={{ marginTop: '10px', marginLeft: '10px', marginBottom: '-8px' }}>Gerenciamento de Usuários</h2>
       <hr style={{ marginBottom: '10px' }} />
       <MDBCardBody className='p-5'>
