@@ -14,6 +14,7 @@ import './Login.css';
 import { ToastContainer, toast } from 'react-toastify';
 import { AxiosURL } from '../../axios/Config';
 import 'react-toastify/dist/ReactToastify.css';
+import Logo from '../../assets/Logo_oncoleitos.png';
 
 function Login() {
 
@@ -83,10 +84,10 @@ function Login() {
   };
 
   return (
-    <MDBContainer fluid className='p-4 background-radial-gradient overflow-hidden d-flex align-items-center justify-content-center' style={{ minHeight: '100vh', marginTop: '-100px' }}>
+    <MDBContainer fluid className='p-4 background-radial-gradient overflow-hidden d-flex align-items-center justify-content-center' style={{ minHeight: '100vh', marginTop: '-20px' }}>
       <MDBCard className='my-5 bg-glass max-width-card'>
         <MDBCardBody className='p-5 text-center'>
-        <h2>Bem-Vindo</h2> 
+        <img src={Logo} alt="Logo" className='mb-4' style={{ width: '300px' }} />
         
           <form onSubmit={Logar}>
             <MDBRow className='mb-4 align-items-center'>
@@ -126,12 +127,14 @@ function Login() {
               color='tertiary'
               rippleColor='light'
               onClick={handleEsqueceuSenha}
+              style={{ textTransform: 'none' }}
             >
+              <MDBIcon far icon="question-circle" className='me-2' />
               Esqueci minha senha
             </MDBBtn>
 
             <MDBBtn
-              className='w-100 mb-4'
+              className='w-100 mb-0'
               size='md'
               type="submit"
             >
@@ -144,6 +147,7 @@ function Login() {
               color='tertiary'
               rippleColor='light'
               onClick={handleConvidadoLogin}
+              style={{ textTransform: 'none' }}
             >
               Entrar como convidado
             </MDBBtn>

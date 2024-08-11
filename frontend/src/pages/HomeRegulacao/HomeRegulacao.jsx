@@ -387,6 +387,8 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
         {/* Conteúdo */}
         <MDBCardBody className="d-flex flex-column" style={{ flex: '1 1 auto', minHeight: '0' }}>
           {/* Cabeçalho */}
+          <div className="d-flex align-items-center mb-2" style={{ marginTop: '-12px' }}>
+
           <MDBInput
             type="text"
             label={
@@ -400,6 +402,8 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
             className="flex-grow-1 mb-2 mt-0"
             style={{ height: '32px' }}
           />
+                    </div>
+
           {/* Listagem */}
           <MDBListGroup light style={{ flex: '1 1 auto', overflowY: 'auto' }}>
             {currentPacientes.map((paciente, index) => (

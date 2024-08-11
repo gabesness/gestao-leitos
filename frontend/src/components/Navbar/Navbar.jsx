@@ -17,6 +17,8 @@ import {
   MDBDropdownItem
 } from 'mdb-react-ui-kit';
 import { AxiosURL } from '../../axios/Config';
+import LogoTitulo from '../../assets/Logo_oncoleitos_titulo.png';
+
 
 export default function Navbar() {
   const [openNavSecond, setOpenNavSecond] = useState(false);
@@ -96,7 +98,9 @@ export default function Navbar() {
   return (
     <MDBNavbar expand='lg' light style={{ backgroundColor: '#fff' }}>
       <MDBContainer fluid>
-        <MDBNavbarBrand href='#'>Sistema</MDBNavbarBrand>
+      <MDBNavbarBrand href='#'>
+          <img src={LogoTitulo} alt="Logo" style={{ height: '20px' }} /> {/* Substitua o texto pelo logo */}
+        </MDBNavbarBrand>
         {!isHomePage && (
           <>
             <MDBNavbarToggler

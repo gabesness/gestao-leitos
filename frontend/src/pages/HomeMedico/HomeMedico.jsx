@@ -63,10 +63,8 @@ function ModalNovaPrescricao({ isOpen, onClose }) {
         id_usuario: localStorage.getItem('idUser'),
       });
       if (response.status === 204) {
-      toast.success('Prescrição criada com sucesso!');
-      setTimeout(() => {
-        window.location.reload();
-      }, 2000);
+      toast.success(response.data.message);
+
       }
 
     } catch (error) {
@@ -418,7 +416,7 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
         {/* Conteúdo */}
         <MDBCardBody className="d-flex flex-column" style={{ flex: '1 1 auto', minHeight: '0' }}>
           {/* Cabeçalho */}
-          <div className="d-flex align-items-center mb-2">
+          <div className="d-flex align-items-center mb-2" style={{ marginTop: '-12px' }}>
             
             <MDBInput
               type="text"

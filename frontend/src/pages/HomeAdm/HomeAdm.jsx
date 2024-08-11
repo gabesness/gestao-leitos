@@ -87,7 +87,7 @@ function QuadroLista({ usuarios, activeTab, selectedUser, handleUserClick, setAc
             value={searchTerm}
             onChange={handleSearchChange}
             className="flex-grow-1 mb-3"
-            style={{ height: '32px' }}
+            style={{ height: '24px' }}
           />
   
           {/* Listagem */}
