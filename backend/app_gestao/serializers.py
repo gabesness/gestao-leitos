@@ -30,6 +30,17 @@ class UserSerializer(DynamicFieldsModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'username', 'password', 'first_name', 'last_name', 'email', 'groups']
+        extra_kwargs = { 'password': {'write_only': True} }
+    
+    def create(self, validated_data):
+        password = validated_data.pop('password', None)
+        groups = validated_data.pop('groups', [])
+        user = User.objects.create_user(**validated_data)
+        if password:
+            user.set_password(password)
+        if groups:
+            user.groups.set(groups)
+        return user
 
 class SessaoSerializer(DynamicFieldsModelSerializer):
 

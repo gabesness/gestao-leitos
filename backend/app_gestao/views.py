@@ -649,6 +649,7 @@ class UserViewSet(GenericViewSet):
         request=None
     )
     @action(detail=False, methods=['POST'])
+    @csrf_exempt
     def logout(self, request):
         try:
             logout(request)
@@ -656,16 +657,53 @@ class UserViewSet(GenericViewSet):
         except Exception as e:
             return Response({'Erro': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    @extend_schema(
+            summary="Cadastrar usuário",
+            description="""Realiza o cadastro do usuário.\n
+                           Admin deve informar nome de usuário, senha, nome, sobrenome, email e cargo.\n
+                           Obs.: o cargo (campo 'groups') é um ÚNICO número, seguindo os criterios abaixo:\n
+                           1 - Medico;\n
+                           2 - Farmacia;\n
+                           3 - Administracao;\n
+                           4 - Regulacao;\n
+                           5 - Recepcao\n
+                           NÃO É POSSÍVEL criar dois usuarios de usernames iguais\n
+                           NÃO É POSSÍVEL criar dois usuarios com o mesmo email (evita conflito de recuperar senha)
+                           """
+    )
+    @action(detail=False, methods=['POST'])
+    def criar_usuario(self, request):
+        try:
+            check_username = User.objects.filter(username=request.data['username']).exists()
+            check_email = User.objects.filter(email=request.data['email']).exists()
+            if check_username:
+                return Response({'Erro': 'Este nome de usuário já está sendo utilizado'}, status=status.HTTP_400_BAD_REQUEST)
+            elif check_email:
+                return Response({'Erro': 'O e-mail informado já está cadastrado para outro usuário'}, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                serializer = self.get_serializer(data=request.data)
+                if serializer.is_valid(raise_exception=True):
+                    user = serializer.save()
+                    return Response(UserSerializer(user).data, status=status.HTTP_201_CREATED)
+                return Response({'Erro': 'dados inválidos'}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({'Erro': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
     # @extend_schema(
-    #         summary="Cadastrar usuário",
-    #         description="Realiza o cadastro do usuário (Falta implementar envio de senha por e-mail)"
+    #     summary="Gerenciar usuários",
+    #     description="""
+    #                 Permite ao Administrador alterar as seguintes informações de um usuário: nome, sobrenome, email, cargo(?), e senha.
+    #                 """
     # )
-    # @action(detail=False, methods=['POST'])
-    # def criar_usuario(self, request):
-    #     serializer = self.get_serializer(data=request.data)
-    #     if serializer.is_valid(raise_exception=True):
-    #         serializer.save()
-    #         return Response(serializer.data, status=status.HTTP_201_CREATED)
+    # @action(detail=True, methods=['PATCH'])
+    # def alterar_dados_usuario(self, request):
+    #     try:
+    #         user = self.get_object()
+    #         fds = ['first_name', 'last_name', 'email', 'password']
+    #         serializer = self.get_serializer(user, fields=fds)
+    #         pass
+    #     except Exception as e:
+    #         return Response({'Erro': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class EstatisticaViewSet(GenericViewSet):
     """
@@ -756,68 +794,4 @@ class EstatisticaViewSet(GenericViewSet):
         """
         Retorna quantos novos pacientes entraram no sistema por tempo
         """
-
-### ROTAS DE LOGIN / AUTENTICACAO
-
-
-@csrf_exempt
-def fazer_login(request):
-    try:
-        username = request.POST.get("username", '')
-        password = request.POST.get("password", '')
-        user = authenticate(request, username=username, password=password)
-
-        if user is not None:
-            login(request, user)
-            data = {
-                'id': user.id,
-                'username': user.username,
-                'nome': user.first_name,
-                'sobrenome': user.last_name,
-                'email': user.email,
-                'groups': list(user.groups.values_list('name', flat=True)),
-            }
-            return JsonResponse(data)
-        else:
-            return JsonResponse({"erro": "usuario/senha incorretos"})
-    except Exception as e:
-        return JsonResponse({"erro": str(e)})
-
-def esqueceu_senha(request):
-    email = request.POST.get('email', '')
-    # enviar o email lol
-    return HttpResponse(status=200)
-
-def alterar_senha(request, id):
-    user = User.objects.get(id)
-    senha = request.PUT.get('senha', '')
-    confirmar_senha = request.POST.get('confirmar_senha', '')
-    if senha == confirmar_senha:
-        user.set_password(senha)
-        user.save()
-        # alterar a senha do usuario
-        pass
-    pass
-
-# ROTAS GERAIS
-def minha_conta(request, id):
-    try:
-        user = User.objects.filter(id=id).values()
-        return JsonResponse(list(user), safe=False)
-    except Exception as e:
-        return JsonResponse({"erro": str(e)})
-def dashboard(request):
-    pass
-def alterar_dados_do_usuario(request, id):
-    try:
-        nome = request.PUT.get('first_name', '')
-        sobrenome = request.PUT.get('last_name', '')
-        email = request.PUT.get('email', '')
-        if nome: u.first_name = nome
-        if sobrenome: u.last_name = sobrenome
-        if email: u.email = email
-        u = User.objects.get(id=id)
-        return JsonResponse({"OK": "dados alterados com sucesso!"})
-    except Exception as e:
-        return JsonResponse({"erro": str(e)})
 
