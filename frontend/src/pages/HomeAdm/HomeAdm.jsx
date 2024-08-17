@@ -80,7 +80,7 @@ function ModalNovoUsuario({ isOpen, onClose }) {
     event.preventDefault();
     
     try {
-      const response = await axios.patch(`${AxiosURL}/usuarios/criar_usuario/`, {
+      const response = await axios.post(`${AxiosURL}/usuarios/criar_usuario/`, {
         username: formData.username,
         password: formData.senha,
         first_name: formData.nome,
@@ -148,7 +148,7 @@ function ModalNovoUsuario({ isOpen, onClose }) {
 
 function QuadroLista({ usuarios, activeTab, selectedUser, handleUserClick, setActiveTab }) {
   const [currentPage, setCurrentPage] = useState(1);
-  const [postsPerPage] = useState(5); // Quantidade de usuários por página
+  const [postsPerPage] = useState(8); // Quantidade de usuários por página
   const [searchTerm, setSearchTerm] = useState(''); // Estado para o termo de pesquisa
 
   const handleSearchChange = (event) => {

@@ -62,7 +62,7 @@ function ModalNovaPrescricao({ isOpen, onClose }) {
       const response = await axios.patch(`${AxiosURL}/prescricoes/${prontuario}/criar_prescricao/`, {
         id_usuario: localStorage.getItem('idUser'),
       });
-      if (response.status === 204) {
+      if (response.status === 200) {
       toast.success(response.data.message);
 
       }
