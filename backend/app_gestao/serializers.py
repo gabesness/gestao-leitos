@@ -41,6 +41,13 @@ class UserSerializer(DynamicFieldsModelSerializer):
         if groups:
             user.groups.set(groups)
         return user
+    
+    def update(self, instance, validated_data):
+        instance.first_name = validated_data.get('first_name', instance.first_name)
+        instance.last_name = validated_data.get('last_name', instance.last_name)
+        instance.email = validated_data.get('email', instance.email)
+        instance.save()
+        return instance
 
 class SessaoSerializer(DynamicFieldsModelSerializer):
 
@@ -69,6 +76,12 @@ class PacienteSerializer(DynamicFieldsModelSerializer):
         fields = ['id', 'nome', 'prontuario', 'estagio_atual', 'leito', 'plano_terapeutico', 'sessao_atual', 'historico_atual', 'historico_completo']
         read_only_fields = ['id', 'estagio_atual', 'leito', 'plano_terapeutico', 'sessao_atual', 'historico_atual', 'historico_completo']
 
+    def update(self, instance, validated_data):
+        instance.nome = validated_data.get('nome', instance.nome)
+        instance.save()
+        return instance
+    
+    # METODOS INTERNOS PROPRIOS
     def get_sessao_atual(self, obj) -> dict:
         sessao = obj.sessao_atual()
         if sessao:
