@@ -78,12 +78,14 @@ function ModalNovaPrescricao({ isOpen, onClose }) {
       <MDBModalDialog>
         <MDBModalContent>
           <MDBModalHeader>
-            <MDBModalTitle>Nova Prescrição</MDBModalTitle>
+          <MDBModalTitle style={{ fontFamily: 'FiraSans-Medium, sans-serif' }}>
+            Nova Prescrição
+          </MDBModalTitle>
             <MDBBtn className='btn-close' color='none' onClick={handleClose}></MDBBtn>
           </MDBModalHeader>
-          <MDBModalBody>
+          <MDBModalBody style={{ fontFamily: 'FiraSans-Light, sans-serif' }}>
 
-          <MDBInput label="Prontuário do Paciente" id="prontuario" type="text" value={prontuario} onChange={handleChange} />
+          <MDBInput style={{ fontFamily: 'FiraSans-Light, sans-serif' }} label="Prontuário do Paciente" id="prontuario" type="text" value={prontuario} onChange={handleChange} />
 
           </MDBModalBody>
           <MDBModalFooter>
@@ -108,10 +110,10 @@ function ModalEnviarFarmacia({ isOpen, onClose, onSubmit }) {
       <MDBModalDialog>
         <MDBModalContent>
           <MDBModalHeader>
-            <MDBModalTitle>Confirmação de envio para farmácia</MDBModalTitle>
+            <MDBModalTitle style={{ fontFamily: 'FiraSans-Medium, sans-serif' }}>Confirmação de envio para farmácia</MDBModalTitle>
             <MDBBtn className='btn-close' color='none' onClick={handleClose}></MDBBtn>
           </MDBModalHeader>
-          <MDBModalBody>
+          <MDBModalBody style={{ fontFamily: 'FiraSans-Light, sans-serif' }}>
 
           A prescrição será encaminhada para a farmácia
 
@@ -158,10 +160,10 @@ function ModalAltaObito({ isOpen, onClose, selectedPaciente }) {
       <MDBModalDialog>
         <MDBModalContent>
           <MDBModalHeader>
-            <MDBModalTitle>Confirmação de Alta Óbito</MDBModalTitle>
+            <MDBModalTitle style={{ fontFamily: 'FiraSans-Medium, sans-serif' }}>Confirmação de Alta Óbito</MDBModalTitle>
             <MDBBtn className='btn-close' color='none' onClick={handleClose}></MDBBtn>
           </MDBModalHeader>
-          <MDBModalBody>
+          <MDBModalBody style={{ fontFamily: 'FiraSans-Light, sans-serif' }}>
 
           Confirme que o paciente está recebendo alta
 
@@ -207,10 +209,10 @@ function ModalAltaNormal({ isOpen, onClose, selectedPaciente }) {
       <MDBModalDialog>
         <MDBModalContent>
           <MDBModalHeader>
-            <MDBModalTitle>Confirmação de Alta Normal</MDBModalTitle>
+            <MDBModalTitle style={{ fontFamily: 'FiraSans-Medium, sans-serif' }}>Confirmação de Alta Normal</MDBModalTitle>
             <MDBBtn className='btn-close' color='none' onClick={handleClose}></MDBBtn>
           </MDBModalHeader>
-          <MDBModalBody>
+          <MDBModalBody style={{ fontFamily: 'FiraSans-Light, sans-serif' }}>
             Confirme que o paciente está recebendo alta normal
           </MDBModalBody>
           <MDBModalFooter>
@@ -253,10 +255,10 @@ function ModalAltaDefinitiva({ isOpen, onClose, selectedPaciente }) {
       <MDBModalDialog>
         <MDBModalContent>
           <MDBModalHeader>
-            <MDBModalTitle>Confirmação de Alta Definitiva</MDBModalTitle>
+            <MDBModalTitle style={{ fontFamily: 'FiraSans-Medium, sans-serif' }}>Confirmação de Alta Definitiva</MDBModalTitle>
             <MDBBtn className='btn-close' color='none' onClick={handleClose}></MDBBtn>
           </MDBModalHeader>
-          <MDBModalBody>
+          <MDBModalBody style={{ fontFamily: 'FiraSans-Light, sans-serif' }}>
 
           Confirme que o paciente está recebendo alta definitiva
 
@@ -303,10 +305,10 @@ function ModalTransferencia({ isOpen, onClose, selectedPaciente, formValue }) {
       <MDBModalDialog>
         <MDBModalContent>
           <MDBModalHeader>
-            <MDBModalTitle>Confirmação de Transferência</MDBModalTitle>
+            <MDBModalTitle style={{ fontFamily: 'FiraSans-Medium, sans-serif' }}>Confirmação de Transferência</MDBModalTitle>
             <MDBBtn className='btn-close' color='none' onClick={handleClose}></MDBBtn>
           </MDBModalHeader>
-          <MDBModalBody>
+          <MDBModalBody style={{ fontFamily: 'FiraSans-Light, sans-serif' }}>
 
           Autorização para a regulação confirmar transferência
 
@@ -388,6 +390,8 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
               boxShadow: 'none', // Remove a sombra
               color: activeTab === 'pendentes' ? '#000000' : '#6c757d', // Texto normal quando ativado, cinza quando desativado
               backgroundColor: activeTab === 'pendentes' ? 'white' : '#D3D3D3', // Ajuste a cor de fundo para corresponder ao estado ativo/desativado
+              fontFamily: 'FiraSans-Medium, sans-serif' 
+
             }}
             color={activeTab === 'pendentes' ? 'white' : 'dark'}
             onClick={() => setActiveTab('pendentes')}
@@ -405,6 +409,7 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
               boxShadow: 'none', // Remove a sombra
               color: activeTab === 'internados' ? '#000000' : '#6c757d', // Texto normal quando ativado, cinza quando desativado
               backgroundColor: activeTab === 'internados' ? 'white' : '#D3D3D3', // Ajuste a cor de fundo para corresponder ao estado ativo/desativado
+              fontFamily: 'FiraSans-Medium, sans-serif' 
             }}
             color={activeTab === 'internados' ? 'white' : 'dark'}
             onClick={() => setActiveTab('internados')}
@@ -625,7 +630,7 @@ function QuadroFicha({ selectedPaciente, historico }) {
       {/* histórico */}
 
       <div className="col-md-6">
-      <h4>Histórico</h4>
+      <h4 style={{ fontFamily: 'FiraSans-Medium, sans-serif' }}>Histórico</h4>
       <div style={{ height: '360px', overflowY: 'auto' }}>
       {historico.map((registro, index) => {
                     const { dataFormatada, horaFormatada } = formatarData(registro.criado_em);
@@ -648,23 +653,29 @@ function QuadroFicha({ selectedPaciente, historico }) {
 
         <div className="col-md-6">
           <div>
-            <h4>Dados da Solicitação</h4>
-            <MDBTextArea 
-                    label="Medicamentos" 
-                    id="textAreaExample" 
-                    rows={4} 
-                    style={{ resize: 'none' }}
-                    className="mb-3"
-                    name="medicamentos"
-                    value={formValue.medicamentos} 
-                    onChange={onChange}
-                    disabled={!isPrescricaoCriada}  
-                    />
+          <h4 style={{ fontFamily: 'FiraSans-Medium, sans-serif' }}>Dados da Solicitação</h4>
+          <MDBTextArea 
+            label="Medicamentos" 
+            id="textAreaExample" 
+            rows={4} 
+            style={{ 
+                resize: 'none', 
+                fontFamily: 'FiraSans-Light, sans-serif' 
+            }}
+            className="mb-3"
+            name="medicamentos"
+            value={formValue.medicamentos} 
+            onChange={onChange}
+            disabled={!isPrescricaoCriada}  
+        />
             
             <MDBInput 
                     label="Data de Entrada" 
                     id="textAreaExample" 
                     type="date" 
+                    style={{  
+                      fontFamily: 'FiraSans-Light, sans-serif' 
+                      }}
                     className="mb-3"
                     name="data_sugerida"
                     value={formValue.data_sugerida} 
@@ -678,6 +689,9 @@ function QuadroFicha({ selectedPaciente, historico }) {
                         label="Nº de Sessões" 
                         id="sessoes"
                         name="sessoes_prescritas"
+                        style={{ 
+                          fontFamily: 'FiraSans-Light, sans-serif' 
+                      }}
                         value={formValue.sessoes_prescritas} 
                         onChange={onChange}
                         disabled={!isPrescricaoCriada}  
@@ -688,6 +702,9 @@ function QuadroFicha({ selectedPaciente, historico }) {
                         label="Dias de intervalo" 
                         id="intervaloDias"
                         name="dias_intervalo"
+                        style={{ 
+                          fontFamily: 'FiraSans-Light, sans-serif' 
+                      }}
                         value={formValue.dias_intervalo} 
                         onChange={onChange}
                         disabled={!isPrescricaoCriada}  
@@ -701,7 +718,10 @@ function QuadroFicha({ selectedPaciente, historico }) {
                     label="Observações" 
                     id="textAreaExample" 
                     rows={4}
-                    style={{ resize: 'none' }}
+                    style={{ 
+                      resize: 'none', 
+                      fontFamily: 'FiraSans-Light, sans-serif' 
+                  }}
                     name="mensagem"
                     value={formValue.mensagem} 
                     onChange={onChange}
@@ -786,7 +806,14 @@ function HomeMedico() {
   return (
     <MDBContainer fluid className='p-1 background-radial-gradient overflow-hidden d-flex justify-content-center'  style={{ minHeight: '100vh' }}>
       <MDBCard className='my-5 bg-glass max-width-card' style={{ width: '100%', maxWidth: '1200px', borderRadius: '38px' }}>
-      <h2 style={{ marginTop: '15px', marginLeft: '50px', marginBottom: '-22px' }}>Acompanhamento</h2>
+      <h2 style={{ 
+        marginTop: '15px', 
+        marginLeft: '50px', 
+        marginBottom: '-22px', 
+        fontFamily: 'FiraSans-SemiBold, sans-serif' 
+      }}>
+        Acompanhamento
+      </h2>
       <MDBCardBody className='p-5'>
           <MDBRow>
           <QuadroLista

@@ -28,10 +28,12 @@ function PacienteCardMedico({ paciente, selectedPaciente, handlePacienteClick })
     >
        <div className='ms-2 me-auto'>
         <div className='fw-bold'>{paciente.nome}</div>
-        Prontuário: {paciente.prontuario}
-      </div>
+        <div style={{ fontFamily: 'FiraSans-Light, sans-serif' }}>
+          Prontuário: {paciente.prontuario}
+        </div>
+        </div>
       {tagContent && (
-      <span className={`badge bg-${tagColor} rounded-pill me-2`}>
+      <span className={`badge bg-${tagColor} rounded-pill me-2`} style={{ fontFamily: 'FiraSans-Light, sans-serif' }}>
           {tagContent === 'Nova' && <MDBIcon fas icon="plus-circle" className="me-1" />}
           {tagContent === 'Farmácia' && <MDBIcon fas icon="pills" className="me-1" />}
           {tagContent === 'Transferência' && <MDBIcon fas icon="exchange-alt" className="me-1" />}

@@ -104,10 +104,10 @@ function ModalNovoUsuario({ isOpen, onClose }) {
       <MDBModalDialog>
         <MDBModalContent>
           <MDBModalHeader>
-            <MDBModalTitle>Novo Usuário</MDBModalTitle>
+            <MDBModalTitle style={{ fontFamily: 'FiraSans-Medium, sans-serif' }}>Novo Usuário</MDBModalTitle>
             <MDBBtn className='btn-close' color='none' onClick={handleClose}></MDBBtn>
           </MDBModalHeader>
-          <MDBModalBody>
+          <MDBModalBody style={{ fontFamily: 'FiraSans-Light, sans-serif' }}>
             <div style={{ marginBottom: '15px' }}>
               <MDBInput label="Nome" id="nome" type="text" onChange={handleChange} />
             </div>
@@ -330,7 +330,8 @@ function HomeAdm() {
   return (
     <MDBContainer fluid className='p-1 background-radial-gradient overflow-hidden d-flex justify-content-center'  style={{ minHeight: '100vh' }}>
       <MDBCard className='my-5 bg-glass max-width-card' style={{ width: '100%', maxWidth: '1200px', borderRadius: '38px' }}>
-      <h2 style={{ marginTop: '15px', marginLeft: '50px', marginBottom: '-22px' }}>Gerenciamento de Usuários</h2>
+      <h2 style={{ marginTop: '15px', marginLeft: '50px', marginBottom: '-22px',         fontFamily: 'FiraSans-SemiBold, sans-serif' 
+ }}>Gerenciamento de Usuários</h2>
       <MDBCardBody className='p-5'>
           <MDBRow>
           <QuadroLista

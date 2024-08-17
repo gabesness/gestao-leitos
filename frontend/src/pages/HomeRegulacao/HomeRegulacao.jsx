@@ -76,10 +76,10 @@ function ModalDevolverMedico({ isOpen, onClose, selectedPaciente, formValue }) {
       <MDBModalDialog>
         <MDBModalContent>
           <MDBModalHeader>
-            <MDBModalTitle>Devolução ao médico</MDBModalTitle>
+            <MDBModalTitle style={{ fontFamily: 'FiraSans-Medium, sans-serif' }}>Devolução ao médico</MDBModalTitle>
             <MDBBtn className='btn-close' color='none' onClick={handleClose}></MDBBtn>
           </MDBModalHeader>
-          <MDBModalBody>
+          <MDBModalBody style={{ fontFamily: 'FiraSans-Light, sans-serif' }}>
 
           A prescrição será devolvida ao médico por falta de vagas, 
           para que possar ser autorizado o encaminhamento para outro hospital.
@@ -131,10 +131,10 @@ function ModalAgendamento({ isOpen, onClose, selectedPaciente, selectedLeito, fo
       <MDBModalDialog>
         <MDBModalContent>
           <MDBModalHeader>
-            <MDBModalTitle>Confirmar agendamento</MDBModalTitle>
+            <MDBModalTitle style={{ fontFamily: 'FiraSans-Medium, sans-serif' }}>Confirmar agendamento</MDBModalTitle>
             <MDBBtn className='btn-close' color='none' onClick={handleClose}></MDBBtn>
           </MDBModalHeader>
-          <MDBModalBody>
+          <MDBModalBody style={{ fontFamily: 'FiraSans-Light, sans-serif' }}>
 
           O paciente {selectedPaciente ? ` ${selectedPaciente.nome}`  : ''} será agendado no leito {selectedLeito ? ` ${selectedLeito.numero}` : ''}
 
@@ -182,10 +182,10 @@ function ModalInternacao({ isOpen, onClose, selectedPaciente }) {
       <MDBModalDialog>
         <MDBModalContent>
           <MDBModalHeader>
-            <MDBModalTitle>Confirmar internação</MDBModalTitle>
+            <MDBModalTitle style={{ fontFamily: 'FiraSans-Medium, sans-serif' }}>Confirmar internação</MDBModalTitle>
             <MDBBtn className='btn-close' color='none' onClick={handleClose}></MDBBtn>
           </MDBModalHeader>
-          <MDBModalBody>
+          <MDBModalBody style={{ fontFamily: 'FiraSans-Light, sans-serif' }}>
 
           Confirmar que o paciente foi internado.
 
@@ -231,10 +231,10 @@ function ModalTransferencia({ isOpen, onClose, selectedPaciente, formValue }) {
       <MDBModalDialog>
         <MDBModalContent>
           <MDBModalHeader>
-            <MDBModalTitle>Confirmar transferência</MDBModalTitle>
+            <MDBModalTitle style={{ fontFamily: 'FiraSans-Medium, sans-serif' }}>Confirmar transferência</MDBModalTitle>
             <MDBBtn className='btn-close' color='none' onClick={handleClose}></MDBBtn>
           </MDBModalHeader>
-          <MDBModalBody>
+          <MDBModalBody style={{ fontFamily: 'FiraSans-Light, sans-serif' }}>
 
           Confirmar que o paciente foi transferido.
 
@@ -280,10 +280,10 @@ function ModalAltaObito({ isOpen, onClose, selectedPaciente }) {
       <MDBModalDialog>
         <MDBModalContent>
           <MDBModalHeader>
-            <MDBModalTitle>Confirmação de Falecimento</MDBModalTitle>
+            <MDBModalTitle style={{ fontFamily: 'FiraSans-Medium, sans-serif' }}>Confirmação de Falecimento</MDBModalTitle>
             <MDBBtn className='btn-close' color='none' onClick={handleClose}></MDBBtn>
           </MDBModalHeader>
-          <MDBModalBody>
+          <MDBModalBody style={{ fontFamily: 'FiraSans-Light, sans-serif' }}>
 
           Confirme que o paciente faleceu
 
@@ -358,7 +358,9 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
               borderBottomLeftRadius: '0px',
               boxShadow: 'none',
               color: activeTab === 'pendentes' ? '#000000' : '#6c757d',
-              backgroundColor: activeTab === 'pendentes' ? 'white' : '#D3D3D3'
+              backgroundColor: activeTab === 'pendentes' ? 'white' : '#D3D3D3',
+              fontFamily: 'FiraSans-Medium, sans-serif' 
+
             }}
             color={activeTab === 'pendentes' ? 'white' : 'dark'}
             onClick={() => setActiveTab('pendentes')}
@@ -375,7 +377,9 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
               borderBottomRightRadius: '0px',
               boxShadow: 'none',
               color: activeTab === 'agendados' ? '#000000' : '#6c757d',
-              backgroundColor: activeTab === 'agendados' ? 'white' : '#D3D3D3'
+              backgroundColor: activeTab === 'agendados' ? 'white' : '#D3D3D3',
+              fontFamily: 'FiraSans-Medium, sans-serif' 
+
             }}
             color={activeTab === 'agendados' ? 'white' : 'dark'}
             onClick={() => setActiveTab('agendados')}
@@ -544,7 +548,7 @@ function QuadroFicha({ selectedPaciente, historico }) {
       {/* histórico */}
 
       <div className="col-md-6">
-      <h4>Histórico</h4>
+      <h4 style={{ fontFamily: 'FiraSans-Medium, sans-serif' }}>Histórico</h4>
       <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
       {historico.map((registro, index) => {
                     const { dataFormatada, horaFormatada } = formatarData(registro.criado_em);
@@ -568,11 +572,14 @@ function QuadroFicha({ selectedPaciente, historico }) {
 
         <div className="col-md-6">
           <div>
-            <h4>Dados da Solicitação</h4>
+          <h4 style={{ fontFamily: 'FiraSans-Medium, sans-serif' }}>Dados da Solicitação</h4>
             <MDBInput 
                     label="Data de Entrada" 
                     id="textAreaExample" 
                     type="date" 
+                    style={{  
+                      fontFamily: 'FiraSans-Light, sans-serif' 
+                      }}
                     className="mb-3" 
                     value={selectedPaciente.plano_terapeutico?.data_sugerida || ''} 
                     disabled 
@@ -583,6 +590,9 @@ function QuadroFicha({ selectedPaciente, historico }) {
               <MDBInput 
                         label="Nº de Sessões" 
                         id="sessoes" 
+                        style={{ 
+                          fontFamily: 'FiraSans-Light, sans-serif' 
+                      }}
                         value={selectedPaciente.plano_terapeutico?.sessoes_prescritas || ''} 
                         disabled 
                       />
@@ -591,6 +601,9 @@ function QuadroFicha({ selectedPaciente, historico }) {
               <MDBInput 
                         label="Dias de intervalo" 
                         id="intervaloDias" 
+                        style={{ 
+                          fontFamily: 'FiraSans-Light, sans-serif' 
+                      }}
                         value={selectedPaciente.plano_terapeutico?.dias_intervalo || ''} 
                         disabled 
                       />
@@ -627,7 +640,10 @@ function QuadroFicha({ selectedPaciente, historico }) {
                     label="Observações" 
                     id="textAreaExample" 
                     rows={4}
-                    style={{ resize: 'none' }}
+                    style={{ 
+                      resize: 'none', 
+                      fontFamily: 'FiraSans-Light, sans-serif' 
+                  }}
                     name="mensagem"
                     value={formValue.mensagem} 
                     onChange={onChange}
@@ -703,7 +719,8 @@ function HomeRegulacao() {
   return (
     <MDBContainer fluid className='p-1 background-radial-gradient overflow-hidden d-flex justify-content-center'  style={{ minHeight: '100vh' }}>
       <MDBCard className='my-5 bg-glass max-width-card' style={{ width: '100%', maxWidth: '1200px', borderRadius: '38px' }}>
-      <h2 style={{ marginTop: '15px', marginLeft: '50px', marginBottom: '-22px' }}>Prescrições</h2>
+      <h2 style={{ marginTop: '15px', marginLeft: '50px', marginBottom: '-22px', fontFamily: 'FiraSans-SemiBold, sans-serif' 
+ }}>Prescrições</h2>
       <MDBCardBody className='p-5'>
           <MDBRow>
           <QuadroLista

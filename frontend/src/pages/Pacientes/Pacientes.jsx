@@ -85,16 +85,17 @@ function ModalCriarPaciente({ isOpen, onClose }) {
       <MDBModalDialog>
         <MDBModalContent>
           <MDBModalHeader>
-            <MDBModalTitle>Adicionar Paciente Novo</MDBModalTitle>
+            <MDBModalTitle style={{ fontFamily: 'FiraSans-Medium, sans-serif' }}>Adicionar Paciente Novo</MDBModalTitle>
             <MDBBtn className='btn-close' color='none' onClick={handleClose}></MDBBtn>
           </MDBModalHeader>
-          <MDBModalBody>
+          <MDBModalBody style={{ fontFamily: 'FiraSans-Light, sans-serif' }}>
           <form onSubmit={CriarPaciente}>
             <MDBInput 
               className="mb-4" 
               name="nome" 
               id="nome" 
               label="Nome" 
+              style={{ fontFamily: 'FiraSans-Light, sans-serif' }}
               type="text"
               value={formValue.nome} 
               onChange={onChange} 
@@ -105,6 +106,7 @@ function ModalCriarPaciente({ isOpen, onClose }) {
               name="prontuario" 
               id="prontuario" 
               label="Prontuário" 
+              style={{ fontFamily: 'FiraSans-Light, sans-serif' }}
               type="text"
               value={formValue.prontuario} 
               onChange={onChange} 
@@ -289,7 +291,7 @@ function QuadroFicha({ selectedPaciente, historico }) {
           </MDBRow>
   
             {/* Histórico */}
-            <h4 style={{ textAlign: 'center' }}>Histórico</h4>
+            <h4 style={{ textAlign: 'center', fontFamily: 'FiraSans-Medium, sans-serif' }}>Histórico</h4>
             <div style={{ height: '360px', overflowY: 'auto' }}>
             {historico.map((registro, index) => {
             const { dataFormatada, horaFormatada } = formatarData(registro.criado_em);
@@ -353,7 +355,8 @@ function Pacientes() {
   return (
     <MDBContainer fluid className='p-1 background-radial-gradient overflow-hidden d-flex justify-content-center'  style={{ minHeight: '100vh' }}>
       <MDBCard className='my-5 bg-glass max-width-card' style={{ width: '100%', maxWidth: '1200px', borderRadius: '38px' }}>
-      <h2 style={{ marginTop: '15px', marginLeft: '50px', marginBottom: '-22px' }}>Pacientes</h2>
+      <h2 style={{ marginTop: '15px', marginLeft: '50px', marginBottom: '-22px', fontFamily: 'FiraSans-SemiBold, sans-serif' 
+ }}>Pacientes</h2>
       <MDBCardBody className='p-5'>
           <MDBRow>
           <QuadroLista

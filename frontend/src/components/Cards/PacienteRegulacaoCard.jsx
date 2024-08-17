@@ -22,7 +22,9 @@ function PacienteCardMedico({ paciente, selectedPaciente, handlePacienteClick })
     >
        <div className='ms-2 me-auto'>
         <div className='fw-bold'>{paciente.nome}</div>
-        Prontuário: {paciente.prontuario}
+        <div style={{ fontFamily: 'FiraSans-Light, sans-serif' }}>
+          Prontuário: {paciente.prontuario}
+        </div>
       </div>
       {tagContent && (
               <span className={`badge bg-${tagColor} rounded-pill me-2`}>{tagContent}</span>

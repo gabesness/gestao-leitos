@@ -59,7 +59,7 @@ function ModalFicha({ isOpen, onClose, selectedPaciente, historico}) {
               {/* histórico */}
 
               <div className="col-md-6">
-              <h4>Histórico</h4>
+              <h4 style={{ fontFamily: 'FiraSans-Medium, sans-serif' }}>Histórico</h4>
               <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
               {historico.map((registro, index) => {
                     const { dataFormatada, horaFormatada } = formatarData(registro.criado_em);
@@ -82,12 +82,16 @@ function ModalFicha({ isOpen, onClose, selectedPaciente, historico}) {
 
                 <div className="col-md-6">
                   <div>
-                    <h4>Dados da Solicitação</h4>
+                  <h4 style={{ fontFamily: 'FiraSans-Medium, sans-serif' }}>Dados da Solicitação</h4>
+                    
                     <MDBTextArea 
                     label="Medicamentos" 
                     id="textAreaExample" 
                     rows={4} 
-                    style={{ resize: 'none' }}
+                    style={{ 
+                      resize: 'none', 
+                      fontFamily: 'FiraSans-Light, sans-serif' 
+                  }}
                     className="mb-3" 
                     value={medicamentos}
                     disabled 
@@ -97,6 +101,9 @@ function ModalFicha({ isOpen, onClose, selectedPaciente, historico}) {
                     label="Data de Entrada" 
                     id="textAreaExample" 
                     type="date" 
+                    style={{  
+                      fontFamily: 'FiraSans-Light, sans-serif' 
+                      }}
                     className="mb-3" 
                     value={data_sugerida}
                     disabled 
@@ -107,6 +114,9 @@ function ModalFicha({ isOpen, onClose, selectedPaciente, historico}) {
                       <MDBInput 
                         label="Nº de Sessões" 
                         id="sessoes" 
+                        style={{ 
+                          fontFamily: 'FiraSans-Light, sans-serif' 
+                      }}
                         value={sessoes_prescritas}
                         disabled 
                       />                      </div>
@@ -114,6 +124,9 @@ function ModalFicha({ isOpen, onClose, selectedPaciente, historico}) {
                       <MDBInput 
                         label="Dias de intervalo" 
                         id="intervaloDias" 
+                        style={{ 
+                          fontFamily: 'FiraSans-Light, sans-serif' 
+                      }}
                         value={dias_intervalo}
                         disabled 
                       />                      </div>
@@ -169,7 +182,8 @@ function Kanban() {
   return (
     <MDBContainer fluid className='p-1 background-radial-gradient overflow-hidden d-flex justify-content-center'  style={{ minHeight: '100vh' }}>
       <MDBCard className='my-5 bg-glass max-width-card' style={{ width: '100%', maxWidth: '1200px', borderRadius: '38px' }}>
-      <h2 style={{ marginTop: '15px', marginLeft: '50px', marginBottom: '10px' }}>Kanban</h2>
+      <h2 style={{ marginTop: '15px', marginLeft: '50px', marginBottom: '10px',         fontFamily: 'FiraSans-SemiBold, sans-serif' 
+ }}>Kanban</h2>
         <MDBCardBody className='p-3'>
           <MDBRow className='g-2'>
             {/* Coluna de Médico */}
