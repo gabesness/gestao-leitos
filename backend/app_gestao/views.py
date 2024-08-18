@@ -1,16 +1,22 @@
-from django.shortcuts import render
-from django.http import HttpResponse, JsonResponse
 from app_gestao.models import Paciente, Registro, Sessao, Plano_terapeutico
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 #from django.middleware.csrf import get_token
-from django.views.decorators.csrf import csrf_exempt, csrf_protect
+from django.views.decorators.csrf import csrf_exempt
+from django.core.mail import send_mail
 from rest_framework.viewsets import GenericViewSet
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from drf_spectacular.utils import extend_schema
 from .serializers import *
+
+from string import ascii_letters, digits
+from random import SystemRandom
+
+# HELPERS
+def helper_gerar_senha(size=8, chars=ascii_letters + digits):
+    return ''.join(SystemRandom().choice(chars) for _ in range(size))
 
 # Create your views here.
 class PacienteViewSet(GenericViewSet):
@@ -671,7 +677,8 @@ class UserViewSet(GenericViewSet):
     @extend_schema(
             summary="Cadastrar usuário",
             description="""Realiza o cadastro do usuário.\n
-                           Admin deve informar nome de usuário, senha, nome, sobrenome, email e cargo.\n
+                           Admin deve informar nome de usuário, nome, sobrenome, email e cargo.\n
+                           A senha será gerada automaticamente e enviada para o email cadastrado.\n
                            Obs.: o cargo (campo 'groups') é um ÚNICO número, seguindo os criterios abaixo:\n
                            1 - Medico;\n
                            2 - Farmacia;\n
@@ -680,7 +687,33 @@ class UserViewSet(GenericViewSet):
                            5 - Recepcao\n
                            NÃO É POSSÍVEL criar dois usuarios de usernames iguais\n
                            NÃO É POSSÍVEL criar dois usuarios com o mesmo email (evita conflito de recuperar senha)
-                           """
+                           """,
+            request={
+            'application/json': {
+                'type': 'object',
+                'properties': {
+                    'username': {
+                        'type': 'string'
+                    },
+                    'first_name': {
+                        'type': 'string'
+                    },
+                    'last_name': {
+                        'type': 'string'
+                    },
+                    'email': {
+                        'type': 'string'
+                    },
+                    'groups': {
+                        'type': 'array',
+                        'items': {
+                            'type': 'string'
+                        }
+                    }
+                },
+                'required': ['username', 'first_name', 'last_name', 'email', 'groups']
+            }
+            }
     )
     @action(detail=False, methods=['POST'])
     def criar_usuario(self, request):
@@ -692,10 +725,26 @@ class UserViewSet(GenericViewSet):
             elif check_email:
                 return Response({'Erro': 'O e-mail informado já está cadastrado para outro usuário'}, status=status.HTTP_400_BAD_REQUEST)
             else:
-                serializer = self.get_serializer(data=request.data)
+                password = helper_gerar_senha()
+                serializer = self.get_serializer(data={**request.data, 'password': password})
                 if serializer.is_valid(raise_exception=True):
+                    send_mail(
+                    subject="Cadastro de usuário no sistema Oncoleitos",
+                    message=f"""
+                            Prezado(a) usuário(a),\n
+                            Você foi cadastrado no sistema Oncoleitos. Abaixo estão as suas credenciais:\n
+                            Nome de usuário: {request.data['username']}.\n
+                            Senha provisória: {password}.\n
+                            Acesse https://oncohu.netlify.app para fazer login.\n
+                            Recomendamos alterar a senha quando acessar o sistema. Em caso de dúvidas, entre em contato com a Administração.\n
+                            Atenciosamente,\n
+                            Oncoleitos - Gestão de Leitos Oncológicos
+                            """,
+                    from_email=None,
+                    recipient_list=[request.data['email']]
+                )
                     user = serializer.save()
-                    return Response(UserSerializer(user).data, status=status.HTTP_201_CREATED)
+                    return Response({'OK': 'Usuário cadastrado com sucesso!'}, status=status.HTTP_201_CREATED)
                 return Response({'Erro': 'dados inválidos'}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response({'Erro': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -768,6 +817,40 @@ class UserViewSet(GenericViewSet):
             return Response({'Erro': 'Usuário não encontrado'}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
             return Response({'Erro': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    @extend_schema(
+        summary="Gerar nova senha",
+        description="""
+                    O Administrador usa essa funcionalidade para redefinir a senha do usuário;
+                    Um email é enviado para o usuário com a senha gerada.
+                    """,
+        request=None
+    )
+    @action(detail=True, methods=['PATCH'])
+    def gerar_senha(self, request, pk=None):
+        try:
+            user = self.get_object()
+            password = helper_gerar_senha()
+            serializer = self.get_serializer(user, data={'password': password}, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                send_mail(
+                    subject="Redefinição de senha",
+                    message=f"""
+                            Prezado(a) usuário(a),\n
+                            Verificamos uma solicitação de redefinição de sua senha por parte do Administrador do sistema.\n
+                            Sua senha provisória é: {password}.\n
+                            Recomendamos alterar a senha quando acessar o sistema novamente. Em caso de dúvidas, entre em contato com a Administração.\n
+                            Atenciosamente,\n
+                            Oncoleitos - Gestão de Leitos Oncológicos
+                            """,
+                    from_email=None,
+                    recipient_list=[user.email]
+                )
+            return Response({'OK': 'Senha alterada com sucesso'}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'Erro': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
 
 class EstatisticaViewSet(GenericViewSet):
     """
