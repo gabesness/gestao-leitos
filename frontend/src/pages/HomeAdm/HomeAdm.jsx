@@ -251,11 +251,25 @@ function QuadroLista({ usuarios, activeTab, selectedUser, handleUserClick, setAc
 }
 
 function QuadroFicha({ selectedUser }) {
-  const [selectedLeito, setSelectedLeito] = useState(null);
 
-  const handleSelectLeito = (index) => {
-    setSelectedLeito(index + 1);
+  const GerarSenha = async (event) => {
+    event.preventDefault();
+    
+    try {
+      const response = await axios.patch(`${AxiosURL}/usuarios/${selectedUser.id}/gerar_senha/`);
+      
+      if (response.status === 200) {
+        toast.success(response.data.message);
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
+      }
+    } catch (error) {
+      console.error('Erro ao criar senha:', error);
+      toast.error(error.response?.data?.erro || 'Erro desconhecido');
+    }
   };
+  
 
   return (
     <MDBCol md='8'>
@@ -273,12 +287,9 @@ function QuadroFicha({ selectedUser }) {
   
               <div>
                 <h4>Informações do Usuário</h4>
+                <MDBInput label="Nome" id="nome" className="mb-3"/>
+                <MDBInput label="Sobrenome" id="sobrenome" className="mb-3" />
                 <MDBInput label="E-mail" id="email" className="mb-3" value={selectedUser.email} />
-                <hr style={{ margin: '20px 0' }} />
-                <h4>Alterar Senha</h4>
-                <MDBInput label="Senha Atual" id="senha" className="mb-2"/>
-                <MDBInput label="Nova Senha" id="senha" className="mb-2"/>
-                <MDBInput label="Confirmar Nova Senha" id="senha" className="mb-2"/>
               </div>
             </MDBRow>
           </MDBCardBody>
@@ -288,6 +299,14 @@ function QuadroFicha({ selectedUser }) {
           <div style={{ padding: '20px', marginTop: '10px', display: 'flex', justifyContent: 'space-between', borderTop: '1px solid rgba(0,0,0,.125)' }}>
             <div>
               <MDBBtn style={{ marginLeft: '10px' }} color='danger' >DESATIVAR USUÁRIO</MDBBtn>
+            </div>
+            <div>
+            <MDBBtn 
+                style={{ marginLeft: '10px' }} 
+                onClick={GerarSenha}
+              >
+                RECUPERAR SENHA
+              </MDBBtn>
             </div>
             <div>
               <MDBBtn style={{ marginLeft: '10px' }}>SALVAR ALTERAÇÕES</MDBBtn>
@@ -300,6 +319,7 @@ function QuadroFicha({ selectedUser }) {
           <p style={{ fontSize: '1.5rem' }}>Selecione um Usuário</p>
         </div>
       )}
+    <ToastContainer />
     </MDBCol>
   )
   
@@ -349,7 +369,7 @@ function HomeAdm() {
           </MDBRow>
         </MDBCardBody>
       </MDBCard>
-
+      <ToastContainer />
     </MDBContainer>
   );
 }

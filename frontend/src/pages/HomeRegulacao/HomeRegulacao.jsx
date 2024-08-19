@@ -52,8 +52,7 @@ function ModalDevolverMedico({ isOpen, onClose, selectedPaciente, formValue }) {
         id_usuario: localStorage.getItem('idUser'),
         mensagem: formValue.mensagem  // Incluir a mensagem no corpo da requisição
       });
-      console.log("Prescrição devolvida com sucesso:", response.data);
-      toast.success('Prescrição devolvida com sucesso!');
+      toast.success(response.data.message);
       setTimeout(() => {
         window.location.reload();
       }, 2000);
@@ -107,8 +106,7 @@ function ModalAgendamento({ isOpen, onClose, selectedPaciente, selectedLeito, fo
         id_usuario: localStorage.getItem('idUser'),
         mensagem: formValue.mensagem  // Incluir a mensagem no corpo da requisição
       });
-      console.log("Prescrição Agendada com sucesso:", response.data);
-      toast.success('Paciente agendado com sucesso!');
+      toast.success(response.data.message);
       setTimeout(() => {
         window.location.reload();
       }, 2000);
@@ -159,8 +157,7 @@ function ModalInternacao({ isOpen, onClose, selectedPaciente }) {
       const response = await axios.patch(`${AxiosURL}/prescricoes/${selectedPaciente.id}/internar/`, {
         id_usuario: localStorage.getItem('idUser'),
       });
-      console.log("Prescrição devolvida com sucesso:", response.data);
-      toast.success('Paciente internado!');
+      toast.success(response.data.message);
       setTimeout(() => {
         window.location.reload();
       }, 2000);
@@ -210,8 +207,7 @@ function ModalTransferencia({ isOpen, onClose, selectedPaciente, formValue }) {
         id_usuario: localStorage.getItem('idUser'),
         mensagem: formValue.mensagem  
       });
-      console.log("Prescrição devolvida com sucesso:", response.data);
-      toast.success('Paciente transferido!');
+      toast.success(response.data.message);
       setTimeout(() => {
         window.location.reload();
       }, 2000);    } catch (error) {
@@ -259,7 +255,7 @@ function ModalAltaObito({ isOpen, onClose, selectedPaciente }) {
         const response = await axios.patch(`${AxiosURL}/prescricoes/${selectedPaciente.id}/dar_alta/2/`, {
           id_usuario: localStorage.getItem('idUser'),
         });
-        toast.success('Prescrição atualizada!');
+        toast.success(response.data.message);
         setTimeout(() => {
           window.location.reload();
         }, 2000);      } catch (error) {

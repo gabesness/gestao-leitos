@@ -40,20 +40,9 @@ import CabecalhoMeuUsuario from '../../components/Ficha/CabecalhoMeuUsuario';
 
 function QuadroFicha() {
   return (
-  <MDBCard style={{ borderTopLeftRadius: '20px', borderTopRightRadius: '20px', borderBottomLeftRadius: '20px', borderBottomRightRadius: '20px', width: '100%', maxWidth: '800px'}}>
+  <MDBCard style={{ borderTopLeftRadius: '20px', borderTopRightRadius: '20px', borderBottomLeftRadius: '20px', borderBottomRightRadius: '20px', width: '100%', maxWidth: '600px'}}>
     <CabecalhoMeuUsuario />
     <MDBCardBody style={{ padding: '20px' }}>
-      <MDBRow>
-
-      {/* histórico */}
-
-      <div className="col-md-6">
-      <h4>Perfil</h4>
-      <MDBInput label="E-mail" id="SenhaAtual" style={{ marginBottom: '20px' }}/>
-      
-      </div>
-
-        {/* Dados da Solicitação */}
 
         <div className="col-md-6">
           <div>
@@ -66,7 +55,6 @@ function QuadroFicha() {
 
           </div>
         </div>
-      </MDBRow>
 
       <div style={{ padding: '20px', marginTop: '10px', display: 'flex', justifyContent: 'space-between', borderTop: '1px solid rgba(0,0,0,.125)' }}>
       <div>
@@ -83,24 +71,13 @@ function QuadroFicha() {
 }
 
 function MinhaConta() {  
-  const nome = localStorage.getItem('nome');
-  const sobrenome = localStorage.getItem('sobrenome');
-  const cargo = localStorage.getItem('cargo');
-
-  const selectedUser = {
-    Nome: nome,
-    Sobrenome: sobrenome,
-    Cargo: cargo,
-  };
-
-
   return (
     <MDBContainer fluid className='p-1 background-radial-gradient overflow-hidden d-flex justify-content-center' style={{ minHeight: '88vh' }}>
       <MDBCard className='my-5 bg-glass max-width-card' style={{ width: '100%', maxWidth: '1200px', borderRadius: '38px' }}>
       <h2 style={{ marginTop: '15px', marginLeft: '50px', marginBottom: '-22px' }}>Minha Conta</h2>
         <MDBCardBody className='p-5'>
           <div className="d-flex justify-content-center">
-            <QuadroFicha selectedUser={selectedUser} />
+            <QuadroFicha/>
           </div>
         </MDBCardBody>
       </MDBCard>

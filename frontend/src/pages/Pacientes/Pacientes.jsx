@@ -68,7 +68,7 @@ function ModalCriarPaciente({ isOpen, onClose }) {
     try {
       const response = await axios.post(`${AxiosURL}/pacientes/cadastrar_paciente/`, formData);
       if (response.status === 201) {
-      toast.success('Paciente cadastrado!');
+      toast.success(response.data.message);
       setTimeout(() => {
         window.location.reload();
       }, 2000);

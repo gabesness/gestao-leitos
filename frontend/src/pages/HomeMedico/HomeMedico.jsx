@@ -63,9 +63,11 @@ function ModalNovaPrescricao({ isOpen, onClose }) {
         id_usuario: localStorage.getItem('idUser'),
       });
       if (response.status === 200) {
-      toast.success(response.data.message);
-
-      }
+        toast.success(response.data.message);
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
+      } 
 
     } catch (error) {
       console.error('Erro ao criar prescrição:', error);
@@ -137,7 +139,7 @@ function ModalAltaObito({ isOpen, onClose, selectedPaciente }) {
       const response = await axios.patch(`${AxiosURL}/prescricoes/${selectedPaciente.id}/dar_alta/2/`, {
         id_usuario: localStorage.getItem('idUser'),
       });
-      toast.success('Prescrição Atualizada!');
+      toast.success(response.data.message);
       setTimeout(() => {
         window.location.reload();
       }, 2000);
@@ -188,7 +190,7 @@ function ModalAltaNormal({ isOpen, onClose, selectedPaciente }) {
       const response = await axios.patch(`${AxiosURL}/prescricoes/${selectedPaciente.id}/dar_alta/0/`, {
         id_usuario: localStorage.getItem('idUser'),
       });
-      toast.success('Prescrição Atualizada!');
+      toast.success(response.data.message);
       setTimeout(() => {
         window.location.reload();
       }, 2000);
@@ -232,7 +234,7 @@ function ModalAltaDefinitiva({ isOpen, onClose, selectedPaciente }) {
       const response = await axios.patch(`${AxiosURL}/prescricoes/${selectedPaciente.id}/dar_alta/1/`, {
         id_usuario: localStorage.getItem('idUser'),
       });
-      toast.success('Prescrição Atualizada!');
+      toast.success(response.data.message);
       setTimeout(() => {
         window.location.reload();
       }, 2000);
@@ -283,8 +285,7 @@ function ModalTransferencia({ isOpen, onClose, selectedPaciente, formValue }) {
         id_usuario: localStorage.getItem('idUser'),
         mensagem: formValue.mensagem  // Incluir a mensagem no corpo da requisição
       });
-      console.log("Prescrição Agendada com sucesso:", response.data);
-      toast.success('A transferência foi autorizada!');
+      toast.success(response.data.message);
       setTimeout(() => {
         window.location.reload();
       }, 2000);
@@ -580,7 +581,7 @@ function QuadroFicha({ selectedPaciente, historico }) {
         id_usuario: localStorage.getItem('idUser'),
       });
       if (response.status === 200) {
-        toast.success('Prescrição encaminhada para farmácia com sucesso!');
+        toast.success(response.data.message);
         setTimeout(() => {
           window.location.reload();
         }, 2000);
@@ -600,7 +601,7 @@ function QuadroFicha({ selectedPaciente, historico }) {
         id_usuario: localStorage.getItem('idUser'),
       });
       if (response.status === 204) {
-        toast.success('Prescrição criada com sucesso!');
+        toast.success(response.data.message);
         setTimeout(() => {
           window.location.reload();
         }, 2000);

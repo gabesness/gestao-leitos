@@ -14,9 +14,6 @@ const CabecalhoFicha = ({ selectedUser }) => {
             </p>
           </div>
           <p style={{ marginBottom: '0px', fontSize: '1.1em', fontFamily: 'FiraSans-Light, sans-serif' }}>
-            Matrícula: {selectedUser.matricula}
-          </p>
-          <p style={{ marginBottom: '0px', fontSize: '1.1em', fontFamily: 'FiraSans-Light, sans-serif' }}>
             Username: {selectedUser.username}
           </p>
         </div>
