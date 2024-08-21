@@ -1,11 +1,6 @@
-import React, { useState } from 'react';
-import { MDBIcon, MDBModal, MDBModalDialog, MDBModalContent, MDBModalHeader, MDBModalTitle, MDBBtn, MDBModalBody, MDBInput, MDBModalFooter } from 'mdb-react-ui-kit';
+import React from 'react';
 
-
-const CabecalhoMeuUsuario = () => {
-  const nome = localStorage.getItem('nome');
-  const sobrenome = localStorage.getItem('sobrenome');
-  const username = localStorage.getItem('username');
+const CabecalhoMeuUsuario = ({ username, firstName, lastName }) => {
   const cargo = localStorage.getItem('cargo');
 
   return (
@@ -14,18 +9,15 @@ const CabecalhoMeuUsuario = () => {
         <div style={{ display: 'grid', gridTemplateColumns: 'auto auto', justifyContent: 'space-between' }}>
           <div>
             <h3 style={{ marginBottom: '0px', fontSize: '1.5em', fontFamily: 'FiraSans-Medium, sans-serif' }}>
-              <strong>{nome} {sobrenome}</strong>
+              <strong>{firstName} {lastName}</strong>
             </h3>
             <p style={{ marginBottom: '0px', fontSize: '1.1em', fontFamily: 'FiraSans-Light, sans-serif' }}>
-              E-mail:
+              Usuário: {username}
             </p>
           </div>
           <div style={{ textAlign: 'right' }}>
             <p style={{ marginBottom: '0px', fontSize: '1.1em', fontFamily: 'FiraSans-Light, sans-serif' }}>
               Tipo de conta: {cargo}
-            </p>
-            <p style={{ marginBottom: '0px', fontSize: '1.1em', fontFamily: 'FiraSans-Light, sans-serif' }}>
-              Usuário: {username}
             </p>
           </div>
         </div>
