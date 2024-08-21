@@ -131,6 +131,92 @@ function ModalCriarPaciente({ isOpen, onClose }) {
   );
 }
 
+function ModalEditarPaciente({ isOpen, onClose, selectedPaciente }) {
+  // Estado do formulário
+  const [formValue, setFormValue] = useState({
+    nome: '',
+  });
+
+  // Atualizar o estado do formulário quando selectedPaciente mudar
+  useEffect(() => {
+    if (selectedPaciente) {
+      setFormValue({
+        nome: selectedPaciente.nome,
+      });
+    }
+  }, [selectedPaciente]);
+
+  // Função de mudança do formulário
+  const onChange = (e) => {
+    setFormValue({ ...formValue, [e.target.name]: e.target.value });
+  };
+
+  // Função para editar paciente
+  async function EditarPaciente(event) {
+    event.preventDefault();
+    const formData = new FormData();
+    formData.append('nome', formValue.nome);
+
+    try {
+      const response = await axios.patch(`${AxiosURL}/pacientes/${selectedPaciente.id}/editar_paciente/`, formData);
+      if (response.status === 200) {
+        toast.success(response.data.message);
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
+        }
+    } catch (error) {
+      console.error('Erro ao editar paciente:', error);
+      toast.error(error.response?.data?.erro || 'Erro desconhecido');
+    }
+  }
+
+  // Fechar o modal
+  const handleClose = () => {
+    if (isOpen) {
+      onClose();
+    }
+  };
+
+  return (
+    <MDBModal open={isOpen} onClose={handleClose} tabIndex='-1' appendToBody>
+      <MDBModalDialog>
+        <MDBModalContent>
+          <MDBModalHeader>
+            <MDBModalTitle style={{ fontFamily: 'FiraSans-Medium, sans-serif' }}>Editar Paciente</MDBModalTitle>
+            <MDBBtn className='btn-close' color='none' onClick={handleClose}></MDBBtn>
+          </MDBModalHeader>
+          <MDBModalBody style={{ fontFamily: 'FiraSans-Light, sans-serif' }}>
+            <form onSubmit={EditarPaciente}>
+              <MDBInput
+                className="mb-4"
+                name="nome"
+                id="nome"
+                label="Nome"
+                style={{ fontFamily: 'FiraSans-Light, sans-serif' }}
+                type="text"
+                value={formValue.nome}
+                onChange={onChange}
+              />
+
+              <MDBBtn
+                className='w-100 mb-4'
+                size='md'
+                type="submit"
+              >
+                Salvar
+              </MDBBtn>
+            </form>
+          </MDBModalBody>
+          <MDBModalFooter>
+          </MDBModalFooter>
+        </MDBModalContent>
+      </MDBModalDialog>
+      <ToastContainer />
+    </MDBModal>
+  );
+}
+
 
 function QuadroLista({ pacientes, selectedPaciente, handlePacienteClick, }) {
   const [currentPage, setCurrentPage] = useState(1);
@@ -246,8 +332,11 @@ function QuadroLista({ pacientes, selectedPaciente, handlePacienteClick, }) {
   
 }
 
+
 function QuadroFicha({ selectedPaciente, historico }) {
   const [selectedSession, setSelectedSession] = useState('Todas');
+  const [showEditModal, setShowEditModal] = useState(false); // Novo estado para o modal de edição
+  const cargo = localStorage.getItem('cargo');
 
   const uniqueSessions = ['Todas', ...new Set(historico.map(item => item.sessao))];
 
@@ -255,27 +344,41 @@ function QuadroFicha({ selectedPaciente, historico }) {
     ? historico
     : historico.filter(item => item.sessao === selectedSession);
 
+  const handleEditClick = () => {
+    setShowEditModal(true);
+  };
+
+  const closeEditModal = () => {
+    setShowEditModal(false);
+  };
+
   return (
     <MDBCol md='8'>
       {selectedPaciente && (
         <MDBCard style={{ borderTopLeftRadius: '20px', borderTopRightRadius: '20px', borderBottomLeftRadius: '20px', borderBottomRightRadius: '20px', height: '610px'}}>
-  
+
           {/* Cabeçalho */}
           <CabecalhoHistorico selectedPaciente={selectedPaciente} />
-  
+
           {/* Conteúdo */}
           <MDBCardBody style={{ padding: '10px' }}>
-          <MDBRow style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <MDBBtn className='mx-2' color='tertiary' rippleColor='light'>
-                <MDBIcon fas icon="file-download" className='me-2' />
-                Esta Sessão
-              </MDBBtn>
-              <MDBBtn className='mx-2' color='tertiary' rippleColor='light'>
-                <MDBIcon fas icon="file-download" className='me-2' />
-                Todas
-              </MDBBtn>
-              <MDBDropdown style={{ marginLeft: 'auto' }}>
+            <MDBRow style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                {cargo === 'Recepção' || cargo === 'Regulação' ? (
+                  <MDBBtn className='mx-2' color='tertiary' rippleColor='light' onClick={handleEditClick}>
+                    <MDBIcon fas icon="edit" className='me-1' />
+                    Editar Paciente
+                  </MDBBtn>
+                ) : null}
+                <MDBBtn className='mx-2' color='tertiary' rippleColor='light'>
+                  <MDBIcon fas icon="file-download" className='me-1' />
+                  Esta Sessão
+                </MDBBtn>
+                <MDBBtn className='mx-2' color='tertiary' rippleColor='light'>
+                  <MDBIcon fas icon="file-download" className='me-1' />
+                  Todas
+                </MDBBtn>
+                <MDBDropdown style={{ marginLeft: 'auto' }}>
                   <MDBDropdownToggle tag='a' className='btn btn-primary'>
                     {selectedSession === 'Todas' ? selectedSession : `Sessão ${selectedSession}`}
                   </MDBDropdownToggle>
@@ -287,41 +390,42 @@ function QuadroFicha({ selectedPaciente, historico }) {
                     ))}
                   </MDBDropdownMenu>
                 </MDBDropdown>
-            </div>
-          </MDBRow>
-  
+              </div>
+            </MDBRow>
+
             {/* Histórico */}
             <h4 style={{ textAlign: 'center', fontFamily: 'FiraSans-Medium, sans-serif' }}>Histórico</h4>
             <div style={{ height: '360px', overflowY: 'auto' }}>
-            {historico.map((registro, index) => {
-            const { dataFormatada, horaFormatada } = formatarData(registro.criado_em);
-            return (
-              <div style={{ width: '400px', margin: '0 auto' }}>
-              <HistoricoCard
-                key={index}
-                title={registro.estagio_atual}
-                date={dataFormatada}
-                time={horaFormatada}
-                text={registro.mensagem}
-              />
-            </div>
-            );
-          })}
-
+              {historico.map((registro, index) => {
+                const { dataFormatada, horaFormatada } = formatarData(registro.criado_em);
+                return (
+                  <div style={{ width: '400px', margin: '0 auto' }}>
+                    <HistoricoCard
+                      key={index}
+                      title={registro.estagio_atual}
+                      date={dataFormatada}
+                      time={horaFormatada}
+                      text={registro.mensagem}
+                    />
+                  </div>
+                );
+              })}
             </div>
           </MDBCardBody>
-  
+
         </MDBCard>
       )}
       {!selectedPaciente && (
-      <div className="text-center d-flex justify-content-center align-items-center" style={{ height: '80vh' }}>
-        <p style={{ fontSize: '1.5rem' }}>Selecione um Paciente</p>
-      </div>
+        <div className="text-center d-flex justify-content-center align-items-center" style={{ height: '80vh' }}>
+          <p style={{ fontSize: '1.5rem' }}>Selecione um Paciente</p>
+        </div>
       )}
+      {/* Modal de Edição */}
+      <ModalEditarPaciente isOpen={showEditModal} onClose={closeEditModal} selectedPaciente={selectedPaciente} />
     </MDBCol>
-  )
-  
+  );
 }
+
 
 function Pacientes() {
   const [pacientes, setPacientes] = useState([]);

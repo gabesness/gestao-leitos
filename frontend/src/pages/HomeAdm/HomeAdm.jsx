@@ -47,8 +47,7 @@ function ModalNovoUsuario({ isOpen, onClose }) {
     nome: '',
     sobrenome: '',
     email: '',
-    username: '',
-    senha: ''
+    username: ''
   });
 
   const handleSelectCargo = (cargo) => {
@@ -82,7 +81,6 @@ function ModalNovoUsuario({ isOpen, onClose }) {
     try {
       const response = await axios.post(`${AxiosURL}/usuarios/criar_usuario/`, {
         username: formData.username,
-        password: formData.senha,
         first_name: formData.nome,
         last_name: formData.sobrenome,
         email: formData.email,
@@ -119,9 +117,6 @@ function ModalNovoUsuario({ isOpen, onClose }) {
             </div>
             <div style={{ marginBottom: '15px' }}>
               <MDBInput label="Username" id="username" type="text" onChange={handleChange} />
-            </div>
-            <div style={{ marginBottom: '15px' }}>
-              <MDBInput label="Senha" id="senha" type="password" onChange={handleChange} />
             </div>
             <div style={{ marginBottom: '15px' }}>
               <MDBDropdown>
