@@ -364,7 +364,7 @@ function QuadroFicha({ selectedPaciente, historico }) {
           <MDBCardBody style={{ padding: '10px' }}>
             <MDBRow style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div style={{ display: 'flex', alignItems: 'center' }}>
-                {cargo === 'Recepção' || cargo === 'Regulação' ? (
+                {cargo === 'Recepção' || cargo === 'Regulação' || cargo === 'Administrador' ? (
                   <MDBBtn className='mx-2' color='tertiary' rippleColor='light' onClick={handleEditClick}>
                     <MDBIcon fas icon="edit" className='me-1' />
                     Editar Paciente

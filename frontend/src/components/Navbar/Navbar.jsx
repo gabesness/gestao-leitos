@@ -74,7 +74,7 @@ export default function Navbar() {
     }
   };
 
-  const isHomePage = location.pathname === '/' || location.pathname === '/esqueceusenha';
+  const isHomePage = location.pathname === '/' || location.pathname === '/esqueceusenha' || location.pathname === '/SemAutorizacao';
 
 
   const handleSignOutClick = async () => {
@@ -99,7 +99,7 @@ export default function Navbar() {
     <MDBNavbar expand='lg' light style={{ backgroundColor: '#fff' }}>
       <MDBContainer fluid>
       <MDBNavbarBrand href='#'>
-          <img src={LogoTitulo} alt="Logo" style={{ height: '20px' }} /> {/* Substitua o texto pelo logo */}
+          <img src={LogoTitulo} alt="Logo" style={{ height: '20px' }} />
         </MDBNavbarBrand>
         {!isHomePage && (
           <>

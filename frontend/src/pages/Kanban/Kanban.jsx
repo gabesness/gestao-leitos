@@ -23,6 +23,7 @@ import {
   MDBModalDialog,
   MDBModalContent,
   MDBModalTitle,
+  MDBTooltip,
 }
 from 'mdb-react-ui-kit';
 import './Kanban.css';
@@ -182,8 +183,20 @@ function Kanban() {
   return (
     <MDBContainer fluid className='p-1 background-radial-gradient overflow-hidden d-flex justify-content-center'  style={{ minHeight: '100vh' }}>
       <MDBCard className='my-5 bg-glass max-width-card' style={{ width: '100%', maxWidth: '1200px', borderRadius: '38px' }}>
-      <h2 style={{ marginTop: '15px', marginLeft: '50px', marginBottom: '10px',         fontFamily: 'FiraSans-SemiBold, sans-serif' 
- }}>Kanban</h2>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '15px 50px 10px 50px' }}>
+        <h2 style={{ fontFamily: 'FiraSans-SemiBold, sans-serif' }}>Kanban</h2>
+        <MDBTooltip
+          placement="left"
+          tag="div"
+          title="Os dados das colunas Alta e Transferido se referem aos últimos 10 dias."
+          >
+            <MDBIcon 
+              fas 
+              icon="info-circle" 
+              style={{ fontSize: '1.5em' }} 
+            />
+          </MDBTooltip>
+      </div>
         <MDBCardBody className='p-3'>
           <MDBRow className='g-2'>
             {/* Coluna de Médico */}

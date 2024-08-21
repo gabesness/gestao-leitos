@@ -11,6 +11,9 @@ import Kanban from '../pages/Kanban/Kanban';
 import Pacientes from '../pages/Pacientes/Pacientes';
 import MinhaConta from '../pages/MinhaConta/MinhaConta';
 import Dashboard from '../pages/Dashboard/Dashboard';
+import SemAutorizacao from '../pages/SemAutorizacao/SemAutorizacao';
+import PrivateRoute from './PrivateRoute';
+
 
 function RouteHandler() {
   return (
@@ -18,13 +21,14 @@ function RouteHandler() {
       <Route path="/" element={<Login />} />
       <Route path="/AlterarSenha" element={<AlterarSenha />} />
       <Route path="/EsqueceuSenha" element={<EsqueceuSenha />} />
-      <Route path="/HomeMedico" element={<HomeMedico />} />
-      <Route path="/HomeFarmacia" element={<HomeFarmacia />} />
-      <Route path="/HomeRegulacao" element={<HomeRegulacao />} />
-      <Route path="/HomeAdm" element={<HomeAdm />} />
+      <Route path="/HomeAdm" element={<PrivateRoute element={<HomeAdm />} allowedRoles={['Administrador']} />} />
+      <Route path="/HomeMedico" element={<PrivateRoute element={<HomeMedico />} allowedRoles={['Médico']} />} />
+      <Route path="/HomeFarmacia" element={<PrivateRoute element={<HomeFarmacia />} allowedRoles={['Farmácia']} />} />
+      <Route path="/HomeRegulacao" element={<PrivateRoute element={<HomeRegulacao />} allowedRoles={['Regulação']} />} />
       <Route path="/Kanban" element={<Kanban />} />
+      <Route path="/SemAutorizacao" element={<SemAutorizacao />} />
       <Route path="/Pacientes" element={<Pacientes />} />
-      <Route path="/MinhaConta" element={<MinhaConta />} />
+      <Route path="/MinhaConta" element={<PrivateRoute element={<MinhaConta />} allowedRoles={['Administrador', 'Médico', 'Farmácia', 'Regulação']} />} />
       <Route path="/Dashboard" element={<Dashboard />} />
 
     </Routes>
