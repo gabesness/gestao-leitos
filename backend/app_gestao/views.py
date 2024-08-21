@@ -95,8 +95,8 @@ class PacienteViewSet(GenericViewSet):
             return Response({'error': str(e)})
         
     @extend_schema(
-        summary="***INCOMPLETA*** Alteração de paciente",
-        description="[INCOMPLETA] Permite editar o nome do paciente",
+        summary="Alteração de paciente",
+        description="Permite editar o nome do paciente",
         request={
         'application/json': {
             'type': 'object',
@@ -616,6 +616,24 @@ class UserViewSet(GenericViewSet):
         return Response(serializer.data)
     
     @extend_schema(
+            summary="Detalhes do usuário",
+            description="""
+                        Retorna as informações de um usuário específico: nome, sobrenome, email, nome de usuario.
+                        """
+    )
+    @action(detail=True, methods=['GET'])
+    def info(self, request, pk=None):
+        try:
+            fds = ['first_name', 'last_name', 'email', 'username']
+            user = self.get_object()
+            serializer = self.get_serializer(user, fields=fds)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except User.DoesNotExist:
+            return Response({'Erro': 'Usuário não encontrado'}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({'Erro': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    
+    @extend_schema(
         summary="Login no sistema",
         description="""Autentica o usuário e salva suas credenciais na sessão;
                        As credenciais serão usadas na maioria das ações do sistema.""",
@@ -750,73 +768,48 @@ class UserViewSet(GenericViewSet):
             return Response({'Erro': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @extend_schema(
-        summary="Alterar nome",
-        description="""
-                    Faz a alteração do nome de um usuário;
-                    Esta rota pode ser utilizada tanto pelo próprio usuário na página Minha Conta, quanto pelo Administrador.
-                    """,
-        request={
-        'application/json': {
-            'type': 'object',
-            'properties': {
-                'first_name': {
-                    'type': 'string'
-                },
-                'last_name': {
-                    'type': 'string'
+            summary="Editar usuário",
+            description="""
+                        Permite alterar nome, sobrenome e email do usuário.
+                        O novo e-mail não pode ser um e-mail que já esteja cadastrado em outro usuário.
+                        """,
+            request={
+            'application/json': {
+                'type': 'object',
+                'properties': {
+                    'first_name': {
+                        'type': 'string'
+                    },
+                    'last_name': {
+                        'type': 'string'
+                    },
+                    'email': {
+                        'type': 'string'
+                    }
                 }
-            },
-            'required': ['first_name', 'last_name']
+            }
         }
-    }
     )
     @action(detail=True, methods=['PATCH'])
-    def editar_nome(self, request, pk=None):
+    def editar_usuario(self, request, pk=None):
         try:
             user = self.get_object()
+            new_email = request.data.get('email')
+            if new_email and new_email != user.email:
+                if User.objects.filter(email=new_email).exists():
+                    return Response({'Erro': 'Este email já está cadastrado para outro usuário'}, status=status.HTTP_400_BAD_REQUEST)
+            
             serializer = self.get_serializer(user, data=request.data, partial=True)
             if serializer.is_valid():
                 serializer.save()
-            return Response({'OK': 'Nome alterado'}, status=status.HTTP_200_OK)
+                return Response({'OK': 'Informações alteradas com sucesso!'}, status=status.HTTP_200_OK)
+            else:
+                return Response({'Erro': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
         except User.DoesNotExist:
             return Response({'Erro': 'Usuário não encontrado'}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
             return Response({'Erro': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    
-    @extend_schema(
-        summary="Alterar email",
-        description="""
-                    Faz a alteração do email de um usuário;
-                    Esta rota pode ser utilizada tanto pelo próprio usuário na página Minha Conta, quanto pelo Administrador;
-                    O e-mail é único, então não pode ser colocado um e-mail que já esteja cadastrado em outro usuário.
-                    """,
-        request={
-        'application/json': {
-            'type': 'object',
-            'properties': {
-                'email': {
-                    'type': 'string'
-                }
-            },
-            'required': ['email']
-        }
-    }
-    )
-    @action(detail=True, methods=['PATCH'])
-    def editar_email(self, request, pk=None):
-        try:
-            check_email = User.objects.filter(email=request.data['email']).exists()
-            user = self.get_object()
-            serializer = self.get_serializer(user, data=request.data, partial=True)
-            if check_email:
-                return Response({'Erro': 'O e-mail informado já está cadastrado para outro usuário'}, status=status.HTTP_400_BAD_REQUEST)
-            elif serializer.is_valid():
-                serializer.save()
-            return Response({'OK': 'E-mail alterado'}, status=status.HTTP_200_OK)
-        except User.DoesNotExist:
-            return Response({'Erro': 'Usuário não encontrado'}, status=status.HTTP_404_NOT_FOUND)
-        except Exception as e:
-            return Response({'Erro': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
     @extend_schema(
         summary="Gerar nova senha",
