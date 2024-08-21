@@ -251,6 +251,17 @@ function QuadroLista({ usuarios, activeTab, selectedUser, handleUserClick, setAc
 }
 
 function QuadroFicha({ selectedUser }) {
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
+
+  useEffect(() => {
+    if (selectedUser) {
+      setFirstName(selectedUser.first_name || '');
+      setLastName(selectedUser.last_name || '');
+      setEmail(selectedUser.email || '');
+    }
+  }, [selectedUser]);
 
   const GerarSenha = async (event) => {
     event.preventDefault();
@@ -266,6 +277,28 @@ function QuadroFicha({ selectedUser }) {
       }
     } catch (error) {
       console.error('Erro ao criar senha:', error);
+      toast.error(error.response?.data?.erro || 'Erro desconhecido');
+    }
+  };
+
+  const EditarUsuario = async (event) => {
+    event.preventDefault();
+
+    try {
+      const response = await axios.patch(`${AxiosURL}/usuarios/${selectedUser.id}/editar_usuario/`, {
+        first_name: firstName,
+        last_name: lastName,
+        email: email,
+      });
+
+      if (response.status === 200) {
+        toast.success(response.data.message);
+        // setTimeout(() => {
+        //   window.location.reload();
+        // }, 2000);
+      }
+    } catch (error) {
+      console.error(error);
       toast.error(error.response?.data?.erro || 'Erro desconhecido');
     }
   };
@@ -287,9 +320,27 @@ function QuadroFicha({ selectedUser }) {
   
               <div>
                 <h4>Informações do Usuário</h4>
-                <MDBInput label="Nome" id="nome" className="mb-3"/>
-                <MDBInput label="Sobrenome" id="sobrenome" className="mb-3" />
-                <MDBInput label="E-mail" id="email" className="mb-3" value={selectedUser.email} />
+                <MDBInput
+                  label="Nome"
+                  id="nome"
+                  className="mb-3"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                />
+                <MDBInput
+                  label="Sobrenome"
+                  id="sobrenome"
+                  className="mb-3"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                />
+                <MDBInput
+                  label="E-mail"
+                  id="email"
+                  className="mb-3"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
               </div>
             </MDBRow>
           </MDBCardBody>
@@ -309,7 +360,7 @@ function QuadroFicha({ selectedUser }) {
               </MDBBtn>
             </div>
             <div>
-              <MDBBtn style={{ marginLeft: '10px' }}>SALVAR ALTERAÇÕES</MDBBtn>
+              <MDBBtn style={{ marginLeft: '10px' }} onClick={EditarUsuario} >SALVAR ALTERAÇÕES </MDBBtn>
             </div>
           </div>
         </MDBCard>
