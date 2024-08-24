@@ -1,7 +1,11 @@
 from app_gestao.models import Paciente, Registro, Sessao, Plano_terapeutico
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
+from django.contrib.auth.tokens import default_token_generator
+from django.contrib.sites.shortcuts import get_current_site
 #from django.middleware.csrf import get_token
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.views.decorators.csrf import csrf_exempt
 from django.core.mail import send_mail
 from rest_framework.viewsets import GenericViewSet
@@ -670,9 +674,7 @@ class UserViewSet(GenericViewSet):
                 }
                 return Response(data, status=status.HTTP_200_OK)    
             else:
-                raise User.DoesNotExist
-        except User.DoesNotExist:
-            return Response({'Erro': 'Nome de usuário ou senha incorretos'}, status=status.HTTP_404_NOT_FOUND)            
+                return Response({'Erro': 'Nome de usuário ou senha incorretos'}, status=status.HTTP_404_NOT_FOUND)            
         except Exception as e:
             return Response({'erro': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
@@ -810,6 +812,64 @@ class UserViewSet(GenericViewSet):
         except Exception as e:
             return Response({'Erro': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    @extend_schema(
+            summary="Alterar senha",
+            description="""
+                        Rota utilizada na página Minha Conta para o usuário alterar sua própria senha.
+                        Recebe os parâmetros: senha atual, nova senha e confirmar nova senha.
+                        """,
+            request={
+            'application/json': {
+                'type': 'object',
+                'properties': {
+                    'senha_atual': {
+                        'type': 'string'
+                    },
+                    'nova_senha': {
+                        'type': 'string'
+                    },
+                    'nova_senha2': {
+                        'type': 'string'
+                    }
+                },
+                'required': ['senha_atual', 'nova_senha', 'nova_senha2']
+            }
+        }
+    )
+    @action(detail=True, methods=['PATCH'])
+    def alterar_senha(self, request, pk=None):
+        try:
+            u = self.get_object()
+            user = authenticate(username=u.username, password=request.data.get('senha_atual'))
+            if user:
+                pw = request.data.get('nova_senha')
+                pw2 = request.data.get('nova_senha2')
+                if pw == pw2:
+                    serializer = self.get_serializer(user, data={'password': pw}, partial=True)
+                    if serializer.is_valid():
+                        serializer.save()
+                        send_mail(
+                            subject="Alteração de senha",
+                            message=f"""
+                                    Olá, {user.first_name},\n
+                                    Verificamos que houve uma alteração recente na sua senha.\n
+                                    Caso você não tenha feito essa alteração, por favor entre em contato com seu Administrador.\n
+                                    Atenciosamente,\n
+                                    Equipe Oncoleitos.
+                                    """,
+                            from_email=None,
+                            recipient_list=[user.email]
+                        )
+                        return Response({'OK': 'Senha alterada com sucesso!'}, status=status.HTTP_200_OK)
+                    else:
+                        return Response({'Erro': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+                else:
+                    return Response({'Erro': 'As senhas estão diferentes.'}, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                return Response({'Erro': 'Senha incorreta. Por favor, tente novamente.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        except Exception as e:
+            return Response({'Erro': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @extend_schema(
         summary="Gerar nova senha",
@@ -843,6 +903,118 @@ class UserViewSet(GenericViewSet):
             return Response({'OK': 'Senha alterada com sucesso'}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'Erro': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        
+    @extend_schema(
+        summary="Enviar e-mail para redefinição de senha",
+        description="""
+                    Caso haja um usuário no sistema com o e-mail informado, o sistema irá enviar um e-mail
+                    para redefinir a senha.
+                    Por segurança, NÃO informar que não foi encontrado um usuário com o e-mail informado.
+                    """,
+        request={
+            'application/json': {
+                'type': 'object',
+                'properties': {
+                    'email': {
+                        'type': 'string'
+                    }
+                },
+                'required': ['email']
+            }
+        }
+    )
+    @action(detail=False, methods=['POST'])
+    def email_redefinir_senha(self, request):
+        try:
+            email = request.data.get('email')
+            user = User.objects.get(email=email)
+            if user:
+                serializer = self.get_serializer(user)
+                token = default_token_generator.make_token(user)
+                uid = urlsafe_base64_encode(force_bytes(user.pk))
+                domain = get_current_site(request).domain
+                protocol = 'https' if request.is_secure() else 'http'
+                reset_link = f"{protocol}://{domain}/redefinir-senha/{token}/{uid}"
+                send_mail(
+                    subject="Redefinição de senha",
+                    message=f"""
+                            Olá, {user.first_name},\n
+                            Recebemos um pedido de redefinição da sua senha.\n
+                            Para concluir o processo, por favor, acesse o link {reset_link}.\n
+                            Se não foi você quem realizou este pedido, desconsidere esta mensagem.\n
+                            Em caso de dúvidas, entre em contato com seu Administrador.\n
+                            Atenciosamente,\n
+                            Equipe Oncoleitos.
+                            """,
+                    from_email=None,
+                    recipient_list=[user.email]
+                )
+                return Response({'OK': 'Se houver um usuário cadastrado com este e-mail, você receberá as instruções para redefinir sua senha.'}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'Erro': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+    @extend_schema(
+        summary="Confirmar redefinição de senha",
+        description="""
+                    Recebe um token de validação e a chave primária do usuário criptografada, no padrão URL/token/id
+                    Também recebe a nova senha colocada pelo usuário.
+                    """,
+        request={
+            'application/json': {
+                'type': 'object',
+                'properties': {
+                    'token': {
+                        'type': 'string'
+                    },
+                    'uid': {
+                        'type': 'string'
+                    },
+                    'password': {
+                        'type': 'string'
+                    },
+                    'password2': {
+                        'type': 'string'
+                    }
+                },
+                'required': ['token', 'uid', 'password', 'password2']
+            }
+            }
+        
+    )
+    @action(detail=False, methods=['PATCH'])
+    def redefinir_senha(self, request):
+        try:
+            uid = urlsafe_base64_decode(request.data.get('uid'))
+            token = request.data.get('token')
+            user = User.objects.get(pk=uid)
+            pw = request.data.get('password')
+            pw2 = request.data.get('password2')
+            if user and default_token_generator.check_token(user, token):
+                if pw == pw2:
+                    serializer = self.get_serializer(user, data={'password': pw}, partial=True)
+                    if serializer.is_valid():
+                        serializer.save()
+                        send_mail(
+                            subject="Alteração de senha",
+                            message=f"""
+                                    Olá, {user.first_name},\n
+                                    Verificamos que houve uma alteração recente na sua senha.\n
+                                    Caso você não tenha feito essa alteração, por favor entre em contato com seu Administrador.\n
+                                    Atenciosamente,\n
+                                    Equipe Oncoleitos.
+                                    """,
+                            from_email=None,
+                            recipient_list=[user.email]
+                        )
+                        return Response({'OK': 'Senha alterada com sucesso! Por favor, faça login no sistema.'}, status=status.HTTP_200_OK)
+                    else:
+                        return Response({'Erro': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+                else:
+                    return Response({'Erro': 'As senhas informadas estão diferentes.'}, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                return Response({'Erro': 'Não foi possível validar as informações. Por favor, tente novamente.'}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({'Erro': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class EstatisticaViewSet(GenericViewSet):

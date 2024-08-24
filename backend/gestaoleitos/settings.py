@@ -53,7 +53,7 @@ REST_FRAMEWORK = {
 
 # Configuracoes do DRF Spectacular - gerador de esquema de OpenAPI
 SPECTACULAR_SETTINGS = {
-    'TITLE': 'API Gestao Leitos',
+    'TITLE': 'API Oncoleitos',
     'DESCRIPTION': 'Rotas do sistema de gestão de leitos',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
