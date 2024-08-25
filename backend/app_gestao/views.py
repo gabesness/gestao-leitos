@@ -748,6 +748,7 @@ class UserViewSet(GenericViewSet):
                 password = helper_gerar_senha()
                 serializer = self.get_serializer(data={**request.data, 'password': password})
                 if serializer.is_valid(raise_exception=True):
+                    domain = get_current_site(request).domain
                     send_mail(
                     subject="Cadastro de usuário no sistema Oncoleitos",
                     message=f"""
@@ -755,7 +756,7 @@ class UserViewSet(GenericViewSet):
                             Você foi cadastrado no sistema Oncoleitos. Abaixo estão as suas credenciais:\n
                             Nome de usuário: {request.data['username']}.\n
                             Senha provisória: {password}.\n
-                            Acesse https://oncohu.netlify.app para fazer login.\n
+                            Acesse {domain} para fazer login.\n
                             Recomendamos alterar a senha quando acessar o sistema. Em caso de dúvidas, entre em contato com a Administração.\n
                             Atenciosamente,\n
                             Oncoleitos - Gestão de Leitos Oncológicos

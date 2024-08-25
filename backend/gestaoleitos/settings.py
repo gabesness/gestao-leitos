@@ -177,7 +177,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # CONFIGURACOES PARA O ENVIO DE EMAILS
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
-# EMAIL_PORT = '<your-server-port>'
+EMAIL_PORT = '587'
 EMAIL_HOST_USER = 'oncoleitos@gmail.com'
 EMAIL_HOST_PASSWORD = 'clnqwyqrjlnpzjhm'
 EMAIL_USE_TLS = True
