@@ -3,6 +3,7 @@ import { Route, Routes, Navigate } from 'react-router-dom';
 import Login from '../pages/Login/Login';
 import AlterarSenha from '../pages/AlterarSenha/AlterarSenha';
 import EsqueceuSenha from '../pages/EsqueceuSenha/EsqueceuSenha';
+import RecuperarSenha from '../pages/EsqueceuSenha/RecuperarSenha';
 import HomeMedico from '../pages/HomeMedico/HomeMedico';
 import HomeFarmacia from '../pages/HomeFarmacia/HomeFarmacia';
 import HomeRegulacao from '../pages/HomeRegulacao/HomeRegulacao';
@@ -21,6 +22,7 @@ function RouteHandler() {
       <Route path="/" element={<Login />} />
       <Route path="/AlterarSenha" element={<AlterarSenha />} />
       <Route path="/EsqueceuSenha" element={<EsqueceuSenha />} />
+      <Route path="/RecuperarSenha" element={<RecuperarSenha />} />
       <Route path="/HomeAdm" element={<PrivateRoute element={<HomeAdm />} allowedRoles={['Administrador']} />} />
       <Route path="/HomeMedico" element={<PrivateRoute element={<HomeMedico />} allowedRoles={['Médico']} />} />
       <Route path="/HomeFarmacia" element={<PrivateRoute element={<HomeFarmacia />} allowedRoles={['Farmácia']} />} />
@@ -28,7 +30,7 @@ function RouteHandler() {
       <Route path="/Kanban" element={<Kanban />} />
       <Route path="/SemAutorizacao" element={<SemAutorizacao />} />
       <Route path="/Pacientes" element={<Pacientes />} />
-      <Route path="/MinhaConta" element={<PrivateRoute element={<MinhaConta />} allowedRoles={['Administrador', 'Médico', 'Farmácia', 'Regulação']} />} />
+      <Route path="/MinhaConta" element={<PrivateRoute element={<MinhaConta />} allowedRoles={['Administrador', 'Médico', 'Farmácia', 'Regulação', 'Recepção']} />} />
       <Route path="/Dashboard" element={<Dashboard />} />
 
     </Routes>
