@@ -14,6 +14,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 from drf_spectacular.utils import extend_schema
 from .serializers import *
+from .helpers import generate_pdf
 
 from string import ascii_letters, digits
 from random import SystemRandom
@@ -153,6 +154,26 @@ class PacienteViewSet(GenericViewSet):
         paciente = self.get_object()
         serializer = self.get_serializer(paciente, fields=fds)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    @extend_schema(
+        summary="*** INCOMPLETA - NAO UTILIZAR *** Baixar histórico",
+        description="""
+                    *** INCOMPLETA - NAO UTILIZAR *** Faz o download de um arquivo PDF do histórico do paciente.
+                    """,
+        request=None
+    )
+    @action(detail=True, methods=['GET'])
+    def baixar_historico(self, request, pk=None):
+        try:
+            paciente = self.get_object()
+            serializer = self.get_serializer(paciente)
+            data = serializer.data['historico_atual']
+            buffer = generate_pdf(data)
+            response = Response(buffer, content_type='application/pdf', status=status.HTTP_200_OK)
+            response['Content-Disposition'] = 'attachment="historico.pdf"'
+            return response
+        except Exception as e:
+            return Response({}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class PrescricaoViewSet(GenericViewSet):
     queryset = Paciente.objects.all()
@@ -1017,13 +1038,14 @@ class UserViewSet(GenericViewSet):
         except Exception as e:
             return Response({'Erro': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
 class EstatisticaViewSet(GenericViewSet):
     """
     Estatisticas -- APENAS requisicoes GET:
     * Taxa de ocupacao de leitos x tempo;
 
     """
+    queryset = Registro.objects.all()
+    serializer_class = RegistroSerializer
 
     # ======== ESTRUTURA DAS FUNCOES =========
     # Modo Ultimos x dias:
@@ -1103,8 +1125,17 @@ class EstatisticaViewSet(GenericViewSet):
             data.append({i: tempos.count(i)})
         return Response(data)
 
-    def pacientes_novos(self):
+    @action(detail=False, methods=['GET'])
+    def pacientes_novos(self, intervalo=None):
         """
-        Retorna quantos novos pacientes entraram no sistema por tempo
+        Retorna quantos novos pacientes entraram no sistema por tempo.
+        1. Considere o intervalo informado. Se intervalo=None, considere todo o período.
+        2. Para cada dia dentro do intervalo, conte quantos Registros têm o status PACIENTE_CADASTRADO.
+        3. Para intervalos acima de 30 dias, envie de n em n dias em vez de dias individuais.
         """
+        
+        oldest = Registro.objects.values('criado_em').order_by('criado_em').first()
+        registros = list(Registro.objects.filter(estagio_atual="PRESCRICAO_CRIADA").distinct())
+        serializer = self.get_serializer(registros, many=True)
+        return Response(oldest, status=status.HTTP_200_OK)
 

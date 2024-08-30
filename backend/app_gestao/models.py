@@ -2,6 +2,7 @@ from django.db import models
 from datetime import datetime
 from django.contrib.auth.models import User
 from django.utils import timezone
+from .helpers import estagio_to_readable
 
 class EstagioEnum(models.TextChoices):
     CADASTRADO = "CADASTRADO" # Paciente cadastrado
@@ -31,14 +32,23 @@ class Paciente(models.Model):
 
     #@property
     def historico_atual(self):
-        return Registro.objects.filter(
+        registros = Registro.objects.filter(
             paciente=self,
             sessao=self.sessao_atual()).order_by('-criado_em')
+        
+        for registro in registros:
+            registro.estagio_atual = estagio_to_readable(registro.estagio_atual)
+        
+        return registros
     
     #@property
     def historico_completo(self):
         # Obs.: verificar se não eh melhor ordenar por sessao ou por timestamp
-        return Registro.objects.filter(paciente=self).order_by('-criado_em')
+        registros = Registro.objects.filter(paciente=self).order_by('-criado_em')
+        for registro in registros:
+            registro.estagio_atual = estagio_to_readable(registro.estagio_atual)
+        
+        return registros
     
     # Sempre que alterar o estagio do paciente, criar o respectivo Registro
     # APENAS altera o estagio, deve ser chamada em conjunto com os demais metodos
