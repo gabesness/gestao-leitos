@@ -74,7 +74,7 @@ class PacienteSerializer(DynamicFieldsModelSerializer):
 
     class Meta:
         model = Paciente
-        fields = ['id', 'nome', 'prontuario', 'estagio_atual', 'leito', 'plano_terapeutico', 'sessao_atual', 'historico_atual', 'historico_completo']
+        fields = ['id', 'nome', 'prontuario', 'estagio_atual', 'leito', 'plano_terapeutico', 'sessao_atual', 'numero_sessao_atual', 'historico_atual', 'historico_completo']
         read_only_fields = ['id', 'estagio_atual', 'leito', 'plano_terapeutico', 'sessao_atual', 'historico_atual', 'historico_completo']
 
     def update(self, instance, validated_data):

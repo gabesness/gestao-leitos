@@ -150,7 +150,7 @@ class PacienteViewSet(GenericViewSet):
     )
     @action(detail=True, methods=['GET'])
     def consultar_prescricao(self, request, pk=None):
-        fds = ['sessao_atual','historico_atual', 'plano_terapeutico']
+        fds = ['sessao_atual', 'numero_sessao_atual', 'historico_atual', 'plano_terapeutico']
         paciente = self.get_object()
         serializer = self.get_serializer(paciente, fields=fds)
         return Response(serializer.data, status=status.HTTP_200_OK)
