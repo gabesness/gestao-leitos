@@ -14,18 +14,18 @@ const CabecalhoPaciente = ({ selectedPaciente }) => {
                   </p>
                 </div>
                 <div style={{ textAlign: 'right' }}>
-                  <p style={{ marginBottom: '0px', fontFamily: 'FiraSans-Light, sans-serif', fontSize: '1.1rem' }}>
-                    Sessão:
-                    <span style={{ fontFamily: 'FiraSans-LightItalic, sans-serif' }}>
-                      {selectedPaciente.sessao ? selectedPaciente.sessao : " A confirmar"}
-                    </span>
-                  </p>
-                  <p style={{ marginBottom: '0px', fontFamily: 'FiraSans-Light, sans-serif', fontSize: '1.1rem' }}>
-                    Leito:
-                    <span style={{ fontFamily: 'FiraSans-LightItalic, sans-serif' }}>
-                      {selectedPaciente.leito ? selectedPaciente.leito : " A confirmar"}
-                    </span>
-                  </p>
+                <p style={{ marginBottom: '0px', fontFamily: 'FiraSans-Light, sans-serif', fontSize: '1.1rem' }}>
+              Sessão:&nbsp; 
+                <span style={{ fontFamily: 'FiraSans-LightItalic, sans-serif' }}>
+                  {selectedPaciente.numero_sessao_atual ? selectedPaciente.numero_sessao_atual : " A confirmar"}
+                </span>
+              </p>
+              <p style={{ marginBottom: '0px', fontFamily: 'FiraSans-Light, sans-serif', fontSize: '1.1rem' }}>
+                Leito:&nbsp; 
+                <span style={{ fontFamily: 'FiraSans-LightItalic, sans-serif' }}>
+                  {selectedPaciente.leito ? selectedPaciente.leito : " A confirmar"}
+                </span>
+              </p>
                 </div>
               </div>
             </>
