@@ -40,6 +40,8 @@ import formatarData from '../../utils/FormatarData';
 import { AxiosURL } from '../../axios/Config';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 
 
 
@@ -78,7 +80,6 @@ function ModalCriarPaciente({ isOpen, onClose }) {
       toast.error(error.response.data.erro);
     }
   }
-
 
   return (
     <MDBModal open={isOpen} onClose={handleClose} tabIndex='-1' appendToBody>
@@ -352,11 +353,35 @@ function QuadroFicha({ selectedPaciente, historico }) {
     setShowEditModal(false);
   };
 
+  function baixarHistoricoComoPDF(historico) {
+    const doc = new jsPDF();
+  
+    // Defina o título do PDF
+    doc.setFontSize(18);
+    doc.text('Histórico do Paciente', 14, 16);
+  
+    // Adicione a tabela
+    const tableColumn = ['Data', 'Hora', 'Estágio Atual', 'Mensagem'];
+    const tableRows = historico.map(registro => {
+      const { dataFormatada, horaFormatada } = formatarData(registro.criado_em);
+      return [
+        dataFormatada,
+        horaFormatada,
+        registro.estagio_atual,
+        registro.mensagem
+      ];
+    });
+  
+    doc.autoTable(tableColumn, tableRows, { startY: 30 });
+  
+    // Salve o PDF
+    doc.save('historico_paciente.pdf');
+  }
+
   return (
     <MDBCol md='8'>
       {selectedPaciente && (
         <MDBCard style={{ borderTopLeftRadius: '20px', borderTopRightRadius: '20px', borderBottomLeftRadius: '20px', borderBottomRightRadius: '20px', height: '610px'}}>
-
           {/* Cabeçalho */}
           <CabecalhoHistorico selectedPaciente={selectedPaciente} />
 
@@ -370,13 +395,9 @@ function QuadroFicha({ selectedPaciente, historico }) {
                     Editar Paciente
                   </MDBBtn>
                 ) : null}
-                <MDBBtn className='mx-2' color='tertiary' rippleColor='light'>
-                  <MDBIcon fas icon="file-download" className='me-1' />
-                  Esta Sessão
-                </MDBBtn>
-                <MDBBtn className='mx-2' color='tertiary' rippleColor='light'>
-                  <MDBIcon fas icon="file-download" className='me-1' />
-                  Todas
+                  <MDBBtn className='mx-2' color='tertiary' rippleColor='light' onClick={() => baixarHistoricoComoPDF(historico)}>
+                   <MDBIcon fas icon="file-download" className='me-1' />
+                     Baixar Histórico
                 </MDBBtn>
                 <MDBDropdown style={{ marginLeft: 'auto' }}>
                   <MDBDropdownToggle tag='a' className='btn btn-primary'>
@@ -395,13 +416,12 @@ function QuadroFicha({ selectedPaciente, historico }) {
 
             {/* Histórico */}
             <h4 style={{ textAlign: 'center', fontFamily: 'FiraSans-Medium, sans-serif' }}>Histórico</h4>
-            <div style={{ height: '360px', overflowY: 'auto' }}>
-              {historico.map((registro, index) => {
+            <div id="historico-content" style={{ height: '360px', overflowY: 'auto' }}>
+              {filteredHistorico.map((registro, index) => {
                 const { dataFormatada, horaFormatada } = formatarData(registro.criado_em);
                 return (
-                  <div style={{ width: '400px', margin: '0 auto' }}>
+                  <div key={index} style={{ width: '400px', margin: '0 auto' }}>
                     <HistoricoCard
-                      key={index}
                       title={registro.estagio_atual}
                       date={dataFormatada}
                       time={horaFormatada}
@@ -412,7 +432,6 @@ function QuadroFicha({ selectedPaciente, historico }) {
               })}
             </div>
           </MDBCardBody>
-
         </MDBCard>
       )}
       {!selectedPaciente && (
