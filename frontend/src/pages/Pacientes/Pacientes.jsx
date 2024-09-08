@@ -34,7 +34,7 @@ from 'mdb-react-ui-kit';
 import './Pacientes.css';
 import Pagination from '../../components/Pagination/Pagination';
 import PacienteCard from '../../components/Cards/PacienteCard';
-import HistoricoCard from '../../components/Cards/HistoricoCard';
+import HistoricoCardSessao from '../../components/Cards/HistoricoCardSessao';
 import CabecalhoHistorico from '../../components/Ficha/CabecalhoHistorico';
 import formatarData from '../../utils/FormatarData';
 import { AxiosURL } from '../../axios/Config';
@@ -342,8 +342,8 @@ function QuadroFicha({ selectedPaciente, historico }) {
   const uniqueSessions = ['Todas', ...new Set(historico.map(item => item.sessao))];
 
   const filteredHistorico = selectedSession === 'Todas'
-    ? historico
-    : historico.filter(item => item.sessao === selectedSession);
+  ? historico
+  : historico.filter(item => item.sessao === selectedSession);
 
   const handleEditClick = () => {
     setShowEditModal(true);
@@ -353,30 +353,38 @@ function QuadroFicha({ selectedPaciente, historico }) {
     setShowEditModal(false);
   };
 
-  function baixarHistoricoComoPDF(historico) {
+  function baixarHistoricoComoPDF(historico, nomePaciente) {
     const doc = new jsPDF();
-  
-    // Defina o título do PDF
+    
+    // Defina o título do PDF com o nome do paciente
     doc.setFontSize(18);
-    doc.text('Histórico do Paciente', 14, 16);
-  
+    doc.text(`Histórico do Paciente ${nomePaciente}`, 14, 16);
+    
     // Adicione a tabela
-    const tableColumn = ['Data', 'Hora', 'Estágio Atual', 'Mensagem'];
+    const tableColumn = ['Data', 'Hora', 'Sessão', 'Estágio Atual', 'Mensagem', 'Usuário'];
     const tableRows = historico.map(registro => {
       const { dataFormatada, horaFormatada } = formatarData(registro.criado_em);
       return [
         dataFormatada,
         horaFormatada,
+        registro.sessao,
         registro.estagio_atual,
-        registro.mensagem
+        registro.mensagem,
+        `${registro.usuario.first_name} ${registro.usuario.last_name}`
       ];
     });
-  
+    
     doc.autoTable(tableColumn, tableRows, { startY: 30 });
-  
+    
     // Salve o PDF
-    doc.save('historico_paciente.pdf');
+    doc.save(`historico_paciente_${nomePaciente}.pdf`);
   }
+  
+
+  useEffect(() => {
+    // Resetar o dropdown quando o paciente selecionado mudar
+    setSelectedSession('Todas');
+  }, [selectedPaciente]);
 
   return (
     <MDBCol md='8'>
@@ -395,7 +403,7 @@ function QuadroFicha({ selectedPaciente, historico }) {
                     Editar Paciente
                   </MDBBtn>
                 ) : null}
-                  <MDBBtn className='mx-2' color='tertiary' rippleColor='light' onClick={() => baixarHistoricoComoPDF(historico)}>
+                  <MDBBtn className='mx-2' color='tertiary' rippleColor='light' onClick={() => baixarHistoricoComoPDF(historico, selectedPaciente.nome)}>
                    <MDBIcon fas icon="file-download" className='me-1' />
                      Baixar Histórico
                 </MDBBtn>
@@ -404,12 +412,12 @@ function QuadroFicha({ selectedPaciente, historico }) {
                     {selectedSession === 'Todas' ? selectedSession : `Sessão ${selectedSession}`}
                   </MDBDropdownToggle>
                   <MDBDropdownMenu>
-                    {uniqueSessions.map((sessao, index) => (
-                      <MDBDropdownItem key={index} onClick={() => setSelectedSession(sessao)}>
-                        {sessao === 'Todas' ? sessao : `Sessão ${sessao}`}
-                      </MDBDropdownItem>
-                    ))}
-                  </MDBDropdownMenu>
+                  {uniqueSessions.map((sessao, index) => (
+                    <MDBDropdownItem key={index} onClick={() => setSelectedSession(sessao)}>
+                      {sessao === 'Todas' ? sessao : `Sessão ${sessao}`}
+                    </MDBDropdownItem>
+                  ))}
+                </MDBDropdownMenu>
                 </MDBDropdown>
               </div>
             </MDBRow>
@@ -421,11 +429,14 @@ function QuadroFicha({ selectedPaciente, historico }) {
                 const { dataFormatada, horaFormatada } = formatarData(registro.criado_em);
                 return (
                   <div key={index} style={{ width: '400px', margin: '0 auto' }}>
-                    <HistoricoCard
+                    <HistoricoCardSessao
                       title={registro.estagio_atual}
                       date={dataFormatada}
                       time={horaFormatada}
                       text={registro.mensagem}
+                      sessao={registro.sessao}
+                      first_name={registro.usuario.first_name}
+                      last_name={registro.usuario.last_name}
                     />
                   </div>
                 );
