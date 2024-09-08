@@ -1,8 +1,10 @@
 from django.db import models
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.contrib.auth.models import User
 from django.utils import timezone
 from .helpers import estagio_to_readable
+
+from collections import defaultdict
 
 class EstagioEnum(models.TextChoices):
     CADASTRADO = "CADASTRADO" # Paciente cadastrado
@@ -160,3 +162,134 @@ class Plano_terapeutico(models.Model):
 
     def __str__(self):
         return f"{self.sessoes_prescritas} sessoes a cada {self.dias_intervalo} dia(s)"
+    
+class Estatisticas():
+    data = {}
+
+    def taxa_ocupacao(dias=None):
+        pass
+
+    def historico_altas(dias=None):  # OK
+        """
+        Mostra quantas altas tiveram por dia em determinado período de tempo, dividido por tipo de alta (Obito, Definitiva e Transferencia).
+        """
+        altas = ['ALTA_OBITO', 'ALTA_DEFINITIVA', 'TRANSFERIDO']
+        queryset = Registro.objects.filter(estagio_atual__in=altas)
+        if dias is not None:
+            data_inicio = timezone.now() - timedelta(days=dias)
+            queryset = queryset.filter(criado_em__gte=data_inicio)
+
+        daily_counts = (queryset
+                        .annotate(data=models.functions.TruncDate('criado_em'))
+                        .values('data', 'estagio_atual')
+                        .annotate(count=models.Count('id'))
+                        .order_by('data', 'estagio_atual')
+        )
+
+        formatted_data = defaultdict(lambda: {alta: 0 for alta in altas})
+
+        for item in daily_counts:
+            str_data = item['data'].strftime('%d/%m/%Y')
+            alta = item['estagio_atual']
+            count = item['count']
+            formatted_data[str_data][alta] = count
+
+        result_list = [{'data': data, **counts} for data, counts in formatted_data.items()]
+
+        return result_list
+
+    def histograma_num_sessoes(dias=None):  # OK
+        """
+            Conta quantas sessoes teve cada paciente, e depois agrupa os pacientes por numero de sessao
+            Ex.: Considere
+                Joao - 3 sessoes,
+                Maria - 4 sessoes,
+                Lucas - 4 sessoes,
+                Marcos - 5 sessoes,
+                Elisa - 7 sessoes,
+            O histograma ira condensar essas informacoes em algo como
+                3 sessoes - 1 paciente,
+                4 sessoes - 2 pacientes,
+                5 sessoes - 1 paciente,
+                7 sessoes - 1 paciente,
+            Passo-a-passo:
+            1. Conte o numero de sessoes que cada paciente teve;
+            2. Considere o intervalo de 1 ate o numero maximo de sessoes encontrado;
+            3. Para cada valor no intervalo, conte quantas vezes esse valor aparece.
+        """
+        ids_pacientes = Paciente.objects.all().values('id')
+        numero_sessoes = []
+        if dias is None:
+            for pair in ids_pacientes:
+                numero_sessoes.append(Sessao.objects.filter(data_alta__isnull=False, paciente_id=pair['id']).count())
+        else:
+            data_inicio = timezone.now() - timedelta(days=dias)
+            for pair in ids_pacientes:
+                numero_sessoes.append(Sessao.objects.filter(data_alta__gte=data_inicio, paciente_id=pair['id']).count())
+        data = []
+        for i in range(1, max(numero_sessoes)+1):
+            s = "sessao" if i == 1 else "sessoes"
+            data.append({f"{i} {s}": numero_sessoes.count(i)})
+
+        return data
+
+    def histograma_tempo_internacao(dias=None):  # OK
+        """
+            Semelhante ao histograma_numero_sessoes, porem dessa vez com o tempo de internacao\n
+            Ex.:\n
+                1 dia - 2 pacientes,\n
+                2 dias - 3 pacientes,\n
+                3 dias - 5 pacientes,\n
+                4 dias - 0 pacientes,\n 
+                ...\n
+            Passo-a-passo:
+            1. Calcule o tempo de internacao de cada Sessao;
+            2. Considere o intervalo de 1 ate o tempo maximo de internacao encontrado;
+            3. Para cada valor no intervalo, conte quantas vezes esse valor aparece.
+        """
+        queryset = Sessao.objects.filter(data_internacao__isnull=False, data_alta__isnull=False)
+
+        if dias is not None:
+            data_inicio = timezone.now() - timedelta(days=dias)
+            queryset = queryset.filter(data_alta__gte=data_inicio)
+        
+        sessoes = list(queryset)
+        tempos = []
+        for sessao in sessoes:
+            tempo = sessao.data_alta - sessao.data_internacao
+            tempos.append(tempo.days+1)
+            
+        data = []
+        for i in range(1, max(tempos)+1):
+            d = "dia" if i == 1 else "dias"
+            data.append({f"{i} {d}": tempos.count(i)})
+        return data
+
+    def pacientes_novos(dias=None):  # OK
+        """
+        Retorna quantos novos pacientes entraram no sistema por tempo.
+        1. Considere os dias informados. Se dias=None, considere todo o período.
+        2. Para cada dia dentro do intervalo, conte quantos Registros têm o status PACIENTE_CADASTRADO.
+        3. Para intervalos acima de 30 dias, envie de n em n dias em vez de dias individuais.
+        """
+        
+        queryset = Registro.objects.filter(estagio_atual="PRESCRICAO_CRIADA").distinct()
+        if dias is not None:
+            data_inicio = timezone.now() - timedelta(days=dias)
+            queryset = queryset.filter(criado_em__gte=data_inicio)
+
+        daily_counts = (queryset
+                        .annotate(data=models.functions.TruncDate('criado_em'))
+                        .values('data')
+                        .annotate(count=models.Count('id'))
+                        .order_by('data')
+        )
+
+        formatted_data = defaultdict()
+
+        for item in daily_counts:
+            str_data = item['data'].strftime('%d/%m/%Y')
+            count = item['count']
+            formatted_data[str_data] = count
+        
+        return formatted_data  

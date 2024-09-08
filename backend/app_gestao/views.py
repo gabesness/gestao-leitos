@@ -1,4 +1,4 @@
-from app_gestao.models import Paciente, Registro, Sessao, Plano_terapeutico
+from app_gestao.models import Paciente, Registro, Sessao, Plano_terapeutico, Estatisticas
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.tokens import default_token_generator
@@ -14,7 +14,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 from drf_spectacular.utils import extend_schema
 from .serializers import *
-from .helpers import generate_pdf
+from .helpers import *
 
 from string import ascii_letters, digits
 from random import SystemRandom
@@ -1044,98 +1044,59 @@ class EstatisticaViewSet(GenericViewSet):
     * Taxa de ocupacao de leitos x tempo;
 
     """
-    queryset = Registro.objects.all()
-    serializer_class = RegistroSerializer
 
-    # ======== ESTRUTURA DAS FUNCOES =========
+        # ======== ESTRUTURA DAS FUNCOES =========
     # Modo Ultimos x dias:
     # Parametro intervalo:<int> representa quantos dias para tras o sistema vai buscar as informacoes
     # Modo Mes/Ano:
     # Parametros mes:<int> e ano:<int>, busca apenas no periodo informado
     # Modo Completo:
     # Busca todos os registros do sistema
-    def taxa_ocupacao(self, ano=None, mes=None, intervalo=None):
-        """
-        Retorna a % de leitos ocupados por tempo.
-        Ex.: 01/06 - 57%; 02/06 - 61%; 03/06 - 65% ...
-        """
-        pass
+    
+    queryset = Registro.objects.all()
+    serializer_class = RegistroSerializer
 
-    def historico_de_altas(self):
-        """
-        Retorna quantas altas tiveram de cada tipo por tempo
-        Ex.: 01/06 - (3T, 5D, 1O); 02/06 - (7T, 1D, 2O) ...
-        T - Pacientes transferidos; D - Altas definitivas; O - Obitos.
-        """
-        pass
-
-    @action(detail=False, methods=['GET']) # OK
-    def histograma_numero_sessoes(self, request):
-        """
-        Conta quantas sessoes teve cada paciente, e depois agrupa os pacientes por numero de sessao
-        Ex.: Considere
-             Joao - 3 sessoes,
-             Maria - 4 sessoes,
-             Lucas - 4 sessoes,
-             Marcos - 5 sessoes,
-             Elisa - 7 sessoes,
-        O histograma ira condensar essas informacoes em algo como
-            3 sessoes - 1 paciente,
-            4 sessoes - 2 pacientes,
-            5 sessoes - 1 paciente,
-            7 sessoes - 1 paciente,
-        Passo-a-passo:
-        1. Conte o numero de sessoes que cada paciente teve;
-        2. Considere o intervalo de 1 ate o numero maximo de sessoes encontrado;
-        3. Para cada valor no intervalo, conte quantas vezes esse valor aparece.
-        """
-        ids_pacientes = Paciente.objects.all().values('id')
-        numero_sessoes = []
-        for pair in ids_pacientes:
-            numero_sessoes.append(Sessao.objects.filter(paciente_id=pair['id']).count())
-        data = []
-        for i in range(1, max(numero_sessoes)+1):
-            data.append({i: numero_sessoes.count(i)})
-
-        return Response(data)
-        
-    @action(detail=False, methods=['GET']) # OK
-    def histograma_tempo_internacao(self, request):
-        """
-        Semelhante ao histograma_numero_sessoes, porem dessa vez com o tempo de internacao\n
-        Ex.:\n
-            1 dia - 2 pacientes,\n
-            2 dias - 3 pacientes,\n
-            3 dias - 5 pacientes,\n
-            4 dias - 0 pacientes,\n 
-            ...\n
-        Passo-a-passo:
-        1. Calcule o tempo de internacao de cada Sessao;
-        2. Considere o intervalo de 1 ate o tempo maximo de internacao encontrado;
-        3. Para cada valor no intervalo, conte quantas vezes esse valor aparece.
-        """
-        sessoes = list(Sessao.objects.filter(data_internacao__isnull=False, data_alta__isnull=False))
-        tempos = []
-        for sessao in sessoes:
-            tempo = sessao.data_alta - sessao.data_internacao
-            tempos.append(tempo.days+1)
-        
-        data = []
-        for i in range(1, max(tempos)+1):
-            data.append({i: tempos.count(i)})
-        return Response(data)
-
+    @extend_schema(
+            summary="*** INCOMPLETA *** Estatísticas de todo o período",
+            description="""
+                        Retorna os dados para a dashboard de todo o período.
+                        *** Falta taxa de ocupacao ***
+                        """
+    )
     @action(detail=False, methods=['GET'])
-    def pacientes_novos(self, intervalo=None):
-        """
-        Retorna quantos novos pacientes entraram no sistema por tempo.
-        1. Considere o intervalo informado. Se intervalo=None, considere todo o período.
-        2. Para cada dia dentro do intervalo, conte quantos Registros têm o status PACIENTE_CADASTRADO.
-        3. Para intervalos acima de 30 dias, envie de n em n dias em vez de dias individuais.
-        """
-        
-        oldest = Registro.objects.values('criado_em').order_by('criado_em').first()
-        registros = list(Registro.objects.filter(estagio_atual="PRESCRICAO_CRIADA").distinct())
-        serializer = self.get_serializer(registros, many=True)
-        return Response(oldest, status=status.HTTP_200_OK)
+    def all(self, request):
+        try:
+            data = {
+                "histograma_num_sessoes": Estatisticas.histograma_num_sessoes(),
+                "histograma_tempo_internacao": Estatisticas.histograma_tempo_internacao(),
+                "pacientes_novos": Estatisticas.pacientes_novos(),
+                "taxa_ocupacao": {},
+                "historico_altas": Estatisticas.historico_altas()
+            }
+            return Response(data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'Erro': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    @extend_schema(
+            summary="*** INCOMPLETA *** Estatísticas do sistema",
+            description="""
+                        Mostra as estatísticas do sistema.
+                        Aceita como parâmetro <int: dias>, o sistema irá considerar apenas os n últimos dias.
+                        *** Falta taxa de ocupação ***
+                        """
+    )
+    @action(detail=False, methods=['GET'], url_path='(?P<dias>[^/.]+)')
+    def ultimos_dias(self, request, dias=None):
+        dias = int(dias)
+        try:
+            data = {
+                "histograma_num_sessoes": Estatisticas.histograma_num_sessoes(dias),
+                "histograma_tempo_internacao": Estatisticas.histograma_tempo_internacao(dias),
+                "pacientes_novos": Estatisticas.pacientes_novos(dias),
+                "taxa_ocupacao": {},
+                "historico_altas": Estatisticas.historico_altas(dias)
+            }
+            return Response(data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'Erro': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
