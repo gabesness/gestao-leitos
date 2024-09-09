@@ -143,7 +143,7 @@ function ModalNovoUsuario({ isOpen, onClose }) {
 
 function QuadroLista({ usuarios, activeTab, selectedUser, handleUserClick, setActiveTab }) {
   const [currentPage, setCurrentPage] = useState(1);
-  const [postsPerPage] = useState(8); // Quantidade de usuários por página
+  const [postsPerPage] = useState(7); // Quantidade de usuários por página
   const [searchTerm, setSearchTerm] = useState(''); // Estado para o termo de pesquisa
 
   const handleSearchChange = (event) => {
@@ -152,20 +152,19 @@ function QuadroLista({ usuarios, activeTab, selectedUser, handleUserClick, setAc
 
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
-  const currentUsers = usuarios.slice(indexOfFirstPost, indexOfLastPost);
-
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const searchedUsuarios = usuarios.filter(usuario => {
     return usuario.first_name.toLowerCase().includes(searchTerm.toLowerCase());
   });
 
-  const currentUsuarios = searchedUsuarios.slice(indexOfFirstPost, indexOfLastPost);
+  const currentUsuarios = searchedUsuarios
+    .filter(usuario => usuario.id !== 1) // Filtra o usuário com id = 1
+    .slice(indexOfFirstPost, indexOfLastPost);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const [basicModal, setBasicModal] = useState(false);
-
   const toggleOpen = () => setBasicModal(!basicModal);
-
   return (
     <MDBCol md='4'>
       <MDBCard

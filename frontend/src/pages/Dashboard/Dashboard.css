@@ -58,3 +58,9 @@
   body {
     font-family: 'FiraSans', sans-serif;
   }
+
+  .page-break {
+    page-break-before: always;
+    margin: 0;
+  }
+  

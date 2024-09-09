@@ -146,50 +146,71 @@ function Dashboard() {
     setDropdownTitle(selected);
   };
 
-
   const handleDownloadPDF = () => {
-    const input = document.getElementById('pdf-content'); // Referência ao conteúdo que será convertido em PDF
-    html2canvas(input).then((canvas) => {
+    const input = document.getElementById('pdf-content');
+    const lastChart = input.querySelector('.last-chart');
+  
+    // Captura a primeira parte do conteúdo (sem o último gráfico)
+    html2canvas(input, {
+      ignoreElements: element => element === lastChart // Ignora o último gráfico na captura
+    }).then((canvas) => {
       const imgData = canvas.toDataURL('image/png');
       const pdf = new jsPDF('p', 'mm', 'a4');
       const imgWidth = 210;
       const pageHeight = 295;
       const imgHeight = (canvas.height * imgWidth) / canvas.width;
       let heightLeft = imgHeight;
-      let position = 0;
-
-      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-      heightLeft -= pageHeight;
-
+  
+      // Adiciona o cabeçalho na primeira página
+      pdf.setFontSize(16);
+      pdf.text('Estatísticas do Oncoleitos', 105, 15, { align: 'center' }); // Adiciona o texto no topo centralizado
+  
+      // Adiciona a primeira parte do conteúdo
+      pdf.addImage(imgData, 'PNG', 0, 20, imgWidth, imgHeight - 20); // Ajusta a posição para baixo do cabeçalho
+      heightLeft -= pageHeight - 20; // Ajusta o comprimento disponível após o cabeçalho
+  
+      // Adiciona páginas para o conteúdo que excede o comprimento da página
       while (heightLeft >= 0) {
-        position = heightLeft - imgHeight;
         pdf.addPage();
-        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
+        pdf.setFontSize(16);
+        pdf.text('Estatísticas do Oncoleitos', 105, 15, { align: 'center' });
+        pdf.addImage(imgData, 'PNG', 0, 20, imgWidth, imgHeight - 20);
+        heightLeft -= pageHeight - 20; // Ajusta o comprimento disponível após o cabeçalho
       }
-
-      pdf.save('dashboard-estatisticas.pdf');
+  
+      // Captura o último gráfico separado
+      html2canvas(lastChart).then((lastChartCanvas) => {
+        const lastChartImgData = lastChartCanvas.toDataURL('image/png');
+        
+        // Adiciona uma nova página para o último gráfico
+        pdf.addPage();
+        pdf.setFontSize(16);
+        pdf.text('Estatísticas do Oncoleitos', 105, 15, { align: 'center' });
+        pdf.addImage(lastChartImgData, 'PNG', 0, 20, imgWidth, lastChartCanvas.height * imgWidth / lastChartCanvas.width);
+        
+        // Salva o PDF
+        pdf.save('dashboard-estatisticas.pdf');
+      });
     });
   };
+  
+  
 
 
   return (
     <MDBContainer fluid className='p-1 background-radial-gradient overflow-hidden d-flex justify-content-center' style={{ minHeight: '100vh' }}>
-      <MDBCard className='my-5 bg-glass max-width-card' style={{ width: '100%', maxWidth: '1200px', borderRadius: '38px' }}>
+    <MDBCard className='my-5 bg-glass max-width-card' style={{ width: '100%', maxWidth: '1200px', borderRadius: '38px' }}>
       <div className='d-flex justify-content-between align-items-center' style={{ padding: '0px' }}>
-        <h2 style={{ marginTop: '15px', marginLeft: '50px', marginBottom: '-22px',         fontFamily: 'FiraSans-SemiBold, sans-serif' 
-        }}>Dashboard</h2>
-        <MDBBtn className='mx-2' color='tertiary' rippleColor='light' onClick={handleDownloadPDF}>
-            <MDBIcon fas icon="file-download" className='me-1' />
-            Baixar Estatísticas
-          </MDBBtn>
+        <h2 style={{ marginTop: '15px', marginLeft: '50px', marginBottom: '-22px', fontFamily: 'FiraSans-SemiBold, sans-serif' }}>
+          Dashboard
+        </h2>
+        <div className="d-flex align-items-center" style={{ marginRight: '50px', marginTop: '10px' }}>
 
-       <MDBDropdown>
+          <MDBDropdown style={{ marginTop: '15px', marginRight: '0px', marginBottom: '-22px' }}>
             <MDBDropdownToggle tag='a' className='btn btn-primary'>
-              {dropdownTitle} {/* Exibe o título do dropdown */}
+              {dropdownTitle}
             </MDBDropdownToggle>
             <MDBDropdownMenu>
-              <MDBDropdownItem link onClick={() => handleDropdownSelect('Últimos 7 Dias')}>Últimos 7 Dias</MDBDropdownItem>
               <MDBDropdownItem link onClick={() => handleDropdownSelect('Últimos 30 Dias')}>Últimos 30 Dias</MDBDropdownItem>
               <MDBDropdownItem link onClick={() => handleDropdownSelect('Últimos 90 Dias')}>Últimos 90 Dias</MDBDropdownItem>
               <MDBDropdownItem link onClick={() => handleDropdownSelect('Últimos 180 Dias')}>Últimos 180 Dias</MDBDropdownItem>
@@ -198,6 +219,14 @@ function Dashboard() {
             </MDBDropdownMenu>
           </MDBDropdown>
         </div>
+      </div>
+
+      <div className='d-flex justify-content-end' style={{ marginRight: '55px', marginTop: '20px',marginBottom: '-28px' }}>
+        <MDBBtn className='mx-2' color='tertiary' rippleColor='light' onClick={handleDownloadPDF}>
+          <MDBIcon fas icon="file-download" className='me-1' />
+          Baixar Estatísticas
+        </MDBBtn>
+      </div>
         <MDBCardBody id="pdf-content" className='p-5'>
           {/* Gráfico de Linhas (3 Linhas): historico_altas */}
           <MDBCard className='mb-4' style={{ borderTopLeftRadius: '30px', borderTopRightRadius: '30px', borderBottomLeftRadius: '20px', borderBottomRightRadius: '20px' }}>
@@ -285,7 +314,7 @@ function Dashboard() {
           </MDBCard>
   
           {/* Gráfico de Linhas (Linha Simples) */}
-          <MDBCard className='mb-4' style={{ borderTopLeftRadius: '30px', borderTopRightRadius: '30px', borderBottomLeftRadius: '20px', borderBottomRightRadius: '20px' }}>
+          <MDBCard className='mb-4 last-chart' style={{ borderTopLeftRadius: '30px', borderTopRightRadius: '30px', borderBottomLeftRadius: '20px', borderBottomRightRadius: '20px' }}>
             <MDBCardBody>
               <ResponsiveContainer width="100%" height={400}>
                 <LineChart

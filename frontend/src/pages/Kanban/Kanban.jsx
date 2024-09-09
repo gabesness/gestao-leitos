@@ -214,7 +214,7 @@ function Kanban() {
                     paciente.estagio_atual === 'DEVOLVIDO_PELA_FARMACIA' ||
                     paciente.estagio_atual === 'DEVOLVIDO_PELA_REGULACAO'
                   ).map((paciente, index) => (
-                    <div key={index}>
+                    <div key={index} className="clickable">
                       <PacienteCard
                         paciente={paciente}
                         selectedPaciente={selectedPaciente}
@@ -239,7 +239,7 @@ function Kanban() {
                 </MDBCardHeader>
                 <MDBCardBody className='p-2' style={{ height: '600px', overflowY: 'auto' }}>
                 {pacientes.filter(paciente => paciente.estagio_atual === 'ENCAMINHADO_PARA_FARMACIA').map((paciente, index) => (
-                    <div key={index}>
+                    <div key={index} className="clickable">
                       <PacienteCard
                         paciente={paciente}
                         selectedPaciente={selectedPaciente}
@@ -268,7 +268,7 @@ function Kanban() {
                     paciente.estagio_atual === 'AGENDADO' ||
                     paciente.estagio_atual === 'AUTORIZADO_PARA_TRANSFERENCIA'
                   ).map((paciente, index) => (
-                    <div key={index}>
+                    <div key={index} className="clickable">
                       <PacienteCard
                         paciente={paciente}
                         selectedPaciente={selectedPaciente}
@@ -293,7 +293,7 @@ function Kanban() {
                 </MDBCardHeader>
                 <MDBCardBody className='p-2' style={{ height: '600px', overflowY: 'auto' }}>
                   {pacientes.filter(paciente => paciente.estagio_atual === 'INTERNADO').map((paciente, index) => (
-                    <div key={index}>
+                    <div key={index} className="clickable">
                       <PacienteCard
                         paciente={paciente}
                         selectedPaciente={selectedPaciente}
@@ -322,7 +322,7 @@ function Kanban() {
                     paciente.estagio_atual === 'ALTA_OBITO' ||
                     paciente.estagio_atual === 'ALTA_DEFINITIVA'
                   ).map((paciente, index) => (
-                    <div key={index}>
+                    <div key={index} className="clickable">
                       <PacienteCard
                         paciente={paciente}
                         selectedPaciente={selectedPaciente}
@@ -347,7 +347,7 @@ function Kanban() {
                 </MDBCardHeader>
                 <MDBCardBody className='p-2' style={{ height: '600px', overflowY: 'auto' }}>
                   {pacientes.filter(paciente => paciente.estagio_atual === 'TRANSFERIDO').map((paciente, index) => (
-                    <div key={index}>
+                    <div key={index} className="clickable">
                       <PacienteCard
                         paciente={paciente}
                         selectedPaciente={selectedPaciente}
