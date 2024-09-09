@@ -70,7 +70,7 @@ function ModalCriarPaciente({ isOpen, onClose }) {
     try {
       const response = await axios.post(`${AxiosURL}/pacientes/cadastrar_paciente/`, formData);
       if (response.status === 201) {
-      toast.success(response.data.message);
+      toast.success(response.data.OK);
       setTimeout(() => {
         window.location.reload();
       }, 2000);
@@ -161,7 +161,7 @@ function ModalEditarPaciente({ isOpen, onClose, selectedPaciente }) {
     try {
       const response = await axios.patch(`${AxiosURL}/pacientes/${selectedPaciente.id}/editar_paciente/`, formData);
       if (response.status === 200) {
-        toast.success(response.data.message);
+        toast.success(response.data.OK);
         setTimeout(() => {
           window.location.reload();
         }, 2000);

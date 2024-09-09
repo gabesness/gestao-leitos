@@ -52,7 +52,7 @@ function ModalDevolverMedico({ isOpen, onClose, selectedPaciente, formValue }) {
         id_usuario: localStorage.getItem('idUser'),
         mensagem: formValue.mensagem  // Incluir a mensagem no corpo da requisição
       });
-      toast.success(response.data.message);
+      toast.success(response.data.OK);
       setTimeout(() => {
         window.location.reload();
       }, 2000);
@@ -106,7 +106,7 @@ function ModalAgendamento({ isOpen, onClose, selectedPaciente, selectedLeito, fo
         id_usuario: localStorage.getItem('idUser'),
         mensagem: formValue.mensagem  // Incluir a mensagem no corpo da requisição
       });
-      toast.success(response.data.message);
+      toast.success(response.data.OK);
       setTimeout(() => {
         window.location.reload();
       }, 2000);
@@ -157,7 +157,7 @@ function ModalInternacao({ isOpen, onClose, selectedPaciente }) {
       const response = await axios.patch(`${AxiosURL}/prescricoes/${selectedPaciente.id}/internar/`, {
         id_usuario: localStorage.getItem('idUser'),
       });
-      toast.success(response.data.message);
+      toast.success(response.data.OK);
       setTimeout(() => {
         window.location.reload();
       }, 2000);
@@ -207,7 +207,7 @@ function ModalTransferencia({ isOpen, onClose, selectedPaciente, formValue }) {
         id_usuario: localStorage.getItem('idUser'),
         mensagem: formValue.mensagem  
       });
-      toast.success(response.data.message);
+      toast.success('Paciente registrado como transferido');
       setTimeout(() => {
         window.location.reload();
       }, 2000);    } catch (error) {
@@ -255,7 +255,7 @@ function ModalAltaObito({ isOpen, onClose, selectedPaciente }) {
         const response = await axios.patch(`${AxiosURL}/prescricoes/${selectedPaciente.id}/dar_alta/2/`, {
           id_usuario: localStorage.getItem('idUser'),
         });
-        toast.success(response.data.message);
+        toast.success(response.data.OK);
         setTimeout(() => {
           window.location.reload();
         }, 2000);      } catch (error) {

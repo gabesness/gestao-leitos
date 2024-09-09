@@ -87,7 +87,7 @@ function ModalNovoUsuario({ isOpen, onClose }) {
         groups: [cargoMap[selectedCargo]],
       });
       if (response.status === 204) {
-      toast.success(response.data.message);
+      toast.success(response.data.OK);
 
       }
 
@@ -265,7 +265,7 @@ function QuadroFicha({ selectedUser }) {
       const response = await axios.patch(`${AxiosURL}/usuarios/${selectedUser.id}/gerar_senha/`);
       
       if (response.status === 200) {
-        toast.success(response.data.message);
+        toast.success(response.data.OK);
         setTimeout(() => {
           window.location.reload();
         }, 2000);
@@ -287,10 +287,10 @@ function QuadroFicha({ selectedUser }) {
       });
 
       if (response.status === 200) {
-        toast.success(response.data.message);
-        // setTimeout(() => {
-        //   window.location.reload();
-        // }, 2000);
+        toast.success(response.data.OK);
+        setTimeout(() => {
+         window.location.reload();
+         }, 2000);
       }
     } catch (error) {
       console.error(error);

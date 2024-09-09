@@ -52,7 +52,7 @@ function ModalDevolverMedico({ isOpen, onClose, selectedPaciente, formValue }) {
         id_usuario: localStorage.getItem('idUser'),
         mensagem: formValue.mensagem  // Incluir a mensagem no corpo da requisição
       });
-      toast.success(response.data.message);
+      toast.success('Prescrição devolvida ao médico');
       setTimeout(() => {
         window.location.reload();
       }, 2000);
@@ -103,7 +103,7 @@ function ModalEnviarRegulacao({ isOpen, onClose, selectedPaciente, formValue }) 
         id_usuario: localStorage.getItem('idUser'),
         mensagem: formValue.mensagem  // Incluir a mensagem no corpo da requisição
       });
-      toast.success(response.data.message);
+      toast.success('Prescrição encaminhada à regulação');
       setTimeout(() => {
         window.location.reload();
       }, 2000);
