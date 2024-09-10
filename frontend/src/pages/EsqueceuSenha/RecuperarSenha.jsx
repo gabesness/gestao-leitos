@@ -50,6 +50,7 @@ function RecuperarSenha() {
                   type='password'
                   id="NovaSenha"
                   className="mb-3"
+                  maxLength="256"
                 />
 
             <MDBInput
@@ -57,6 +58,7 @@ function RecuperarSenha() {
                   type='password'
                   id="NovaSenha2"
                   className="mb-3"
+                  maxLength="256"
                 />
 
               <MDBBtn onClick={enviarEmail} className='w-100 mb-4' size='md'>ALTERAR</MDBBtn>

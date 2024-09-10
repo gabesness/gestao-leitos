@@ -505,7 +505,7 @@ function QuadroFicha({ selectedPaciente, historico }) {
     const renderButtons = () => {
       switch (selectedPaciente.estagio_atual) {
         case 'ENCAMINHADO_PARA_AGENDAMENTO':
-          return <MDBBtn style={{ marginLeft: '10px' }} onClick={toggleModalAgendamento} >AGENDAR</MDBBtn>;
+          return <MDBBtn style={{ marginLeft: '10px' }} onClick={toggleModalAgendamento} >AGENDAR LEITO</MDBBtn>;
         case 'AUTORIZADO_PARA_TRANSFERENCIA':
           return (
             <>
@@ -643,6 +643,7 @@ function QuadroFicha({ selectedPaciente, historico }) {
                     name="mensagem"
                     value={formValue.mensagem} 
                     onChange={onChange}
+                    maxLength="256"
                     />
           </div>
         </div>
@@ -654,7 +655,7 @@ function QuadroFicha({ selectedPaciente, historico }) {
     <div style={{ padding: '20px', marginTop: '10px', display: 'flex', justifyContent: 'space-between', borderTop: '1px solid rgba(0,0,0,.125)' }}>
         <div>
           {selectedPaciente.estagio_atual === 'ENCAMINHADO_PARA_AGENDAMENTO' && (
-              <MDBBtn color='success' style={{ marginLeft: '10px' }} onClick={toggleModalDevolverMedico} >DEVOLVER</MDBBtn>
+              <MDBBtn color='success' style={{ marginLeft: '10px' }} onClick={toggleModalDevolverMedico} >DEVOLVE AO MÉDICO</MDBBtn>
           )}
           {selectedPaciente.estagio_atual === 'AGENDADO' && (
               <MDBBtn color='danger' style={{ marginLeft: '10px' }} onClick={toggleModalAltaObito} >ALTA ÓBITO</MDBBtn>

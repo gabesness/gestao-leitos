@@ -20,8 +20,8 @@ function EsqueceuSenha() {
           <MDBCard className='my-5 bg-glass max-width-card'>
             <MDBCardBody className='p-5'>
 
-              <MDBInput className='mb-4' label='Senha' id='form4' type='password'/>
-              <MDBInput className='mb-4' label='Confirmar Senha' id='form4' type='password'/>
+              <MDBInput className='mb-4' label='Senha' id='form4' type='password' maxLength="256"/>
+              <MDBInput className='mb-4' label='Confirmar Senha' id='form4' type='password' maxLength="256"/>
 
               <MDBBtn className='w-100 mb-4' size='md'>ENVIAR</MDBBtn>
 

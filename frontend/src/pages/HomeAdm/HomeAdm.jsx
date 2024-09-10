@@ -8,13 +8,8 @@ import {
   MDBCard,
   MDBCardBody,
   MDBInput,
-  MDBCheckbox,
   MDBIcon,
-  MDBBadge, 
   MDBListGroup, 
-  MDBListGroupItem,
-  MDBRipple,
-  MDBTextArea,
   MDBModal,
   MDBModalHeader,
   MDBModalBody,
@@ -26,9 +21,6 @@ import {
   MDBDropdownMenu,
   MDBDropdownItem,
   MDBDropdownToggle,
-  MDBCardTitle,
-  MDBCardText,
-  UserListItem,
 }
 from 'mdb-react-ui-kit';
 import './HomeAdm.css';
@@ -107,16 +99,16 @@ function ModalNovoUsuario({ isOpen, onClose }) {
           </MDBModalHeader>
           <MDBModalBody style={{ fontFamily: 'FiraSans-Light, sans-serif' }}>
             <div style={{ marginBottom: '15px' }}>
-              <MDBInput label="Nome" id="nome" type="text" onChange={handleChange} />
+              <MDBInput label="Nome" id="nome" type="text" onChange={handleChange} maxLength="256" />
             </div>
             <div style={{ marginBottom: '15px' }}>
-              <MDBInput label="Sobrenome" id="sobrenome" type="text" onChange={handleChange} />
+              <MDBInput label="Sobrenome" id="sobrenome" type="text" onChange={handleChange} maxLength="256" />
             </div>
             <div style={{ marginBottom: '15px' }}>
-              <MDBInput label="Email" id="email" type="text" onChange={handleChange} />
+              <MDBInput label="Email" id="email" type="text" onChange={handleChange} maxLength="256" />
             </div>
             <div style={{ marginBottom: '15px' }}>
-              <MDBInput label="Username" id="username" type="text" onChange={handleChange} />
+              <MDBInput label="Username" id="username" type="text" onChange={handleChange} maxLength="256" />
             </div>
             <div style={{ marginBottom: '15px' }}>
               <MDBDropdown>
@@ -198,6 +190,7 @@ function QuadroLista({ usuarios, activeTab, selectedUser, handleUserClick, setAc
               onChange={handleSearchChange}
               className="flex-grow-1"
               style={{ height: '40px'}}
+              maxLength="256"
             />
             
             <MDBBtn
@@ -320,6 +313,7 @@ function QuadroFicha({ selectedUser }) {
                   className="mb-3"
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
+                  maxLength="256"
                 />
                 <MDBInput
                   label="Sobrenome"
@@ -327,6 +321,7 @@ function QuadroFicha({ selectedUser }) {
                   className="mb-3"
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
+                  maxLength="256"
                 />
                 <MDBInput
                   label="E-mail"
@@ -334,6 +329,7 @@ function QuadroFicha({ selectedUser }) {
                   className="mb-3"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  maxLength="256"
                 />
               </div>
             </MDBRow>

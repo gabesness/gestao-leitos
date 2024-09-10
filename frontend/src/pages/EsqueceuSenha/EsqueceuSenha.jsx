@@ -3,13 +3,9 @@ import axios from 'axios';
 import {
   MDBBtn,
   MDBContainer,
-  MDBRow,
-  MDBCol,
   MDBCard,
   MDBCardBody,
   MDBInput,
-  MDBCheckbox,
-  MDBIcon
 }
 from 'mdb-react-ui-kit';
 import './EsqueceuSenha.css';
@@ -45,11 +41,14 @@ function EsqueceuSenha() {
           <MDBCard className='my-5 bg-glass max-width-card'>
             <MDBCardBody className='p-5'>
 
+            <p className="mb-4">Informe o e-mail cadastrado no sistema.</p>
+
             <MDBInput
                   label="E-mail"
                   id="email"
                   className="mb-3"
                   onChange={(e) => setEmail(e.target.value)}
+                  maxLength="256"
                 />
 
               <MDBBtn onClick={enviarEmail} className='w-100 mb-4' size='md'>ENVIAR</MDBBtn>

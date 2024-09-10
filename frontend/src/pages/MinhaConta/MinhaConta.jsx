@@ -40,6 +40,7 @@ function QuadroFicha({ username,
               className="mb-3"
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
+              maxLength="256"
             />
             <MDBInput
               label="Sobrenome"
@@ -47,6 +48,7 @@ function QuadroFicha({ username,
               className="mb-3"
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
+              maxLength="256"
             />
             <MDBInput
               label="E-mail"
@@ -54,6 +56,7 @@ function QuadroFicha({ username,
               className="mb-3"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              maxLength="256"
             />
           </div>
           <div style={{ flex: 1, paddingLeft: '10px' }}>
@@ -65,6 +68,7 @@ function QuadroFicha({ username,
               className="mb-3" 
               value={senhaAtual}
               onChange={(e) => setSenhaAtual(e.target.value)}
+              maxLength="256"
             />
             <MDBInput 
               label="Nova Senha"
@@ -73,6 +77,7 @@ function QuadroFicha({ username,
               className="mb-3" 
               value={senhaNova}
               onChange={(e) => setSenhaNova(e.target.value)}
+              maxLength="256"
             />
             <MDBInput 
               label="Confirmar Nova Senha" 
@@ -81,6 +86,7 @@ function QuadroFicha({ username,
               className="mb-3" 
               value={senhaNova2}
               onChange={(e) => setSenhaNova2(e.target.value)}
+              maxLength="256"
             />
           </div>
         </div>

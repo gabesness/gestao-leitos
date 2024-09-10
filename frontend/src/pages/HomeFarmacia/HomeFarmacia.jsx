@@ -125,17 +125,17 @@ function ModalEnviarRegulacao({ isOpen, onClose, selectedPaciente, formValue }) 
       <MDBModalDialog>
         <MDBModalContent>
           <MDBModalHeader>
-            <MDBModalTitle style={{ fontFamily: 'FiraSans-Medium, sans-serif' }}>Confirmação de envio para regulação</MDBModalTitle>
+            <MDBModalTitle style={{ fontFamily: 'FiraSans-Medium, sans-serif' }}>Confirmação de encaminhamento</MDBModalTitle>
             <MDBBtn className='btn-close' color='none' onClick={handleClose}></MDBBtn>
           </MDBModalHeader>
           <MDBModalBody style={{ fontFamily: 'FiraSans-Light, sans-serif' }}>
 
-          A prescrição será enviada à regulação para que possa ser feita a reserva do leito.
+          A prescrição será encaminhada à regulação para que possa ser feita a reserva do leito.
 
           </MDBModalBody>
           <MDBModalFooter>
           <MDBBtn color='danger' onClick={handleClose}>Cancelar</MDBBtn>
-          <MDBBtn onClick={handleEnviar} >Enviar</MDBBtn>
+          <MDBBtn onClick={handleEnviar} >ENCAMINHAR</MDBBtn>
           </MDBModalFooter>
         </MDBModalContent>
       </MDBModalDialog>
@@ -197,6 +197,7 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
             onChange={handleSearchChange}
             className="mb-3"
             style={{ height: '24px' }}
+            maxLength="256"
           />
   
           {/* Listagem */}
@@ -352,6 +353,7 @@ function QuadroFicha({ selectedPaciente, historico }) {
                     name="mensagem"
                     value={formValue.mensagem} 
                     onChange={onChange}
+                    maxLength="256"
                     />
           </div>
         </div>
@@ -362,10 +364,10 @@ function QuadroFicha({ selectedPaciente, historico }) {
 
     <div style={{ padding: '20px', marginTop: '10px', display: 'flex', justifyContent: 'space-between', borderTop: '1px solid rgba(0,0,0,.125)' }}>
       <div>
-        <MDBBtn style={{ marginLeft: '10px' }}onClick={toggleModalDevolverMedico}>DEVOLVER</MDBBtn>
+        <MDBBtn style={{ marginLeft: '10px' }}onClick={toggleModalDevolverMedico}>DEVOLVER AO MÉDICO</MDBBtn>
       </div>
       <div>
-        <MDBBtn style={{ marginLeft: '10px' }}onClick={toggleModalEnviarRegulacao}>ENVIAR</MDBBtn>
+        <MDBBtn style={{ marginLeft: '10px' }}onClick={toggleModalEnviarRegulacao}>ENCAMINHAR À REGULAÇÃO</MDBBtn>
       </div>
     </div>
         </MDBCard>

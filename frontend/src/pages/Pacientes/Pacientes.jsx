@@ -8,13 +8,8 @@ import {
   MDBCard,
   MDBCardBody,
   MDBInput,
-  MDBCheckbox,
   MDBIcon,
-  MDBBadge, 
   MDBListGroup, 
-  MDBListGroupItem,
-  MDBRipple,
-  MDBTextArea,
   MDBModal,
   MDBModalHeader,
   MDBModalBody,
@@ -26,9 +21,6 @@ import {
   MDBDropdownMenu,
   MDBDropdownItem,
   MDBDropdownToggle,
-  MDBCardTitle,
-  MDBCardText,
-  UserListItem,
 }
 from 'mdb-react-ui-kit';
 import './Pacientes.css';
@@ -100,6 +92,7 @@ function ModalCriarPaciente({ isOpen, onClose }) {
               type="text"
               value={formValue.nome} 
               onChange={onChange} 
+              maxLength="256"
             />
 
             <MDBInput 
@@ -111,6 +104,7 @@ function ModalCriarPaciente({ isOpen, onClose }) {
               type="text"
               value={formValue.prontuario} 
               onChange={onChange} 
+              maxLength="256"
             />  
 
             <MDBBtn
@@ -198,6 +192,7 @@ function ModalEditarPaciente({ isOpen, onClose, selectedPaciente }) {
                 type="text"
                 value={formValue.nome}
                 onChange={onChange}
+                maxLength="256"
               />
 
               <MDBBtn
@@ -286,6 +281,7 @@ function QuadroLista({ pacientes, selectedPaciente, handlePacienteClick, }) {
             onChange={handleSearchChange}
             className="flex-grow-1"
             style={{ height: '40px', borderRadius: '20px' }}
+            maxLength="256"
           />
 
             {cargo === 'Recepção' || cargo === 'Regulação' ? (

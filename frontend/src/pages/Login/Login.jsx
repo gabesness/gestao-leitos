@@ -101,6 +101,7 @@ function Login() {
                   label="Usuário"
                   value={formValue.username}
                   onChange={onChange}
+                  maxLength="256"
                 />
               </MDBCol>
             </MDBRow>
@@ -117,6 +118,7 @@ function Login() {
                   label="Senha"
                   value={formValue.password}
                   onChange={onChange}
+                  maxLength="256"
                 />
               </MDBCol>
             </MDBRow>

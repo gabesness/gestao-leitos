@@ -4,32 +4,13 @@ import { AxiosURL } from '../../axios/Config';
 import {
   MDBBtn,
   MDBContainer,
-  MDBRow,
-  MDBCol,
   MDBCard,
   MDBCardBody,
-  MDBInput,
-  MDBCheckbox,
   MDBIcon,
-  MDBBadge, 
-  MDBListGroup, 
-  MDBListGroupItem,
-  MDBRipple,
-  MDBTextArea,
-  MDBModal,
-  MDBModalHeader,
-  MDBModalBody,
-  MDBModalFooter,
-  MDBModalDialog,
-  MDBModalContent,
-  MDBModalTitle,
   MDBDropdown,
   MDBDropdownMenu,
   MDBDropdownItem,
   MDBDropdownToggle,
-  MDBCardTitle,
-  MDBCardText,
-  UserListItem,
 }
 from 'mdb-react-ui-kit';
 import {
@@ -76,7 +57,7 @@ function Dashboard() {
         // Processar histograma_num_sessoes
         const histograma_num_sessoes = data.histograma_num_sessoes.map(item => {
           const key = Object.keys(item)[0];
-          return { name: key, Sessões: item[key] };
+          return { name: key, Pacientes: item[key] };
         });
   
         // Processar histograma_tempo_internacao
@@ -195,8 +176,6 @@ function Dashboard() {
   };
   
   
-
-
   return (
     <MDBContainer fluid className='p-1 background-radial-gradient overflow-hidden d-flex justify-content-center' style={{ minHeight: '100vh' }}>
     <MDBCard className='my-5 bg-glass max-width-card' style={{ width: '100%', maxWidth: '1200px', borderRadius: '38px' }}>
@@ -231,6 +210,7 @@ function Dashboard() {
           {/* Gráfico de Linhas (3 Linhas): historico_altas */}
           <MDBCard className='mb-4' style={{ borderTopLeftRadius: '30px', borderTopRightRadius: '30px', borderBottomLeftRadius: '20px', borderBottomRightRadius: '20px' }}>
             <MDBCardBody>
+            <h4 style={{ marginBottom: '5px' }}>Relação entre tipos de altas</h4>
               <ResponsiveContainer width="100%" height={400}>
                 <LineChart
                   data={dados.historico_altas}
@@ -259,6 +239,7 @@ function Dashboard() {
             {/* Histograma 1: histograma_tempo_internacao */}
             <MDBCard className='mb-4' style={{ flex: 1, marginRight: '10px', borderTopLeftRadius: '30px', borderTopRightRadius: '30px', borderBottomLeftRadius: '20px', borderBottomRightRadius: '20px' }}>
               <MDBCardBody>
+              <h4 style={{ marginBottom: '5px' }}>Tempo médio de internação</h4>
                 <ResponsiveContainer width="100%" height={300}>
                   <BarChart data={dados.histograma_tempo_internacao}>
                     <CartesianGrid strokeDasharray="3 3" />
@@ -275,6 +256,7 @@ function Dashboard() {
             {/* Histograma 2: histograma_num_sessoes */}
             <MDBCard className='mb-4' style={{ flex: 1, marginLeft: '10px', borderTopLeftRadius: '30px', borderTopRightRadius: '30px', borderBottomLeftRadius: '20px', borderBottomRightRadius: '20px' }}>
               <MDBCardBody>
+              <h4 style={{ marginBottom: '5px' }}>Quantidade de sessões</h4>
                 <ResponsiveContainer width="100%" height={300}>
                   <BarChart data={dados.histograma_num_sessoes}>
                     <CartesianGrid strokeDasharray="3 3" />
@@ -282,7 +264,7 @@ function Dashboard() {
                     <YAxis />
                     <Tooltip />
                     <Legend />
-                    <Bar dataKey="Sessões" fill="#8884d8" strokeWidth={2} />
+                    <Bar dataKey="Pacientes" fill="#8884d8" strokeWidth={2} />
                   </BarChart>
                 </ResponsiveContainer>
               </MDBCardBody>
@@ -292,6 +274,7 @@ function Dashboard() {
           {/* Gráfico de Barras: pacientes_novos */}
           <MDBCard className='mb-4' style={{ borderTopLeftRadius: '30px', borderTopRightRadius: '30px', borderBottomLeftRadius: '20px', borderBottomRightRadius: '20px' }}>
             <MDBCardBody>
+            <h4 style={{ marginBottom: '5px' }}>Pacientes novos cadastrados</h4>
               <ResponsiveContainer width="100%" height={400}>
                 <BarChart
                   data={dados.pacientes_novos}
@@ -316,6 +299,7 @@ function Dashboard() {
           {/* Gráfico de Linhas (Linha Simples) */}
           <MDBCard className='mb-4 last-chart' style={{ borderTopLeftRadius: '30px', borderTopRightRadius: '30px', borderBottomLeftRadius: '20px', borderBottomRightRadius: '20px' }}>
             <MDBCardBody>
+            <h4 style={{ marginBottom: '5px' }}>Taxa de ocupação dos leitos</h4>
               <ResponsiveContainer width="100%" height={400}>
                 <LineChart
                   data={dataLinha}
@@ -339,8 +323,6 @@ function Dashboard() {
       </MDBCard>
     </MDBContainer>
   );
-  
-  
   
   
 }

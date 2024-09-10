@@ -87,7 +87,7 @@ function ModalNovaPrescricao({ isOpen, onClose }) {
           </MDBModalHeader>
           <MDBModalBody style={{ fontFamily: 'FiraSans-Light, sans-serif' }}>
 
-          <MDBInput style={{ fontFamily: 'FiraSans-Light, sans-serif' }} label="Prontuário do Paciente" id="prontuario" type="text" value={prontuario} onChange={handleChange} />
+          <MDBInput style={{ fontFamily: 'FiraSans-Light, sans-serif' }} label="Prontuário do Paciente" id="prontuario" type="text" value={prontuario} onChange={handleChange} maxLength="256" />
 
           </MDBModalBody>
           <MDBModalFooter>
@@ -112,7 +112,7 @@ function ModalEnviarFarmacia({ isOpen, onClose, onSubmit }) {
       <MDBModalDialog>
         <MDBModalContent>
           <MDBModalHeader>
-            <MDBModalTitle style={{ fontFamily: 'FiraSans-Medium, sans-serif' }}>Confirmação de envio para farmácia</MDBModalTitle>
+            <MDBModalTitle style={{ fontFamily: 'FiraSans-Medium, sans-serif' }}>Confirmação de encaminhamento</MDBModalTitle>
             <MDBBtn className='btn-close' color='none' onClick={handleClose}></MDBBtn>
           </MDBModalHeader>
           <MDBModalBody style={{ fontFamily: 'FiraSans-Light, sans-serif' }}>
@@ -436,6 +436,7 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
               onChange={handleSearchChange}
               className="flex-grow-1"
               style={{ height: '40px'}}
+              maxLength="256"
             />
             
             <MDBBtn
@@ -522,7 +523,7 @@ function QuadroFicha({ selectedPaciente, historico }) {
     switch (selectedPaciente.estagio_atual) {
       case 'PRESCRICAO_CRIADA':
       case 'DEVOLVIDO_PELA_FARMACIA':
-        return <MDBBtn style={{ marginLeft: '10px' }} onClick={toggleModalEnviarFarmacia} disabled={!isPrescricaoCriada} >ENVIAR</MDBBtn>;
+        return <MDBBtn style={{ marginLeft: '10px' }} onClick={toggleModalEnviarFarmacia} disabled={!isPrescricaoCriada} >ENCAMINHAR À FARMÁCIA</MDBBtn>;
       case 'DEVOLVIDO_PELA_REGULACAO':
         return <MDBBtn onClick={toggleModalTransferencia} >AUTORIZAR TRANSFERÊNCIA</MDBBtn>;
       case 'INTERNADO':
@@ -667,6 +668,7 @@ function QuadroFicha({ selectedPaciente, historico }) {
             name="medicamentos"
             value={formValue.medicamentos} 
             onChange={onChange}
+            maxLength="256"
             disabled={!isPrescricaoCriada}  
         />
             
@@ -696,6 +698,7 @@ function QuadroFicha({ selectedPaciente, historico }) {
                         value={formValue.sessoes_prescritas} 
                         onChange={onChange}
                         disabled={!isPrescricaoCriada}  
+                        maxLength="5"
                         />
               </div>
               <div>
@@ -709,6 +712,7 @@ function QuadroFicha({ selectedPaciente, historico }) {
                         value={formValue.dias_intervalo} 
                         onChange={onChange}
                         disabled={!isPrescricaoCriada}  
+                        maxLength="5"
                         />
               </div>
             </div>
@@ -726,6 +730,7 @@ function QuadroFicha({ selectedPaciente, historico }) {
                     name="mensagem"
                     value={formValue.mensagem} 
                     onChange={onChange}
+                    maxLength="256"
                     disabled={!isPrescricaoCriada}  
                     />
           </div>
