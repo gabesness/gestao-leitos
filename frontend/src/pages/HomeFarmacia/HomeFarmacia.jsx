@@ -185,21 +185,21 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
       >
         <MDBCardBody className="d-flex flex-column" style={{ flex: '1 1 auto', minHeight: '0' }}>
         {/* Barra de Pesquisa */}
-          <MDBInput
-            type="text"
-            label={
-              <div className="d-flex align-items-center">
-                <MDBIcon fas icon="search" className="me-2" />
-                Pesquisar
-              </div>
-            }
-            value={searchTerm}
-            onChange={handleSearchChange}
-            className="mb-3"
-            style={{ height: '24px' }}
-            maxLength="256"
-          />
-  
+        <div className="d-flex align-items-center mb-2" style={{ marginTop: '0px' }}>
+            <MDBInput
+              type="text"
+              label={
+                <div className="d-flex align-items-center">
+                  <MDBIcon fas icon="search" className="me-2" />
+                  Pesquisar
+                </div>
+              }
+              value={searchTerm}
+              onChange={handleSearchChange}
+              className="flex-grow-1 mb-2 mt-0"
+              style={{ height: '32px' }}
+            />
+          </div>
           {/* Listagem */}
           <MDBListGroup light style={{ flex: '1 1 auto', overflowY: 'auto' }}>
             {currentPacientes.map((paciente, index) => (

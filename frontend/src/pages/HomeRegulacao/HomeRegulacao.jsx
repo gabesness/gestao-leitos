@@ -8,12 +8,8 @@ import {
   MDBCard,
   MDBCardBody,
   MDBInput,
-  MDBCheckbox,
   MDBIcon,
-  MDBBadge, 
   MDBListGroup, 
-  MDBListGroupItem,
-  MDBRipple,
   MDBTextArea,
   MDBModal,
   MDBModalHeader,
@@ -22,13 +18,6 @@ import {
   MDBModalDialog,
   MDBModalContent,
   MDBModalTitle,
-  MDBDropdown,
-  MDBDropdownMenu,
-  MDBDropdownItem,
-  MDBDropdownToggle,
-  MDBCardTitle,
-  MDBCardText,
-  UserListItem,
 }
 from 'mdb-react-ui-kit';
 import './HomeRegulacao.css';
@@ -63,7 +52,6 @@ function ModalDevolverMedico({ isOpen, onClose, selectedPaciente, formValue }) {
   };
  
  
- 
   const handleClose = () => {
     if (isOpen) {
       onClose();
@@ -75,19 +63,19 @@ function ModalDevolverMedico({ isOpen, onClose, selectedPaciente, formValue }) {
       <MDBModalDialog>
         <MDBModalContent>
           <MDBModalHeader>
-            <MDBModalTitle style={{ fontFamily: 'FiraSans-Medium, sans-serif' }}>Devolução ao médico</MDBModalTitle>
+            <MDBModalTitle style={{ fontFamily: 'FiraSans-Medium, sans-serif' }}>Solicitação de transferência</MDBModalTitle>
             <MDBBtn className='btn-close' color='none' onClick={handleClose}></MDBBtn>
           </MDBModalHeader>
           <MDBModalBody style={{ fontFamily: 'FiraSans-Light, sans-serif' }}>
 
           A prescrição será devolvida ao médico por falta de vagas, 
-          para que possar ser autorizado o encaminhamento para outro hospital.
+          para que possa ser autorizada a transferência do paciente.
 
 
           </MDBModalBody>
           <MDBModalFooter>
           <MDBBtn color='danger' onClick={handleClose}>Cancelar</MDBBtn>
-          <MDBBtn onClick={handleDevolver}>Devolver</MDBBtn>
+          <MDBBtn onClick={handleDevolver}>Solicitar Transferência</MDBBtn>
           </MDBModalFooter>
         </MDBModalContent>
       </MDBModalDialog>
@@ -115,7 +103,6 @@ function ModalAgendamento({ isOpen, onClose, selectedPaciente, selectedLeito, fo
       toast.error(error.response.data.erro);
     }
   };
-  
   
   
   const handleClose = () => {
@@ -505,7 +492,7 @@ function QuadroFicha({ selectedPaciente, historico }) {
     const renderButtons = () => {
       switch (selectedPaciente.estagio_atual) {
         case 'ENCAMINHADO_PARA_AGENDAMENTO':
-          return <MDBBtn style={{ marginLeft: '10px' }} onClick={toggleModalAgendamento} >AGENDAR LEITO</MDBBtn>;
+          return <MDBBtn style={{ marginLeft: '10px' }} onClick={toggleModalAgendamento}  disabled={!selectedLeito} >AGENDAR LEITO</MDBBtn>;
         case 'AUTORIZADO_PARA_TRANSFERENCIA':
           return (
             <>
@@ -655,7 +642,7 @@ function QuadroFicha({ selectedPaciente, historico }) {
     <div style={{ padding: '20px', marginTop: '10px', display: 'flex', justifyContent: 'space-between', borderTop: '1px solid rgba(0,0,0,.125)' }}>
         <div>
           {selectedPaciente.estagio_atual === 'ENCAMINHADO_PARA_AGENDAMENTO' && (
-              <MDBBtn color='success' style={{ marginLeft: '10px' }} onClick={toggleModalDevolverMedico} >DEVOLVE AO MÉDICO</MDBBtn>
+              <MDBBtn color='success' style={{ marginLeft: '10px' }} onClick={toggleModalDevolverMedico} >SOLICITAR TRANSFERÊNCIA</MDBBtn>
           )}
           {selectedPaciente.estagio_atual === 'AGENDADO' && (
               <MDBBtn color='danger' style={{ marginLeft: '10px' }} onClick={toggleModalAltaObito} >ALTA ÓBITO</MDBBtn>

@@ -69,7 +69,7 @@ function ModalCriarPaciente({ isOpen, onClose }) {
       }
     } catch (error) {
       console.error('Erro ao criar paciente:', error);
-      toast.error(error.response.data.erro);
+      toast.error(error.response.data.Erro);
     }
   }
 

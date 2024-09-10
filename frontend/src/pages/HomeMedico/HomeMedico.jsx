@@ -523,7 +523,7 @@ function QuadroFicha({ selectedPaciente, historico }) {
     switch (selectedPaciente.estagio_atual) {
       case 'PRESCRICAO_CRIADA':
       case 'DEVOLVIDO_PELA_FARMACIA':
-        return <MDBBtn style={{ marginLeft: '10px' }} onClick={toggleModalEnviarFarmacia} disabled={!isPrescricaoCriada} >ENCAMINHAR À FARMÁCIA</MDBBtn>;
+        return <MDBBtn style={{ marginLeft: '10px' }} onClick={toggleModalEnviarFarmacia} disabled={!isPrescricaoCriada || !isFormValid()} >ENCAMINHAR À FARMÁCIA</MDBBtn>;
       case 'DEVOLVIDO_PELA_REGULACAO':
         return <MDBBtn onClick={toggleModalTransferencia} >AUTORIZAR TRANSFERÊNCIA</MDBBtn>;
       case 'INTERNADO':
@@ -549,6 +549,18 @@ function QuadroFicha({ selectedPaciente, historico }) {
     medicamentos: '',
     mensagem: ''
   });
+
+  const isFormValid = () => {
+    const sessoesPrescritasValida = formValue.sessoes_prescritas !== '' && !isNaN(Number(formValue.sessoes_prescritas));
+    const diasIntervaloValido = formValue.dias_intervalo !== '' && !isNaN(Number(formValue.dias_intervalo));
+
+    return (
+      formValue.medicamentos.trim() !== '' &&
+      formValue.data_sugerida.trim() !== '' &&
+      sessoesPrescritasValida &&
+      diasIntervaloValido
+    );
+  };
 
   useEffect(() => {
     if (selectedPaciente && selectedPaciente.plano_terapeutico) {
@@ -683,6 +695,7 @@ function QuadroFicha({ selectedPaciente, historico }) {
                     name="data_sugerida"
                     value={formValue.data_sugerida} 
                     onChange={onChange}
+                    min={new Date().toISOString().split("T")[0]}
                     disabled={!isPrescricaoCriada}  
                     />
 
@@ -692,6 +705,7 @@ function QuadroFicha({ selectedPaciente, historico }) {
                         label="Nº de Sessões" 
                         id="sessoes"
                         name="sessoes_prescritas"
+                        type="number" 
                         style={{ 
                           fontFamily: 'FiraSans-Light, sans-serif' 
                       }}
@@ -706,6 +720,7 @@ function QuadroFicha({ selectedPaciente, historico }) {
                         label="Dias de intervalo" 
                         id="intervaloDias"
                         name="dias_intervalo"
+                        type="number" 
                         style={{ 
                           fontFamily: 'FiraSans-Light, sans-serif' 
                       }}
