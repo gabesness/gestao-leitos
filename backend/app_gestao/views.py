@@ -636,7 +636,7 @@ class UserViewSet(GenericViewSet):
     )
     @action(detail=False, methods=['GET'], url_path='')
     def lista(self, request):
-        queryset = self.get_queryset()
+        queryset = self.get_queryset().order_by('first_name')
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
     

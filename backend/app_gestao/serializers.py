@@ -29,7 +29,7 @@ class DynamicFieldsModelSerializer(serializers.ModelSerializer):
 class UserSerializer(DynamicFieldsModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username', 'password', 'first_name', 'last_name', 'email', 'groups']
+        fields = ['id', 'username', 'password', 'first_name', 'last_name', 'email', 'groups', 'is_active']
         extra_kwargs = { 'password': {'write_only': True} }
     
     def create(self, validated_data):
@@ -47,6 +47,7 @@ class UserSerializer(DynamicFieldsModelSerializer):
         instance.last_name = validated_data.get('last_name', instance.last_name)
         instance.email = validated_data.get('email', instance.email)
         instance.set_password(validated_data.get('password', instance.password))
+        instance.is_active = validated_data.get('is_active', instance.is_active)
         instance.save()
         return instance
 
