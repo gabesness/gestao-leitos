@@ -245,7 +245,7 @@ class PrescricaoViewSet(GenericViewSet):
                     },
                     'mensagem': {'type': 'string'},
                 },
-                'required': ['id_usuario', 'plano_terapeutico', 'mensagem']
+                'required': ['id_usuario', 'plano_terapeutico']
             }
         }
         )
@@ -299,7 +299,7 @@ class PrescricaoViewSet(GenericViewSet):
                     'type': 'string'
                 }
             },
-            'required': ['id_usuario', 'mensagem']
+            'required': ['id_usuario']
         }
     }
     )
@@ -478,7 +478,7 @@ class PrescricaoViewSet(GenericViewSet):
                     'type': 'string'
                 }
             },
-            'required': ['id_usuario', 'mensagem']
+            'required': ['id_usuario']
         }
     }
     )
@@ -517,7 +517,7 @@ class PrescricaoViewSet(GenericViewSet):
                     'type': 'string'
                 }
             },
-            'required': ['id_usuario', 'mensagem']
+            'required': ['id_usuario']
         }
     },
     )
@@ -555,7 +555,7 @@ class PrescricaoViewSet(GenericViewSet):
                     'type': 'string'
                 }
             },
-            'required': ['id_usuario', 'mensagem']
+            'required': ['id_usuario']
         }
     }
     )
@@ -592,7 +592,7 @@ class PrescricaoViewSet(GenericViewSet):
                     'type': 'string'
                 }
             },
-            'required': ['id_usuario', 'mensagem']
+            'required': ['id_usuario']
         }
     }
     )
