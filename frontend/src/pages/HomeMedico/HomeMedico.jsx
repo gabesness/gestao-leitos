@@ -613,7 +613,7 @@ function QuadroFicha({ selectedPaciente, historico }) {
       const response = await axios.patch(`${AxiosURL}/prescricoes/${selectedPaciente.prontuario}/criar_prescricao/`, {
         id_usuario: localStorage.getItem('idUser'),
       });
-      if (response.status === 204) {
+      if (response.status === 200) {
         toast.success(response.data.OK);
         setTimeout(() => {
           window.location.reload();
