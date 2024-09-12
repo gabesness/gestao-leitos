@@ -145,7 +145,11 @@ function QuadroLista({ usuarios, activeTab, selectedUser, handleUserClick, setAc
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
 
-  const searchedUsuarios = usuarios.filter(usuario => {
+  const filteredUsuarios = usuarios.filter(usuario => 
+    activeTab === 'ativos' ? usuario.is_active === true : usuario.is_active === false
+  );
+
+  const searchedUsuarios = filteredUsuarios.filter(usuario => {
     return usuario.first_name.toLowerCase().includes(searchTerm.toLowerCase());
   });
 
@@ -171,12 +175,50 @@ function QuadroLista({ usuarios, activeTab, selectedUser, handleUserClick, setAc
           flexDirection: 'column',
         }}
       >
+          {/* Botões Ativos/Inativos */}
+          <div className="text-center mb-2">
+          <MDBBtn
+            className="w-50"
+            style={{
+              borderTopLeftRadius: '20px',
+              borderTopRightRadius: '0px',
+              borderBottomRightRadius: '0px',
+              borderBottomLeftRadius: '0px',
+              boxShadow: 'none',
+              color: activeTab === 'ativos' ? '#000000' : '#6c757d',
+              backgroundColor: activeTab === 'ativos' ? 'white' : '#D3D3D3',
+              fontFamily: 'FiraSans-Medium, sans-serif',
+            }}
+            color={activeTab === 'ativos' ? 'white' : 'dark'}
+            onClick={() => setActiveTab('ativos')}
+          >
+            Ativos
+          </MDBBtn>
+
+          <MDBBtn
+            className="w-50"
+            style={{
+              borderTopLeftRadius: '0px',
+              borderTopRightRadius: '20px',
+              borderBottomLeftRadius: '0px',
+              borderBottomRightRadius: '0px',
+              boxShadow: 'none',
+              color: activeTab === 'inativos' ? '#000000' : '#6c757d',
+              backgroundColor: activeTab === 'inativos' ? 'white' : '#D3D3D3',
+              fontFamily: 'FiraSans-Medium, sans-serif',
+            }}
+            color={activeTab === 'inativos' ? 'white' : 'dark'}
+            onClick={() => setActiveTab('inativos')}
+          >
+            Inativos
+          </MDBBtn>
+        </div>
         {/* Conteúdo */}
         <MDBCardBody
           className="d-flex flex-column"
           style={{ flex: '1 1 auto', minHeight: '0' }}
         >          {/* Cabeçalho */}
-          <div className="d-flex align-items-center mb-2" style={{ marginTop: '0px' }}>
+          <div className="d-flex align-items-center mb-2" style={{ marginTop: '-12px' }}>
             
             <MDBInput
               type="text"
@@ -368,7 +410,7 @@ function QuadroFicha({ selectedUser }) {
 
 function HomeAdm() {
   const [usuarios, setUsuarios] = useState([]);
-  const [activeTab, setActiveTab] = useState('pendentes');
+  const [activeTab, setActiveTab] = useState('ativos');
   const [selectedUser, setSelectedUser] = useState(null);
 
   useEffect(() => {
