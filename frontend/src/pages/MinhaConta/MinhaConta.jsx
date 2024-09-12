@@ -27,7 +27,15 @@ function QuadroFicha({ username,
   setSenhaNova,
   setSenhaNova2,
   AlterarSenha  }) {
-  return (
+  
+  
+    const isPasswordFieldsFilled = () => {
+      return senhaAtual && senhaNova && senhaNova2;
+    };
+  
+  
+  
+    return (
     <MDBCard style={{ borderRadius: '20px', width: '100%', maxWidth: '600px' }}>
       <CabecalhoMeuUsuario username={username} firstName={firstName} lastName={lastName} />
       <MDBCardBody style={{ padding: '20px' }}>
@@ -92,7 +100,8 @@ function QuadroFicha({ username,
         </div>
         <div style={{ padding: '20px', marginTop: '10px', display: 'flex', justifyContent: 'space-between', borderTop: '1px solid rgba(0,0,0,.125)' }}>
           <MDBBtn onClick={EditarUsuario}>SALVAR ALTERAÇÕES</MDBBtn>
-          <MDBBtn onClick={AlterarSenha}>ALTERAR SENHA</MDBBtn>
+          <MDBBtn onClick={AlterarSenha} 
+          disabled={!isPasswordFieldsFilled()}>ALTERAR SENHA</MDBBtn>
         </div>
       </MDBCardBody>
     </MDBCard>
