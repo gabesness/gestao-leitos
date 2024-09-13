@@ -103,6 +103,13 @@ class PacienteSerializer(DynamicFieldsModelSerializer):
         plano_terapeutico = obj.plano_terapeutico
         return Plano_terapeuticoSerializer(plano_terapeutico).data
     
+    def get_leito(self, obj) -> str:
+        leito = obj.leito
+        if leito:
+            return LeitoSerializer(leito).data.get('nome')
+        else:
+            return "A confirmar"
+    
     def atualizar_estagio(self, obj, usuario, estagio, mensagem):
         obj.atualizar_estagio(usuario, estagio, mensagem)
 

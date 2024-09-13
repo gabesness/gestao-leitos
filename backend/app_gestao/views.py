@@ -835,6 +835,48 @@ class UserViewSet(GenericViewSet):
             return Response({'Erro': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @extend_schema(
+            summary="Desativar usuário",
+            description="""Desativar usuário""",
+            request=None
+    )
+    @action(detail=True, methods=['PATCH'])
+    def desativar_usuario(self, request, pk=None):
+        try:
+            user = self.get_object()
+            if user:
+                if  user.is_active:
+                    user.is_active = False
+                    user.save()
+                    return Response({'OK': 'Usuário desativado com sucesso'}, status=status.HTTP_200_OK)
+                else:
+                    return Response({'Erro': 'Este usuário já está inativo'}, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                return Response({'Erro': 'Usuário não encontrado'}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({'Erro': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    @extend_schema(
+            summary="Reativar usuário",
+            description="""Reativar usuário""",
+            request=None
+    )
+    @action(detail=True, methods=['PATCH'])
+    def reativar_usuario(self, request, pk=None):
+        try:
+            user = self.get_object()
+            if user:
+                if not user.is_active:
+                    user.is_active = True
+                    user.save()
+                    return Response({'OK': 'Usuário reativado com sucesso'}, status=status.HTTP_200_OK)
+                else:
+                    return Response({'Erro': 'Este usuário já está ativo'}, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                return Response({'Erro': 'Usuário não encontrado'}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({'Erro': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+   
+    @extend_schema(
             summary="Alterar senha",
             description="""
                         Rota utilizada na página Minha Conta para o usuário alterar sua própria senha.
