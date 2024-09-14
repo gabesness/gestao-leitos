@@ -25,7 +25,7 @@ def helper_gerar_senha(size=8, chars=ascii_letters + digits):
 
 # Create your views here.
 class PacienteViewSet(GenericViewSet):
-    queryset = Paciente.objects.all()
+    queryset = Paciente.objects.all().order_by('nome')
     serializer_class = PacienteSerializer
 
     @extend_schema(
@@ -150,30 +150,13 @@ class PacienteViewSet(GenericViewSet):
     )
     @action(detail=True, methods=['GET'])
     def consultar_prescricao(self, request, pk=None):
-        fds = ['sessao_atual', 'numero_sessao_atual', 'historico_atual', 'plano_terapeutico']
-        paciente = self.get_object()
-        serializer = self.get_serializer(paciente, fields=fds)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-    
-    @extend_schema(
-        summary="*** INCOMPLETA - NAO UTILIZAR *** Baixar histórico",
-        description="""
-                    *** INCOMPLETA - NAO UTILIZAR *** Faz o download de um arquivo PDF do histórico do paciente.
-                    """,
-        request=None
-    )
-    @action(detail=True, methods=['GET'])
-    def baixar_historico(self, request, pk=None):
         try:
+            fds = ['sessao_atual', 'numero_sessao_atual', 'historico_atual', 'plano_terapeutico', 'leito']
             paciente = self.get_object()
-            serializer = self.get_serializer(paciente)
-            data = serializer.data['historico_atual']
-            buffer = generate_pdf(data)
-            response = Response(buffer, content_type='application/pdf', status=status.HTTP_200_OK)
-            response['Content-Disposition'] = 'attachment="historico.pdf"'
-            return response
+            serializer = self.get_serializer(paciente, fields=fds)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
-            return Response({}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response({'Erro': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class PrescricaoViewSet(GenericViewSet):
     queryset = Paciente.objects.all()

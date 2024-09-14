@@ -72,6 +72,7 @@ class PacienteSerializer(DynamicFieldsModelSerializer):
     historico_atual = serializers.SerializerMethodField()
     historico_completo = serializers.SerializerMethodField()
     plano_terapeutico = serializers.SerializerMethodField()
+    leito = serializers.SerializerMethodField()
 
     class Meta:
         model = Paciente
@@ -103,12 +104,12 @@ class PacienteSerializer(DynamicFieldsModelSerializer):
         plano_terapeutico = obj.plano_terapeutico
         return Plano_terapeuticoSerializer(plano_terapeutico).data
     
-    def get_leito(self, obj) -> str:
+    def get_leito(self, obj) -> dict:
         leito = obj.leito
         if leito:
-            return LeitoSerializer(leito).data.get('nome')
+            return LeitoSerializer(leito).data
         else:
-            return "A confirmar"
+            return {}
     
     def atualizar_estagio(self, obj, usuario, estagio, mensagem):
         obj.atualizar_estagio(usuario, estagio, mensagem)
