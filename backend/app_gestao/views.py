@@ -16,6 +16,7 @@ from drf_spectacular.utils import extend_schema
 from .serializers import *
 from .helpers import *
 
+from datetime import datetime
 from string import ascii_letters, digits
 from random import SystemRandom
 
@@ -240,28 +241,29 @@ class PrescricaoViewSet(GenericViewSet):
             paciente_serializer = self.get_serializer(paciente)
             user = User.objects.get(id=request.data['id_usuario'])
             estagios_aceitos = ['PRESCRICAO_CRIADA', 'DEVOLVIDO_PELA_FARMACIA']
+            data_sugerida = datetime.strptime(request.data.get('plano_terapeutico')['data_sugerida'],'%Y-%m-%d').date()
 
             if user:
                 if paciente_serializer.data['estagio_atual'] in estagios_aceitos:
-                    # Se não houver nenhum plano terapeutico associado ao paciente, criar um plano novo
-                    if paciente.plano_terapeutico is None:
-                        # Definindo um novo plano terapeutico
-                        plano_serializer = Plano_terapeuticoSerializer(data={**plano_json, 'sessoes_restantes': plano_json['sessoes_prescritas']})
-                        if plano_serializer.is_valid(): # checando as informacoes do plano novo
-                            plano_terapeutico = plano_serializer.create({**plano_json, 'sessoes_restantes': plano_json['sessoes_prescritas']})
-                            plano_terapeutico.save() # salva o novo plano no banco de dados
-                            paciente_serializer.associar_plano(obj=paciente, plano_terapeutico=plano_terapeutico)
+                    if data_sugerida > timezone.now().date():
+                        # Se não houver nenhum plano terapeutico associado ao paciente, criar um plano novo
+                        if paciente.plano_terapeutico is None:
+                            # Definindo um novo plano terapeutico
+                            plano_serializer = Plano_terapeuticoSerializer(data={**plano_json, 'sessoes_restantes': plano_json['sessoes_prescritas']})
+
+                            if plano_serializer.is_valid(): # checando as informacoes do plano novo
+                                plano_terapeutico = plano_serializer.create({**plano_json, 'sessoes_restantes': plano_json['sessoes_prescritas']})
+                                plano_terapeutico.save() # salva o novo plano no banco de dados
+                                paciente_serializer.associar_plano(obj=paciente, plano_terapeutico=plano_terapeutico)
+                            else: return Response({plano_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+                        # Se já houver plano para esse paciente, recuperar o existente e alterar as suas informações
                         else:
-                            return Response({plano_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
-                    # Se já houver plano para esse paciente, recuperar o existente e alterar as suas informações
-                    else:
-                        plano_serializer = paciente_serializer.data['plano_terapeutico'] # consulta o plano terapeutico do paciente
-                        plano_terapeutico = plano_serializer.update(obj=Plano_terapeutico.objects.get(id=plano_serializer['id']), validated_data=plano_json)
-                
-                    paciente_serializer.atualizar_estagio(obj=paciente, usuario=user, estagio='ENCAMINHADO_PARA_FARMACIA', mensagem=request.data['mensagem'])
-                    return Response({'OK': 'Plano terapêutico criado e paciente encaminhado à Farmacia'}, status=status.HTTP_200_OK)
-                else:
-                    return Response({'erro': 'Paciente já foi encaminhado à farmácia!'}, status=status.HTTP_400_BAD_REQUEST)
+                            plano_serializer = paciente_serializer.data['plano_terapeutico'] # consulta o plano terapeutico do paciente
+                            plano_terapeutico = plano_serializer.update(obj=Plano_terapeutico.objects.get(id=plano_serializer['id']), validated_data=plano_json)
+                        paciente_serializer.atualizar_estagio(obj=paciente, usuario=user, estagio='ENCAMINHADO_PARA_FARMACIA', mensagem=request.data['mensagem'])
+                        return Response({'OK': 'Plano terapêutico criado e paciente encaminhado à Farmacia'}, status=status.HTTP_200_OK)
+                    else: return Response({'Erro': 'Data de internação deve ser no mínimo no dia seguinte'}, status=status.HTTP_400_BAD_REQUEST)
+                else: return Response({'erro': 'Paciente já foi encaminhado à farmácia!'}, status=status.HTTP_400_BAD_REQUEST)
             else: raise User.DoesNotExist
         except User.DoesNotExist: return Response({'Erro': 'Usuário inválido'}, status=status.HTTP_401_UNAUTHORIZED)
         except Exception as e: return Response({'Erro': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
