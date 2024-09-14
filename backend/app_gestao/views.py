@@ -210,6 +210,7 @@ class PrescricaoViewSet(GenericViewSet):
         description="""O médico encaminha a prescrição para a farmácia (devolvida ou não);
                        Assume os estágios PRESCRICAO_CRIADA ou DEVOLVIDO_PELA_FARMACIA;
                        Altera o estágio atual do paciente para ENCAMINHADO_PARA_FARMACIA;
+                       A data de internação deve ser, no mínimo, igual ao dia seguinte;
                        Caso o paciente não possua plano terapêutico, é criado um plano novo e atribuído ao paciente;
                        Caso já possua, o plano é apenas alterado;
                        Cria um Registro.""",
@@ -335,23 +336,29 @@ class PrescricaoViewSet(GenericViewSet):
             paciente = self.get_object()
             serializer = self.get_serializer(paciente)
             user = User.objects.get(id=request.data['id_usuario'])
+            hoje = timezone.now().date()
+            data_sugerida = datetime.strptime(serializer.data.get('plano_terapeutico')['data_sugerida'],'%Y-%m-%d').date()
             if id_leito is None:
                 raise Leito.DoesNotExist
             else:
                 leito = Leito.objects.get(id=id_leito)
                 if user:
                     if serializer.data['estagio_atual'] == 'ENCAMINHADO_PARA_AGENDAMENTO':
-                        if leito.ocupado:
-                            return Response({'Erro': 'Este leito já está ocupado!'}, status=status.HTTP_400_BAD_REQUEST)
+                        if leito.ocupado: return Response({'Erro': 'Este leito já está ocupado!'}, status=status.HTTP_400_BAD_REQUEST)
                         else:
-                            serializer.alocar_leito(obj=paciente, id_leito=id_leito)
-                            serializer.atualizar_estagio(
-                                obj=paciente,
-                                usuario=user,
-                                estagio='AGENDADO',
-                                mensagem=f"Paciente {paciente.nome} agendado para internação."
-                                )
-                            return Response({'OK': 'Agendado com sucesso'}, status=status.HTTP_200_OK)
+                            # Verificar se esta agendando com mais de 1 dia de antecedencia
+                            if data_sugerida - hoje > timedelta(days=1):
+                                return Response({'Erro': 'Não é possível agendar um leito com mais de 24h de antecedência'},
+                                                status=status.HTTP_400_BAD_REQUEST)
+                            else:
+                                serializer.alocar_leito(obj=paciente, id_leito=id_leito)
+                                serializer.atualizar_estagio(
+                                    obj=paciente,
+                                    usuario=user,
+                                    estagio='AGENDADO',
+                                    mensagem=f"Paciente {paciente.nome} agendado para internação."
+                                    )
+                                return Response({'OK': 'Agendado com sucesso'}, status=status.HTTP_200_OK)
                     else:
                         return Response({'erro': 'estagio_atual inválido'}, status=status.HTTP_400_BAD_REQUEST)
                 else: raise User.DoesNotExist
