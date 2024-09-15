@@ -331,7 +331,44 @@ function QuadroFicha({ selectedUser }) {
       toast.error(error.response?.data?.erro || 'Erro desconhecido');
     }
   };
+
+  const DesativarUsuario = async (event) => {
+    event.preventDefault();
+
+    try {
+      const response = await axios.patch(`${AxiosURL}/usuarios/${selectedUser.id}/desativar_usuario/`);
+
+      if (response.status === 200) {
+        toast.success('Usuário desativado com sucesso!');
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
+      }
+    } catch (error) {
+      console.error('Erro ao desativar usuário:', error);
+      toast.error(error.response?.data?.erro || 'Erro desconhecido');
+    }
+  };
   
+
+  const ReativarUsuario = async (event) => {
+    event.preventDefault();
+
+    try {
+      const response = await axios.patch(`${AxiosURL}/usuarios/${selectedUser.id}/reativar_usuario/`);
+
+      if (response.status === 200) {
+        toast.success('Usuário reativado com sucesso!');
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
+      }
+    } catch (error) {
+      console.error('Erro ao reativar usuário:', error);
+      toast.error(error.response?.data?.erro || 'Erro desconhecido');
+    }
+  };
+
 
   return (
     <MDBCol md='8'>
@@ -380,21 +417,25 @@ function QuadroFicha({ selectedUser }) {
           {/* Botões */}
   
           <div style={{ padding: '20px', marginTop: '10px', display: 'flex', justifyContent: 'space-between', borderTop: '1px solid rgba(0,0,0,.125)' }}>
-            <div>
-              <MDBBtn style={{ marginLeft: '10px' }} color='danger' >DESATIVAR USUÁRIO</MDBBtn>
-            </div>
-            <div>
-            <MDBBtn 
-                style={{ marginLeft: '10px' }} 
-                onClick={GerarSenha}
-              >
-                RECUPERAR SENHA
+            {selectedUser.is_active ? (
+              <>
+                <MDBBtn style={{ marginLeft: '10px' }} color='danger' onClick={DesativarUsuario}>
+                  DESATIVAR USUÁRIO
+                </MDBBtn>
+                <MDBBtn style={{ marginLeft: '10px' }} onClick={GerarSenha}>
+                  RECUPERAR SENHA
+                </MDBBtn>
+                <MDBBtn style={{ marginLeft: '10px' }} onClick={EditarUsuario}>
+                  SALVAR ALTERAÇÕES
+                </MDBBtn>
+              </>
+            ) : (
+              <MDBBtn style={{ marginLeft: '10px' }} color='success' onClick={ReativarUsuario}>
+                REATIVAR USUÁRIO
               </MDBBtn>
-            </div>
-            <div>
-              <MDBBtn style={{ marginLeft: '10px' }} onClick={EditarUsuario} >SALVAR ALTERAÇÕES </MDBBtn>
-            </div>
+            )}
           </div>
+          
         </MDBCard>
       )}
       {!selectedUser && (
