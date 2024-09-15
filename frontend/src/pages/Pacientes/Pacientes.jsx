@@ -394,12 +394,12 @@ function QuadroFicha({ selectedPaciente, historico }) {
             <MDBRow style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div style={{ display: 'flex', alignItems: 'center' }}>
                 {cargo === 'Recepção' || cargo === 'Regulação' || cargo === 'Administrador' ? (
-                  <MDBBtn className='mx-2' color='tertiary' rippleColor='light' onClick={handleEditClick}>
+                  <MDBBtn className='mx-2' color='secondary' rippleColor='light' onClick={handleEditClick}>
                     <MDBIcon fas icon="edit" className='me-1' />
                     Editar Paciente
                   </MDBBtn>
                 ) : null}
-                  <MDBBtn className='mx-2' color='tertiary' rippleColor='light' onClick={() => baixarHistoricoComoPDF(historico, selectedPaciente.nome)}>
+                  <MDBBtn className='mx-2' color='secondary' rippleColor='light' onClick={() => baixarHistoricoComoPDF(historico, selectedPaciente.nome)}>
                    <MDBIcon fas icon="file-download" className='me-1' />
                      Baixar Histórico
                 </MDBBtn>
@@ -419,7 +419,7 @@ function QuadroFicha({ selectedPaciente, historico }) {
             </MDBRow>
 
             {/* Histórico */}
-            <h4 style={{ textAlign: 'center', fontFamily: 'FiraSans-Medium, sans-serif' }}>Histórico</h4>
+            <h4 style={{ textAlign: 'center', fontFamily: 'FiraSans-Medium, sans-serif', marginTop:'20px' }}>Histórico</h4>
             <div id="historico-content" style={{ height: '360px', overflowY: 'auto' }}>
               {filteredHistorico.map((registro, index) => {
                 const { dataFormatada, horaFormatada } = formatarData(registro.criado_em);
