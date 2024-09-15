@@ -22,7 +22,7 @@ function RouteHandler() {
       <Route path="/" element={<Login />} />
       <Route path="/AlterarSenha" element={<AlterarSenha />} />
       <Route path="/EsqueceuSenha" element={<EsqueceuSenha />} />
-      <Route path="/RecuperarSenha" element={<RecuperarSenha />} />
+      <Route path="/redefinir-senha/*" element={<RecuperarSenha />} />
       <Route path="/HomeAdm" element={<PrivateRoute element={<HomeAdm />} allowedRoles={['Administrador']} />} />
       <Route path="/HomeMedico" element={<PrivateRoute element={<HomeMedico />} allowedRoles={['Médico']} />} />
       <Route path="/HomeFarmacia" element={<PrivateRoute element={<HomeFarmacia />} allowedRoles={['Farmácia']} />} />
