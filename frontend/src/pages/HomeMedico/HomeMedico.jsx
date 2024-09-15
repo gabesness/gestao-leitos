@@ -523,14 +523,23 @@ function QuadroFicha({ selectedPaciente, historico }) {
     switch (selectedPaciente.estagio_atual) {
       case 'PRESCRICAO_CRIADA':
       case 'DEVOLVIDO_PELA_FARMACIA':
-        return <MDBBtn style={{ marginLeft: '10px' }} onClick={toggleModalEnviarFarmacia} disabled={!isPrescricaoCriada || !isFormValid()} >ENCAMINHAR À FARMÁCIA</MDBBtn>;
+        return <MDBBtn style={{ marginLeft: '10px' }} onClick={toggleModalEnviarFarmacia} disabled={!isPrescricaoCriada || !isFormValid()} >
+        <MDBIcon fas icon="paper-plane" className="me-2" />
+          ENCAMINHAR À FARMÁCIA
+          </MDBBtn>;
       case 'DEVOLVIDO_PELA_REGULACAO':
-        return <MDBBtn onClick={toggleModalTransferencia} >AUTORIZAR TRANSFERÊNCIA</MDBBtn>;
+        return <MDBBtn onClick={toggleModalTransferencia} >
+         <MDBIcon fas icon="check" className="me-2" />
+          AUTORIZAR TRANSFERÊNCIA
+          </MDBBtn>;
       case 'INTERNADO':
         return (
           <>
             <div>
-              <MDBBtn color='primary'onClick={toggleModalAltaNormal}>ALTA NORMAL</MDBBtn>
+              <MDBBtn color='primary'onClick={toggleModalAltaNormal}>
+              <MDBIcon fas icon="check" className="me-2" />
+                ALTA NORMAL
+                </MDBBtn>
             </div>
           </>
         );
@@ -595,9 +604,6 @@ function QuadroFicha({ selectedPaciente, historico }) {
       });
       if (response.status === 200) {
         toast.success('Prescrição encaminhada à farmácia');
-        setTimeout(() => {
-          window.location.reload();
-        }, 2000);
       }
     } catch (error) {
       console.error('Erro ao encaminhar para farmácia', error);
@@ -759,13 +765,21 @@ function QuadroFicha({ selectedPaciente, historico }) {
             <div>
               {selectedPaciente.estagio_atual === 'ALTA_NORMAL' && (
                 <>
-                <MDBBtn color='success' style={{ marginLeft: '10px' }} onClick={CriarSegundaPrescricao}>INICIAR NOVA SESSÃO</MDBBtn>
+                <MDBBtn color='primary' onClick={CriarSegundaPrescricao}>
+                <MDBIcon fas icon="file-medical" className="me-2" />
+                  INICIAR NOVA SESSÃO
+                  </MDBBtn>
               </>
               )}
               {selectedPaciente.estagio_atual === 'INTERNADO' && (
                 <>
-                  <MDBBtn color='warning' style={{ marginLeft: '10px' }}onClick={toggleModalAltaDefinitiva}>ALTA DEFINITIVA</MDBBtn>
-                  <MDBBtn color='danger' style={{ marginLeft: '10px' }} onClick={toggleModalAltaObito}>ALTA ÓBITO</MDBBtn>
+                  <MDBBtn color='secondary' style={{ marginLeft: '10px' }}onClick={toggleModalAltaDefinitiva}>
+                  <MDBIcon fas icon="heartbeat" className="me-2" />
+                    ALTA DEFINITIVA</MDBBtn>
+                  
+                  <MDBBtn color='secondary' style={{ marginLeft: '10px' }} onClick={toggleModalAltaObito}>
+                  <MDBIcon fas icon="exclamation" className="me-2" />
+                    ALTA ÓBITO</MDBBtn>
                 </>
               )}
             </div>

@@ -6,6 +6,7 @@ import {
   MDBCard,
   MDBCardBody,
   MDBInput,
+  MDBIcon
 } from 'mdb-react-ui-kit';
 import './MinhaConta.css';
 import CabecalhoMeuUsuario from '../../components/Ficha/CabecalhoMeuUsuario';
@@ -33,13 +34,12 @@ function QuadroFicha({ username,
       return senhaAtual && senhaNova && senhaNova2;
     };
   
-  
-  
     return (
-    <MDBCard style={{ borderRadius: '20px', width: '100%', maxWidth: '600px' }}>
+    <MDBCard style={{ borderRadius: '20px', width: '100%', maxWidth: '800px' }}>
       <CabecalhoMeuUsuario username={username} firstName={firstName} lastName={lastName} />
       <MDBCardBody style={{ padding: '20px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+
           <div style={{ flex: 1, paddingRight: '10px' }}>
             <h4>Informações do Usuário</h4>
             <MDBInput
@@ -66,7 +66,19 @@ function QuadroFicha({ username,
               onChange={(e) => setEmail(e.target.value)}
               maxLength="256"
             />
+             <MDBBtn color='secondary' onClick={EditarUsuario}>
+          <MDBIcon fas icon="user-times" className="me-2" />
+            SALVAR ALTERAÇÕES
+            </MDBBtn>
           </div>
+
+          <div style={{
+    width: '1px',
+    backgroundColor: '#ddd',
+    height: 'auto',
+    margin: '0 10px'
+  }}></div>
+
           <div style={{ flex: 1, paddingLeft: '10px' }}>
             <h4>Alterar a Senha</h4>
             <MDBInput 
@@ -96,13 +108,15 @@ function QuadroFicha({ username,
               onChange={(e) => setSenhaNova2(e.target.value)}
               maxLength="256"
             />
+              <MDBBtn color='secondary' onClick={AlterarSenha} 
+          disabled={!isPasswordFieldsFilled()}>
+          <MDBIcon fas icon="user-times" className="me-2" />
+            ALTERAR SENHA
+            </MDBBtn>
           </div>
+
         </div>
-        <div style={{ padding: '20px', marginTop: '10px', display: 'flex', justifyContent: 'space-between', borderTop: '1px solid rgba(0,0,0,.125)' }}>
-          <MDBBtn onClick={EditarUsuario}>SALVAR ALTERAÇÕES</MDBBtn>
-          <MDBBtn onClick={AlterarSenha} 
-          disabled={!isPasswordFieldsFilled()}>ALTERAR SENHA</MDBBtn>
-        </div>
+
       </MDBCardBody>
     </MDBCard>
   );

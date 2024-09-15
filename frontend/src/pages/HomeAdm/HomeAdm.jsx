@@ -20,7 +20,7 @@ import {
   MDBDropdown,
   MDBDropdownMenu,
   MDBDropdownItem,
-  MDBDropdownToggle,
+  MDBDropdownToggle
 }
 from 'mdb-react-ui-kit';
 import './HomeAdm.css';
@@ -245,7 +245,7 @@ function QuadroLista({ usuarios, activeTab, selectedUser, handleUserClick, setAc
               }}
               color="primary"
             >
-              <MDBIcon fas icon="plus" style={{ fontSize: '16px' }} />
+              <MDBIcon fas icon="user-plus" style={{ fontSize: '16px' }} />
             </MDBBtn>
           </div>
   
@@ -419,18 +419,24 @@ function QuadroFicha({ selectedUser }) {
           <div style={{ padding: '20px', marginTop: '10px', display: 'flex', justifyContent: 'space-between', borderTop: '1px solid rgba(0,0,0,.125)' }}>
             {selectedUser.is_active ? (
               <>
-                <MDBBtn style={{ marginLeft: '10px' }} color='danger' onClick={DesativarUsuario}>
-                  DESATIVAR USUÁRIO
-                </MDBBtn>
-                <MDBBtn style={{ marginLeft: '10px' }} onClick={GerarSenha}>
+             <MDBBtn style={{ marginLeft: '10px' }} color='secondary' onClick={DesativarUsuario}>
+                <MDBIcon fas icon="user-times" className="me-2" />
+                DESATIVAR USUÁRIO
+              </MDBBtn>
+
+                <MDBBtn style={{ marginLeft: '10px' }} color='secondary' onClick={GerarSenha}>
+                <MDBIcon fas icon="key" className="me-2" />
                   RECUPERAR SENHA
                 </MDBBtn>
-                <MDBBtn style={{ marginLeft: '10px' }} onClick={EditarUsuario}>
+                
+                <MDBBtn style={{ marginLeft: '10px' }} color='secondary' onClick={EditarUsuario}>
+                <MDBIcon fas icon="check" className="me-2" />
                   SALVAR ALTERAÇÕES
                 </MDBBtn>
               </>
             ) : (
-              <MDBBtn style={{ marginLeft: '10px' }} color='success' onClick={ReativarUsuario}>
+              <MDBBtn style={{ marginLeft: '10px' }} color='secondary' onClick={ReativarUsuario}>
+               <MDBIcon fas icon="user-check" className="me-2" />
                 REATIVAR USUÁRIO
               </MDBBtn>
             )}

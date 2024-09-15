@@ -353,10 +353,15 @@ function QuadroFicha({ selectedPaciente, historico }) {
 
     <div style={{ padding: '20px', marginTop: '10px', display: 'flex', justifyContent: 'space-between', borderTop: '1px solid rgba(0,0,0,.125)' }}>
       <div>
-        <MDBBtn style={{ marginLeft: '10px' }}onClick={toggleModalDevolverMedico}>DEVOLVER AO MÉDICO</MDBBtn>
+        <MDBBtn color='secondary' onClick={toggleModalDevolverMedico}>
+        <MDBIcon fas icon="undo" className="me-2" />
+          DEVOLVER AO MÉDICO
+          </MDBBtn>
       </div>
       <div>
-        <MDBBtn style={{ marginLeft: '10px' }}onClick={toggleModalEnviarRegulacao}>ENCAMINHAR À REGULAÇÃO</MDBBtn>
+        <MDBBtn onClick={toggleModalEnviarRegulacao}>
+        <MDBIcon fas icon="paper-plane" className="me-2" />
+          ENCAMINHAR À REGULAÇÃO</MDBBtn>
       </div>
     </div>
         </MDBCard>

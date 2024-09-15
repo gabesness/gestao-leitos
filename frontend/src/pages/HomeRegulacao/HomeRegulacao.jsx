@@ -492,12 +492,15 @@ function QuadroFicha({ selectedPaciente, historico }) {
     const renderButtons = () => {
       switch (selectedPaciente.estagio_atual) {
         case 'ENCAMINHADO_PARA_AGENDAMENTO':
-          return <MDBBtn style={{ marginLeft: '10px' }} onClick={toggleModalAgendamento}  disabled={!selectedLeito} >AGENDAR LEITO</MDBBtn>;
+          return <MDBBtn onClick={toggleModalAgendamento}  disabled={!selectedLeito} >
+         <MDBIcon fas icon="check" className="me-2" />
+            AGENDAR LEITO
+            </MDBBtn>;
         case 'AUTORIZADO_PARA_TRANSFERENCIA':
           return (
             <>
               <div>
-                <MDBBtn style={{ marginLeft: '10px' }} onClick={toggleModalTransferencia} >CONFIRMAR TRANSFERÊNCIA</MDBBtn>
+                <MDBBtn onClick={toggleModalTransferencia} >CONFIRMAR TRANSFERÊNCIA</MDBBtn>
               </div>
             </>
           );
@@ -505,7 +508,10 @@ function QuadroFicha({ selectedPaciente, historico }) {
           return (
             <>
               <div>
-                <MDBBtn color='primary' onClick={toggleModalInternacao} >CONFIRMAR INTERNAÇÃO</MDBBtn>
+                <MDBBtn color='primary' onClick={toggleModalInternacao} >
+                <MDBIcon fas icon="check" className="me-2" />
+                  CONFIRMAR INTERNAÇÃO
+                  </MDBBtn>
               </div>
             </>
           );
@@ -603,7 +609,7 @@ function QuadroFicha({ selectedPaciente, historico }) {
                     fas
                     icon="bed"
                     style={{
-                      fontSize: '28px',
+                      fontSize: '30px',
                       cursor: leito.ocupado ? 'not-allowed' : 'pointer',
                       color: selectedLeito?.numero === leito.numero ? '#1E90FF' : (leito.ocupado ? '#A9A9A9' : '#14A44D'),
                     }}
@@ -622,7 +628,7 @@ function QuadroFicha({ selectedPaciente, historico }) {
             <MDBTextArea 
                     label="Observações" 
                     id="textAreaExample" 
-                    rows={4}
+                    rows={2}
                     style={{ 
                       resize: 'none', 
                       fontFamily: 'FiraSans-Light, sans-serif' 
@@ -642,10 +648,16 @@ function QuadroFicha({ selectedPaciente, historico }) {
     <div style={{ padding: '20px', marginTop: '10px', display: 'flex', justifyContent: 'space-between', borderTop: '1px solid rgba(0,0,0,.125)' }}>
         <div>
           {selectedPaciente.estagio_atual === 'ENCAMINHADO_PARA_AGENDAMENTO' && (
-              <MDBBtn color='success' style={{ marginLeft: '10px' }} onClick={toggleModalDevolverMedico} >SOLICITAR TRANSFERÊNCIA</MDBBtn>
+              <MDBBtn color='secondary' onClick={toggleModalDevolverMedico} >
+              <MDBIcon fas icon="undo-alt" className="me-2" />
+                SOLICITAR TRANSFERÊNCIA
+                </MDBBtn>
           )}
           {selectedPaciente.estagio_atual === 'AGENDADO' && (
-              <MDBBtn color='danger' style={{ marginLeft: '10px' }} onClick={toggleModalAltaObito} >ALTA ÓBITO</MDBBtn>
+              <MDBBtn color='secondary' onClick={toggleModalAltaObito} >
+              <MDBIcon fas icon="exclamation" className="me-2" />
+                ALTA ÓBITO
+                </MDBBtn>
           )}
         </div>
         <div>
