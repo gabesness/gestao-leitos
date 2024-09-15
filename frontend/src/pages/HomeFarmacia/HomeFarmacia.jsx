@@ -8,12 +8,8 @@ import {
   MDBCard,
   MDBCardBody,
   MDBInput,
-  MDBCheckbox,
   MDBIcon,
-  MDBBadge, 
   MDBListGroup, 
-  MDBListGroupItem,
-  MDBRipple,
   MDBTextArea,
   MDBModal,
   MDBModalHeader,
@@ -21,14 +17,7 @@ import {
   MDBModalFooter,
   MDBModalDialog,
   MDBModalContent,
-  MDBModalTitle,
-  MDBDropdown,
-  MDBDropdownMenu,
-  MDBDropdownItem,
-  MDBDropdownToggle,
-  MDBCardTitle,
-  MDBCardText,
-  UserListItem,
+  MDBModalTitle
 }
 from 'mdb-react-ui-kit';
 import './HomeFarmacia.css';

@@ -1,7 +1,6 @@
 import { React } from 'react';
 import { Route, Routes, Navigate } from 'react-router-dom';
 import Login from '../pages/Login/Login';
-import AlterarSenha from '../pages/AlterarSenha/AlterarSenha';
 import EsqueceuSenha from '../pages/EsqueceuSenha/EsqueceuSenha';
 import RecuperarSenha from '../pages/EsqueceuSenha/RecuperarSenha';
 import HomeMedico from '../pages/HomeMedico/HomeMedico';
@@ -20,7 +19,6 @@ function RouteHandler() {
   return (
     <Routes>
       <Route path="/" element={<Login />} />
-      <Route path="/AlterarSenha" element={<AlterarSenha />} />
       <Route path="/EsqueceuSenha" element={<EsqueceuSenha />} />
       <Route path="/redefinir-senha/*" element={<RecuperarSenha />} />
       <Route path="/HomeAdm" element={<PrivateRoute element={<HomeAdm />} allowedRoles={['Administrador']} />} />
