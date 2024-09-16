@@ -139,6 +139,10 @@ function Login() {
               className='w-100 mb-0'
               size='md'
               type="submit"
+              style={{
+                borderRadius: '8px',
+                padding: '10px 20px',
+              }}
             >
               ENTRAR
             </MDBBtn>

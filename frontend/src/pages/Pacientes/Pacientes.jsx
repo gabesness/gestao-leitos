@@ -394,27 +394,73 @@ function QuadroFicha({ selectedPaciente, historico }) {
             <MDBRow style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div style={{ display: 'flex', alignItems: 'center' }}>
                 {cargo === 'Recepção' || cargo === 'Regulação' || cargo === 'Administrador' ? (
-                  <MDBBtn className='mx-2' color='secondary' rippleColor='light' onClick={handleEditClick}>
+                  <MDBBtn 
+                  className='mx-2' 
+                  color='secondary' 
+                  rippleColor='light' 
+                  style={{
+                    borderRadius: '8px',
+                    padding: '10px 20px',
+                  }}
+                  onClick={handleEditClick}>
                     <MDBIcon fas icon="edit" className='me-1' />
                     Editar Paciente
                   </MDBBtn>
                 ) : null}
-                  <MDBBtn className='mx-2' color='secondary' rippleColor='light' onClick={() => baixarHistoricoComoPDF(historico, selectedPaciente.nome)}>
-                   <MDBIcon fas icon="file-download" className='me-1' />
+                  <MDBBtn 
+                  className='mx-2' 
+                  color='secondary' 
+                  rippleColor='light' 
+                  style={{
+                    borderRadius: '8px',
+                    padding: '10px 20px',
+                  }}
+                  onClick={() => baixarHistoricoComoPDF(historico, selectedPaciente.nome)}>
+                   <MDBIcon fas icon="file-download" className='me-1'  />
                      Baixar Histórico
                 </MDBBtn>
+
+
                 <MDBDropdown style={{ marginLeft: 'auto' }}>
-                  <MDBDropdownToggle tag='a' className='btn btn-primary'>
+                  <MDBDropdownToggle
+                    tag='a'
+                    className='btn btn-primary'
+                    style={{
+                      borderRadius: '8px',
+                      padding: '10px 20px',
+                      boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+                      transition: 'all 0.3s ease-in-out'
+                    }}
+                    onMouseEnter={e => e.target.style.boxShadow = '0 6px 12px rgba(0, 0, 0, 0.15)'} // Aumenta a sombra ao passar o mouse
+                    onMouseLeave={e => e.target.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.1)'}
+                  >
                     {selectedSession === 'Todas' ? selectedSession : `Sessão ${selectedSession}`}
                   </MDBDropdownToggle>
+
                   <MDBDropdownMenu>
-                  {uniqueSessions.map((sessao, index) => (
-                    <MDBDropdownItem key={index} onClick={() => setSelectedSession(sessao)}>
-                      {sessao === 'Todas' ? sessao : `Sessão ${sessao}`}
-                    </MDBDropdownItem>
-                  ))}
-                </MDBDropdownMenu>
+                    {uniqueSessions.map((sessao, index) => (
+                      <MDBDropdownItem 
+                        key={index} 
+                        onClick={() => setSelectedSession(sessao)} 
+                        style={{
+                          borderRadius: '8px', 
+                          padding: '8px 16px',
+                          marginBottom: '5px',
+                          transition: 'background-color 0.3s',
+                          cursor: 'pointer'
+                        }}
+                        onMouseEnter={e => e.target.style.backgroundColor = '#e9ecef'} // Cor ao passar o mouse
+                        onMouseLeave={e => e.target.style.backgroundColor = 'transparent'}
+                      >
+                        {sessao === 'Todas' ? sessao : `Sessão ${sessao}`}
+                      </MDBDropdownItem>
+                    ))}
+                  </MDBDropdownMenu>
                 </MDBDropdown>
+
+
+
+
               </div>
             </MDBRow>
 

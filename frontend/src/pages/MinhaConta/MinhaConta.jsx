@@ -66,7 +66,13 @@ function QuadroFicha({ username,
               onChange={(e) => setEmail(e.target.value)}
               maxLength="256"
             />
-             <MDBBtn color='secondary' onClick={EditarUsuario}>
+             <MDBBtn 
+             color='secondary' 
+             style={{
+              borderRadius: '8px',
+              padding: '10px 20px',
+            }}
+             onClick={EditarUsuario}>
           <MDBIcon fas icon="user-times" className="me-2" />
             SALVAR ALTERAÇÕES
             </MDBBtn>
@@ -108,7 +114,13 @@ function QuadroFicha({ username,
               onChange={(e) => setSenhaNova2(e.target.value)}
               maxLength="256"
             />
-              <MDBBtn color='secondary' onClick={AlterarSenha} 
+              <MDBBtn 
+              color='secondary' 
+              style={{
+                borderRadius: '8px',
+                padding: '10px 20px',
+              }}
+              onClick={AlterarSenha} 
           disabled={!isPasswordFieldsFilled()}>
           <MDBIcon fas icon="user-times" className="me-2" />
             ALTERAR SENHA

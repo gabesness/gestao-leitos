@@ -74,8 +74,18 @@ function ModalDevolverMedico({ isOpen, onClose, selectedPaciente, formValue }) {
 
           </MDBModalBody>
           <MDBModalFooter>
-          <MDBBtn color='danger' onClick={handleClose}>Cancelar</MDBBtn>
-          <MDBBtn onClick={handleDevolver}>Solicitar Transferência</MDBBtn>
+          <MDBBtn color='danger' onClick={handleClose}
+           style={{
+            borderRadius: '8px',
+            padding: '10px 20px',
+          }}
+          >Cancelar</MDBBtn>
+          <MDBBtn onClick={handleDevolver}
+           style={{
+            borderRadius: '8px',
+            padding: '10px 20px',
+          }}
+          >Solicitar Transferência</MDBBtn>
           </MDBModalFooter>
         </MDBModalContent>
       </MDBModalDialog>
@@ -125,8 +135,17 @@ function ModalAgendamento({ isOpen, onClose, selectedPaciente, selectedLeito, fo
 
           </MDBModalBody>
           <MDBModalFooter>
-          <MDBBtn color='danger' onClick={handleClose}>Cancelar</MDBBtn>
-          <MDBBtn onClick={handleAgendar} >Agendar</MDBBtn>
+          <MDBBtn color='danger' onClick={handleClose}
+           style={{
+            borderRadius: '8px',
+            padding: '10px 20px',
+          }}
+          >Cancelar</MDBBtn>
+          <MDBBtn onClick={handleAgendar} 
+           style={{
+            borderRadius: '8px',
+            padding: '10px 20px',
+          }}>Agendar</MDBBtn>
           </MDBModalFooter>
         </MDBModalContent>
       </MDBModalDialog>
@@ -175,8 +194,18 @@ function ModalInternacao({ isOpen, onClose, selectedPaciente }) {
 
           </MDBModalBody>
           <MDBModalFooter>
-          <MDBBtn color='danger' onClick={handleClose}>Cancelar</MDBBtn>
-          <MDBBtn onClick={handleInternar}>Internado</MDBBtn>
+          <MDBBtn color='danger' onClick={handleClose}
+           style={{
+            borderRadius: '8px',
+            padding: '10px 20px',
+          }}
+          >Cancelar</MDBBtn>
+          <MDBBtn onClick={handleInternar}
+           style={{
+            borderRadius: '8px',
+            padding: '10px 20px',
+          }}
+          >Internado</MDBBtn>
           </MDBModalFooter>
         </MDBModalContent>
       </MDBModalDialog>
@@ -223,8 +252,18 @@ function ModalTransferencia({ isOpen, onClose, selectedPaciente, formValue }) {
 
           </MDBModalBody>
           <MDBModalFooter>
-          <MDBBtn color='danger' onClick={handleClose}>Cancelar</MDBBtn>
-          <MDBBtn onClick={handleTransferir} >Transferido</MDBBtn>
+          <MDBBtn color='danger' onClick={handleClose}
+           style={{
+            borderRadius: '8px',
+            padding: '10px 20px',
+          }}
+          >Cancelar</MDBBtn>
+          <MDBBtn onClick={handleTransferir} 
+           style={{
+            borderRadius: '8px',
+            padding: '10px 20px',
+          }}
+          >Transferido</MDBBtn>
           </MDBModalFooter>
         </MDBModalContent>
       </MDBModalDialog>
@@ -272,8 +311,16 @@ function ModalAltaObito({ isOpen, onClose, selectedPaciente }) {
 
           </MDBModalBody>
           <MDBModalFooter>
-          <MDBBtn color='danger' onClick={handleClose}>Cancelar</MDBBtn>
-          <MDBBtn onClick={handleAltaObito}>Confirmar Alta</MDBBtn>
+          <MDBBtn color='danger' onClick={handleClose}
+           style={{
+            borderRadius: '8px',
+            padding: '10px 20px',
+          }}>Cancelar</MDBBtn>
+          <MDBBtn onClick={handleAltaObito}
+           style={{
+            borderRadius: '8px',
+            padding: '10px 20px',
+          }}>Confirmar Alta</MDBBtn>
           </MDBModalFooter>
         </MDBModalContent>
       </MDBModalDialog>
@@ -492,7 +539,12 @@ function QuadroFicha({ selectedPaciente, historico }) {
     const renderButtons = () => {
       switch (selectedPaciente.estagio_atual) {
         case 'ENCAMINHADO_PARA_AGENDAMENTO':
-          return <MDBBtn onClick={toggleModalAgendamento}  disabled={!selectedLeito} >
+          return <MDBBtn onClick={toggleModalAgendamento}  
+          style={{
+            borderRadius: '8px',
+            padding: '10px 20px',
+          }}
+          disabled={!selectedLeito} >
          <MDBIcon fas icon="check" className="me-2" />
             AGENDAR LEITO
             </MDBBtn>;
@@ -500,7 +552,13 @@ function QuadroFicha({ selectedPaciente, historico }) {
           return (
             <>
               <div>
-                <MDBBtn onClick={toggleModalTransferencia} >CONFIRMAR TRANSFERÊNCIA</MDBBtn>
+                <MDBBtn 
+                onClick={toggleModalTransferencia} 
+                style={{
+                  borderRadius: '8px',
+                  padding: '10px 20px',
+                }}
+                >CONFIRMAR TRANSFERÊNCIA</MDBBtn>
               </div>
             </>
           );
@@ -508,7 +566,12 @@ function QuadroFicha({ selectedPaciente, historico }) {
           return (
             <>
               <div>
-                <MDBBtn color='primary' onClick={toggleModalInternacao} >
+                <MDBBtn color='primary' 
+                 style={{
+                  borderRadius: '8px',
+                  padding: '10px 20px',
+                }}
+                onClick={toggleModalInternacao} >
                 <MDBIcon fas icon="check" className="me-2" />
                   CONFIRMAR INTERNAÇÃO
                   </MDBBtn>
@@ -648,13 +711,25 @@ function QuadroFicha({ selectedPaciente, historico }) {
     <div style={{ padding: '20px', marginTop: '10px', display: 'flex', justifyContent: 'space-between', borderTop: '1px solid rgba(0,0,0,.125)' }}>
         <div>
           {selectedPaciente.estagio_atual === 'ENCAMINHADO_PARA_AGENDAMENTO' && (
-              <MDBBtn color='secondary' onClick={toggleModalDevolverMedico} >
+              <MDBBtn 
+              color='secondary' 
+              style={{
+                borderRadius: '8px',
+                padding: '10px 20px',
+              }}
+              onClick={toggleModalDevolverMedico} >
               <MDBIcon fas icon="undo-alt" className="me-2" />
                 SOLICITAR TRANSFERÊNCIA
                 </MDBBtn>
           )}
           {selectedPaciente.estagio_atual === 'AGENDADO' && (
-              <MDBBtn color='secondary' onClick={toggleModalAltaObito} >
+              <MDBBtn 
+              color='secondary' 
+              style={{
+                borderRadius: '8px',
+                padding: '10px 20px',
+              }}
+              onClick={toggleModalAltaObito} >
               <MDBIcon fas icon="exclamation" className="me-2" />
                 ALTA ÓBITO
                 </MDBBtn>

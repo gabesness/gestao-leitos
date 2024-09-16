@@ -112,7 +112,15 @@ function ModalNovoUsuario({ isOpen, onClose }) {
             </div>
             <div style={{ marginBottom: '15px' }}>
               <MDBDropdown>
-                <MDBDropdownToggle style={{ width: '100%' }}>{selectedCargo}</MDBDropdownToggle>
+                <MDBDropdownToggle
+                style={{
+                  borderRadius: '8px',
+                  padding: '10px 20px',
+                  boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+                  transition: 'all 0.3s ease-in-out',
+                  width: '100%'
+                }}
+                >{selectedCargo}</MDBDropdownToggle>
                 <MDBDropdownMenu style={{ width: '100%' }}>
                 <MDBDropdownItem link onClick={() => handleSelectCargo('Médico')}>Médico</MDBDropdownItem>
                 <MDBDropdownItem link onClick={() => handleSelectCargo('Farmácia')}>Farmácia</MDBDropdownItem>
@@ -124,7 +132,12 @@ function ModalNovoUsuario({ isOpen, onClose }) {
             </div>
           </MDBModalBody>
           <MDBModalFooter>
-            <MDBBtn onClick={CriarUsuario}>Criar</MDBBtn>
+            <MDBBtn onClick={CriarUsuario}
+             style={{
+              borderRadius: '8px',
+              padding: '10px 20px',
+            }}
+            >Criar</MDBBtn>
           </MDBModalFooter>
         </MDBModalContent>
       </MDBModalDialog>
@@ -419,23 +432,47 @@ function QuadroFicha({ selectedUser }) {
           <div style={{ padding: '20px', marginTop: '10px', display: 'flex', justifyContent: 'space-between', borderTop: '1px solid rgba(0,0,0,.125)' }}>
             {selectedUser.is_active ? (
               <>
-             <MDBBtn style={{ marginLeft: '10px' }} color='secondary' onClick={DesativarUsuario}>
+             <MDBBtn
+              style={{
+                borderRadius: '8px',
+                padding: '10px 20px',
+              }}
+             color='secondary' 
+             onClick={DesativarUsuario}>
                 <MDBIcon fas icon="user-times" className="me-2" />
                 DESATIVAR USUÁRIO
               </MDBBtn>
 
-                <MDBBtn style={{ marginLeft: '10px' }} color='secondary' onClick={GerarSenha}>
+                <MDBBtn 
+                 style={{
+                  borderRadius: '8px',
+                  padding: '10px 20px',
+                }}
+                color='secondary' 
+                onClick={GerarSenha}>
                 <MDBIcon fas icon="key" className="me-2" />
                   RECUPERAR SENHA
                 </MDBBtn>
                 
-                <MDBBtn style={{ marginLeft: '10px' }} color='secondary' onClick={EditarUsuario}>
+                <MDBBtn 
+                 style={{
+                  borderRadius: '8px',
+                  padding: '10px 20px',
+                }}
+                color='secondary' 
+                onClick={EditarUsuario}>
                 <MDBIcon fas icon="check" className="me-2" />
                   SALVAR ALTERAÇÕES
                 </MDBBtn>
               </>
             ) : (
-              <MDBBtn style={{ marginLeft: '10px' }} color='secondary' onClick={ReativarUsuario}>
+              <MDBBtn 
+              style={{
+                borderRadius: '8px',
+                padding: '10px 20px',
+              }}
+              color='secondary' 
+              onClick={ReativarUsuario}>
                <MDBIcon fas icon="user-check" className="me-2" />
                 REATIVAR USUÁRIO
               </MDBBtn>

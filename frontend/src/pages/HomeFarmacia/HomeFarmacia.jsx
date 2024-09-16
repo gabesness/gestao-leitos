@@ -72,8 +72,19 @@ function ModalDevolverMedico({ isOpen, onClose, selectedPaciente, formValue }) {
 
           </MDBModalBody>
           <MDBModalFooter>
-          <MDBBtn color='danger' onClick={handleClose}>Cancelar</MDBBtn>
-          <MDBBtn onClick={handleDevolver} >Devolver</MDBBtn>
+          <MDBBtn 
+          color='danger' 
+          style={{
+            borderRadius: '8px',
+            padding: '10px 20px',
+          }}
+          onClick={handleClose}>Cancelar</MDBBtn>
+          <MDBBtn 
+           style={{
+            borderRadius: '8px',
+            padding: '10px 20px',
+          }}
+          onClick={handleDevolver} >Devolver</MDBBtn>
           </MDBModalFooter>
         </MDBModalContent>
       </MDBModalDialog>
@@ -123,8 +134,19 @@ function ModalEnviarRegulacao({ isOpen, onClose, selectedPaciente, formValue }) 
 
           </MDBModalBody>
           <MDBModalFooter>
-          <MDBBtn color='danger' onClick={handleClose}>Cancelar</MDBBtn>
-          <MDBBtn onClick={handleEnviar} >ENCAMINHAR</MDBBtn>
+          <MDBBtn 
+          color='danger' 
+          style={{
+            borderRadius: '8px',
+            padding: '10px 20px',
+          }}
+          onClick={handleClose}>Cancelar</MDBBtn>
+          <MDBBtn 
+           style={{
+            borderRadius: '8px',
+            padding: '10px 20px',
+          }}
+          onClick={handleEnviar} >ENCAMINHAR</MDBBtn>
           </MDBModalFooter>
         </MDBModalContent>
       </MDBModalDialog>
@@ -353,13 +375,24 @@ function QuadroFicha({ selectedPaciente, historico }) {
 
     <div style={{ padding: '20px', marginTop: '10px', display: 'flex', justifyContent: 'space-between', borderTop: '1px solid rgba(0,0,0,.125)' }}>
       <div>
-        <MDBBtn color='secondary' onClick={toggleModalDevolverMedico}>
+        <MDBBtn 
+        color='secondary' 
+        style={{
+          borderRadius: '8px',
+          padding: '10px 20px',
+        }}
+        onClick={toggleModalDevolverMedico}>
         <MDBIcon fas icon="undo" className="me-2" />
           DEVOLVER AO MÉDICO
           </MDBBtn>
       </div>
       <div>
-        <MDBBtn onClick={toggleModalEnviarRegulacao}>
+        <MDBBtn 
+         style={{
+          borderRadius: '8px',
+          padding: '10px 20px',
+        }}
+        onClick={toggleModalEnviarRegulacao}>
         <MDBIcon fas icon="paper-plane" className="me-2" />
           ENCAMINHAR À REGULAÇÃO</MDBBtn>
       </div>

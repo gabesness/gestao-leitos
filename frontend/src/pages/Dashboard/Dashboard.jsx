@@ -183,29 +183,56 @@ function Dashboard() {
         <h2 style={{ marginTop: '15px', marginLeft: '50px', marginBottom: '-22px', fontFamily: 'FiraSans-SemiBold, sans-serif' }}>
           Dashboard
         </h2>
-        <div className="d-flex align-items-center" style={{ marginRight: '50px', marginTop: '10px' }}>
-
-          <MDBDropdown style={{ marginTop: '15px', marginRight: '0px', marginBottom: '-22px' }}>
-            <MDBDropdownToggle tag='a' className='btn btn-primary'>
-              {dropdownTitle}
-            </MDBDropdownToggle>
-            <MDBDropdownMenu>
-              <MDBDropdownItem link onClick={() => handleDropdownSelect('Últimos 30 Dias')}>Últimos 30 Dias</MDBDropdownItem>
-              <MDBDropdownItem link onClick={() => handleDropdownSelect('Últimos 90 Dias')}>Últimos 90 Dias</MDBDropdownItem>
-              <MDBDropdownItem link onClick={() => handleDropdownSelect('Últimos 180 Dias')}>Últimos 180 Dias</MDBDropdownItem>
-              <MDBDropdownItem link onClick={() => handleDropdownSelect('Últimos 360 Dias')}>Últimos 360 Dias</MDBDropdownItem>
-              <MDBDropdownItem link onClick={() => handleDropdownSelect('Todo o Período')}>Todo o Período</MDBDropdownItem>
-            </MDBDropdownMenu>
-          </MDBDropdown>
-        </div>
-      </div>
-
-      <div className='d-flex justify-content-end' style={{ marginRight: '55px', marginTop: '20px',marginBottom: '-28px' }}>
-        <MDBBtn className='mx-2' color='tertiary' rippleColor='light' onClick={handleDownloadPDF}>
+        <div className="d-flex align-items-center justify-content-between" style={{ marginRight: '50px', marginTop: '38px' }}>
+       
+        <MDBBtn 
+        className='mx-2' 
+        color='secondary' 
+        rippleColor='light' 
+        style={{
+          borderRadius: '8px',
+          padding: '10px 20px',
+        }}
+        onClick={handleDownloadPDF}
+        >
           <MDBIcon fas icon="file-download" className='me-1' />
           Baixar Estatísticas
         </MDBBtn>
+ 
+ 
+        <MDBDropdown style={{ marginTop: '0px', marginRight: '0px', marginBottom: '0' }}>
+          <MDBDropdownToggle 
+          tag='a' 
+          className='btn btn-primary'
+          style={{
+            borderRadius: '8px',
+            padding: '10px 20px',
+            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+            transition: 'all 0.3s ease-in-out'
+          }}
+          onMouseEnter={e => e.target.style.boxShadow = '0 6px 12px rgba(0, 0, 0, 0.15)'}
+          onMouseLeave={e => e.target.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.1)'} 
+          >
+            {dropdownTitle}
+          </MDBDropdownToggle>
+          <MDBDropdownMenu
+          style={{
+            borderRadius: '8px',
+            boxShadow: '0 8px 16px rgba(0, 0, 0, 0.1)',
+            padding: '10px',
+            minWidth: '200px'
+          }}>
+            <MDBDropdownItem link onClick={() => handleDropdownSelect('Últimos 30 Dias')}>Últimos 30 Dias</MDBDropdownItem>
+            <MDBDropdownItem link onClick={() => handleDropdownSelect('Últimos 90 Dias')}>Últimos 90 Dias</MDBDropdownItem>
+            <MDBDropdownItem link onClick={() => handleDropdownSelect('Últimos 180 Dias')}>Últimos 180 Dias</MDBDropdownItem>
+            <MDBDropdownItem link onClick={() => handleDropdownSelect('Últimos 360 Dias')}>Últimos 360 Dias</MDBDropdownItem>
+            <MDBDropdownItem link onClick={() => handleDropdownSelect('Todo o Período')}>Todo o Período</MDBDropdownItem>
+          </MDBDropdownMenu>
+        </MDBDropdown>
+
+</div>
       </div>
+
         <MDBCardBody id="pdf-content" className='p-5'>
           {/* Gráfico de Linhas (3 Linhas): historico_altas */}
           <MDBCard className='mb-4' style={{ borderTopLeftRadius: '30px', borderTopRightRadius: '30px', borderBottomLeftRadius: '20px', borderBottomRightRadius: '20px' }}>

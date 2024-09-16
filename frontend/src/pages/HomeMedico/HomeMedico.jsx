@@ -91,7 +91,11 @@ function ModalNovaPrescricao({ isOpen, onClose }) {
 
           </MDBModalBody>
           <MDBModalFooter>
-          <MDBBtn onClick={CriarPrescricao}>Criar</MDBBtn>
+          <MDBBtn onClick={CriarPrescricao}
+           style={{
+            borderRadius: '8px',
+            padding: '10px 20px',
+          }}>Criar</MDBBtn>
           </MDBModalFooter>
         </MDBModalContent>
       </MDBModalDialog>
@@ -121,8 +125,18 @@ function ModalEnviarFarmacia({ isOpen, onClose, onSubmit }) {
 
           </MDBModalBody>
           <MDBModalFooter>
-          <MDBBtn color='danger' onClick={handleClose}>Cancelar</MDBBtn>
-          <MDBBtn onClick={onSubmit}>Encaminhar</MDBBtn>
+          <MDBBtn color='danger' 
+           style={{
+            borderRadius: '8px',
+            padding: '10px 20px',
+          }}
+          onClick={handleClose}>Cancelar</MDBBtn>
+          <MDBBtn onClick={onSubmit}
+           style={{
+            borderRadius: '8px',
+            padding: '10px 20px',
+          }}
+          >Encaminhar</MDBBtn>
           </MDBModalFooter>
         </MDBModalContent>
       </MDBModalDialog>
@@ -171,8 +185,20 @@ function ModalAltaObito({ isOpen, onClose, selectedPaciente }) {
 
           </MDBModalBody>
           <MDBModalFooter>
-          <MDBBtn color='danger' onClick={handleClose}>Cancelar</MDBBtn>
-          <MDBBtn onClick={handleAltaObito} >Confirmar Alta</MDBBtn>
+          <MDBBtn
+          color='danger' 
+          onClick={handleClose}
+          style={{
+            borderRadius: '8px',
+            padding: '10px 20px',
+          }}
+          >Cancelar</MDBBtn>
+          <MDBBtn 
+           style={{
+            borderRadius: '8px',
+            padding: '10px 20px',
+          }}
+          onClick={handleAltaObito} >Confirmar Alta</MDBBtn>
           </MDBModalFooter>
         </MDBModalContent>
       </MDBModalDialog>
@@ -218,8 +244,19 @@ function ModalAltaNormal({ isOpen, onClose, selectedPaciente }) {
             Confirme que o paciente está recebendo alta normal
           </MDBModalBody>
           <MDBModalFooter>
-            <MDBBtn color='danger' onClick={handleClose}>Cancelar</MDBBtn>
-            <MDBBtn onClick={handleAltaNormal}>Confirmar Alta</MDBBtn>
+            <MDBBtn 
+            color='danger' 
+            style={{
+              borderRadius: '8px',
+              padding: '10px 20px',
+            }}
+            onClick={handleClose}>Cancelar</MDBBtn>
+            <MDBBtn 
+             style={{
+              borderRadius: '8px',
+              padding: '10px 20px',
+            }}
+            onClick={handleAltaNormal}>Confirmar Alta</MDBBtn>
           </MDBModalFooter>
         </MDBModalContent>
       </MDBModalDialog>
@@ -266,8 +303,19 @@ function ModalAltaDefinitiva({ isOpen, onClose, selectedPaciente }) {
 
           </MDBModalBody>
           <MDBModalFooter>
-          <MDBBtn color='danger' onClick={handleClose}>Cancelar</MDBBtn>
-          <MDBBtn onClick={handleAltaDefinitiva} >Confirmar Alta</MDBBtn>
+          <MDBBtn 
+          color='danger' 
+          style={{
+            borderRadius: '8px',
+            padding: '10px 20px',
+          }}
+          onClick={handleClose}>Cancelar</MDBBtn>
+          <MDBBtn 
+           style={{
+            borderRadius: '8px',
+            padding: '10px 20px',
+          }}
+          onClick={handleAltaDefinitiva} >Confirmar Alta</MDBBtn>
           </MDBModalFooter>
         </MDBModalContent>
       </MDBModalDialog>
@@ -315,8 +363,18 @@ function ModalTransferencia({ isOpen, onClose, selectedPaciente, formValue }) {
 
           </MDBModalBody>
           <MDBModalFooter>
-            <MDBBtn color='danger' onClick={handleClose}>Cancelar</MDBBtn>
-            <MDBBtn onClick={handleAuthorizeTransfer}>Autorizar transferência</MDBBtn>
+            <MDBBtn color='danger' 
+             style={{
+              borderRadius: '8px',
+              padding: '10px 20px',
+            }}
+            onClick={handleClose}>Cancelar</MDBBtn>
+            <MDBBtn 
+             style={{
+              borderRadius: '8px',
+              padding: '10px 20px',
+            }}
+            onClick={handleAuthorizeTransfer}>Autorizar transferência</MDBBtn>
           </MDBModalFooter>
         </MDBModalContent>
       </MDBModalDialog>
@@ -523,12 +581,22 @@ function QuadroFicha({ selectedPaciente, historico }) {
     switch (selectedPaciente.estagio_atual) {
       case 'PRESCRICAO_CRIADA':
       case 'DEVOLVIDO_PELA_FARMACIA':
-        return <MDBBtn style={{ marginLeft: '10px' }} onClick={toggleModalEnviarFarmacia} disabled={!isPrescricaoCriada || !isFormValid()} >
+        return <MDBBtn 
+        style={{
+          borderRadius: '8px',
+          padding: '10px 20px',
+        }}
+        onClick={toggleModalEnviarFarmacia} disabled={!isPrescricaoCriada || !isFormValid()} >
         <MDBIcon fas icon="paper-plane" className="me-2" />
           ENCAMINHAR À FARMÁCIA
           </MDBBtn>;
       case 'DEVOLVIDO_PELA_REGULACAO':
-        return <MDBBtn onClick={toggleModalTransferencia} >
+        return <MDBBtn 
+        style={{
+          borderRadius: '8px',
+          padding: '10px 20px',
+        }}
+        onClick={toggleModalTransferencia} >
          <MDBIcon fas icon="check" className="me-2" />
           AUTORIZAR TRANSFERÊNCIA
           </MDBBtn>;
@@ -536,7 +604,12 @@ function QuadroFicha({ selectedPaciente, historico }) {
         return (
           <>
             <div>
-              <MDBBtn color='primary'onClick={toggleModalAltaNormal}>
+              <MDBBtn 
+               style={{
+                borderRadius: '8px',
+                padding: '10px 20px',
+              }}
+              color='primary'onClick={toggleModalAltaNormal}>
               <MDBIcon fas icon="check" className="me-2" />
                 ALTA NORMAL
                 </MDBBtn>
@@ -765,7 +838,12 @@ function QuadroFicha({ selectedPaciente, historico }) {
             <div>
               {selectedPaciente.estagio_atual === 'ALTA_NORMAL' && (
                 <>
-                <MDBBtn color='primary' onClick={CriarSegundaPrescricao}>
+                <MDBBtn 
+                 style={{
+                  borderRadius: '8px',
+                  padding: '10px 20px',
+                }}
+                color='primary' onClick={CriarSegundaPrescricao}>
                 <MDBIcon fas icon="file-medical" className="me-2" />
                   INICIAR NOVA SESSÃO
                   </MDBBtn>
@@ -773,11 +851,21 @@ function QuadroFicha({ selectedPaciente, historico }) {
               )}
               {selectedPaciente.estagio_atual === 'INTERNADO' && (
                 <>
-                  <MDBBtn color='secondary' style={{ marginLeft: '10px' }}onClick={toggleModalAltaDefinitiva}>
+                  <MDBBtn color='secondary' 
+                   style={{
+                    borderRadius: '8px',
+                    padding: '10px 20px',
+                  }}
+                  onClick={toggleModalAltaDefinitiva}>
                   <MDBIcon fas icon="heartbeat" className="me-2" />
                     ALTA DEFINITIVA</MDBBtn>
                   
-                  <MDBBtn color='secondary' style={{ marginLeft: '10px' }} onClick={toggleModalAltaObito}>
+                  <MDBBtn color='secondary' 
+                   style={{
+                    borderRadius: '8px',
+                    padding: '10px 20px',
+                  }}
+                  onClick={toggleModalAltaObito}>
                   <MDBIcon fas icon="exclamation" className="me-2" />
                     ALTA ÓBITO</MDBBtn>
                 </>
