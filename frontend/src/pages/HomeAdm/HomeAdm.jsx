@@ -205,6 +205,7 @@ function QuadroLista({ usuarios, activeTab, selectedUser, handleUserClick, setAc
             color={activeTab === 'ativos' ? 'white' : 'dark'}
             onClick={() => setActiveTab('ativos')}
           >
+            <MDBIcon fas icon="user-friends" className="me-2" />
             Ativos
           </MDBBtn>
 
@@ -223,6 +224,7 @@ function QuadroLista({ usuarios, activeTab, selectedUser, handleUserClick, setAc
             color={activeTab === 'inativos' ? 'white' : 'dark'}
             onClick={() => setActiveTab('inativos')}
           >
+          <MDBIcon fas icon="user-alt-slash" className="me-2" />
             Inativos
           </MDBBtn>
         </div>
