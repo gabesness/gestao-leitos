@@ -27,7 +27,8 @@ function QuadroFicha({ username,
   setSenhaAtual,
   setSenhaNova,
   setSenhaNova2,
-  AlterarSenha  }) {
+  AlterarSenha,
+  isUserInfoChanged   }) {
   
   
     const isPasswordFieldsFilled = () => {
@@ -72,6 +73,7 @@ function QuadroFicha({ username,
               borderRadius: '8px',
               padding: '10px 20px',
             }}
+            disabled={!isUserInfoChanged}
              onClick={EditarUsuario}>
           <MDBIcon fas icon="user-times" className="me-2" />
             SALVAR ALTERAÇÕES
@@ -139,6 +141,12 @@ function MinhaConta() {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
+
+  const [initialFirstName, setInitialFirstName] = useState('');
+  const [initialLastName, setInitialLastName] = useState('');
+  const [initialEmail, setInitialEmail] = useState('');
+  
+
   const [senhaAtual, setSenhaAtual] = useState('');
   const [senhaNova, setSenhaNova] = useState('');
   const [senhaNova2, setSenhaNova2] = useState('');
@@ -154,6 +162,10 @@ function MinhaConta() {
         setFirstName(userData.first_name || '');
         setLastName(userData.last_name || '');
         setEmail(userData.email || '');
+
+        setInitialFirstName(userData.first_name || '');
+        setInitialLastName(userData.last_name || '');
+        setInitialEmail(userData.email || '');
       } catch (error) {
         console.error("Erro ao buscar informações:", error);
       }
@@ -163,6 +175,14 @@ function MinhaConta() {
       fetchUser();
     }
   }, [idUser]);
+
+  const isUserInfoChanged = () => {
+    return (
+      firstName !== initialFirstName ||
+      lastName !== initialLastName ||
+      email !== initialEmail
+    );
+  };
 
   const EditarUsuario = async (event) => {
     event.preventDefault();
@@ -231,6 +251,7 @@ function MinhaConta() {
               setSenhaNova={setSenhaNova}
               setSenhaNova2={setSenhaNova2}
               AlterarSenha={AlterarSenha}
+              isUserInfoChanged={isUserInfoChanged()}
             />
           </div>
         </MDBCardBody>
