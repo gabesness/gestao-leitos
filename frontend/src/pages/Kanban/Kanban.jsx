@@ -9,20 +9,11 @@ import {
   MDBCardBody,
   MDBCardHeader,
   MDBInput,
-  MDBCheckbox,
   MDBIcon,
-  MDBBadge, 
-  MDBListGroup, 
-  MDBListGroupItem,
-  MDBRipple,
   MDBTextArea,
   MDBModal,
-  MDBModalHeader,
-  MDBModalBody,
-  MDBModalFooter,
   MDBModalDialog,
   MDBModalContent,
-  MDBModalTitle,
   MDBTooltip,
 }
 from 'mdb-react-ui-kit';
@@ -202,10 +193,10 @@ function Kanban() {
             {/* Coluna de Médico */}
             <MDBCol md='2'>
               <MDBCard>
-                <MDBCardHeader className="text-center" style={{ fontSize: "22px", padding: "5px 15px", backgroundColor: "#b4c5e4" }}>
+                <MDBCardHeader className="text-center bg-info" style={{ fontSize: "20px", padding: "10px 15px"}}>
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-                    <MDBIcon fas icon="user-md" style={{ marginRight: "8px" }} />
-                    <strong>Médico</strong>
+                    <MDBIcon fas icon="user-md" className="text-white" style={{ marginRight: "8px" }} />
+                    <strong className="text-white">Médico</strong>
                   </div>
                 </MDBCardHeader>
                 <MDBCardBody className='p-2' style={{ height: '600px', overflowY: 'auto' }}>
@@ -231,10 +222,10 @@ function Kanban() {
             {/* Coluna da Farmácia */}
             <MDBCol md='2'>
               <MDBCard>
-                <MDBCardHeader className="text-center" style={{ fontSize: "22px", padding: "5px 15px", backgroundColor: "#b4c5e4" }}>
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-                    <MDBIcon fas icon="pills" style={{ marginRight: "8px" }} />
-                    <strong>Farmácia</strong>
+              <MDBCardHeader className="text-center bg-info" style={{ fontSize: "20px", padding: "10px 15px"}}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <MDBIcon fas icon="pills" className="text-white" style={{ marginRight: "8px" }} />
+                    <strong className="text-white">Farmácia</strong>
                   </div>
                 </MDBCardHeader>
                 <MDBCardBody className='p-2' style={{ height: '600px', overflowY: 'auto' }}>
@@ -256,10 +247,10 @@ function Kanban() {
             {/* Coluna da Regulação */}
             <MDBCol md='2'>
               <MDBCard>
-                <MDBCardHeader className="text-center" style={{ fontSize: "22px", padding: "5px 15px", backgroundColor: "#b4c5e4" }}>
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-                    <MDBIcon far icon="calendar-alt" style={{ marginRight: "8px" }} />
-                    <strong>Regulação</strong>
+              <MDBCardHeader className="text-center bg-info" style={{ fontSize: "20px", padding: "10px 15px"}}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <MDBIcon far icon="calendar-alt" className="text-white" style={{ marginRight: "8px" }} />
+                    <strong className="text-white">Regulação</strong>
                   </div>
                 </MDBCardHeader>
                 <MDBCardBody className='p-2' style={{ height: '600px', overflowY: 'auto' }}>
@@ -285,10 +276,10 @@ function Kanban() {
             {/* Coluna da Internação */}
             <MDBCol md='2'>
               <MDBCard>
-                <MDBCardHeader className="text-center" style={{ fontSize: "22px", padding: "5px 15px", backgroundColor: "#b4c5e4" }}>
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-                    <MDBIcon fas icon="bed" style={{ marginRight: "8px" }} />
-                    <strong>Internação</strong>
+              <MDBCardHeader className="text-center bg-info" style={{ fontSize: "20px", padding: "10px 15px"}}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <MDBIcon fas icon="bed" className="text-white" style={{ marginRight: "8px" }} />
+                    <strong className="text-white">Internação</strong>
                   </div>
                 </MDBCardHeader>
                 <MDBCardBody className='p-2' style={{ height: '600px', overflowY: 'auto' }}>
@@ -310,10 +301,10 @@ function Kanban() {
             {/* Coluna da Alta */}
             <MDBCol md='2'>
               <MDBCard>
-                <MDBCardHeader className="text-center" style={{ fontSize: "22px", padding: "5px 15px", backgroundColor: "#b4c5e4" }}>
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-                    <MDBIcon fas icon="check-circle" style={{ marginRight: "8px" }} />
-                    <strong>Alta</strong>
+              <MDBCardHeader className="text-center bg-info" style={{ fontSize: "20px", padding: "10px 15px"}}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <MDBIcon fas icon="check-circle" className="text-white" style={{ marginRight: "8px" }} />
+                    <strong className="text-white">Alta</strong>
                   </div>
                 </MDBCardHeader>
                 <MDBCardBody className='p-2' style={{ height: '600px', overflowY: 'auto' }}>
@@ -339,10 +330,10 @@ function Kanban() {
             {/* Coluna da Transferência */}
             <MDBCol md='2'>
               <MDBCard>
-                <MDBCardHeader className="text-center" style={{ fontSize: "22px", padding: "5px 15px", backgroundColor: "#b4c5e4" }}>
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-                    <MDBIcon fas icon="hospital-alt" style={{ marginRight: "8px" }} />
-                    <strong>Transferido</strong>
+              <MDBCardHeader className="text-center bg-info" style={{ fontSize: "20px", padding: "10px 15px"}}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <MDBIcon fas icon="hospital-alt" className="text-white" style={{ marginRight: "8px" }} />
+                    <strong className="text-white">Transferido</strong>
                   </div>
                 </MDBCardHeader>
                 <MDBCardBody className='p-2' style={{ height: '600px', overflowY: 'auto' }}>

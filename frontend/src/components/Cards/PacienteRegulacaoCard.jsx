@@ -1,5 +1,5 @@
 import React from 'react';
-import { MDBListGroupItem } from 'mdb-react-ui-kit';
+import { MDBListGroupItem, MDBIcon } from 'mdb-react-ui-kit';
 
 function PacienteCardMedico({ paciente, selectedPaciente, handlePacienteClick }) {
   let tagContent = '';
@@ -7,7 +7,7 @@ function PacienteCardMedico({ paciente, selectedPaciente, handlePacienteClick })
 
   if (paciente.estagio_atual === 'ENCAMINHADO_PARA_AGENDAMENTO') {
     tagContent = 'Em 3 Dias';
-    tagColor = 'primary';
+    tagColor = 'info';
   } else if (paciente.estagio_atual === 'AUTORIZADO_PARA_TRANSFERENCIA') {
     tagContent = 'Transferência';
     tagColor = 'success';
@@ -27,7 +27,12 @@ function PacienteCardMedico({ paciente, selectedPaciente, handlePacienteClick })
         </div>
       </div>
       {tagContent && (
-              <span className={`badge bg-${tagColor} rounded-pill me-2`}>{tagContent}</span>
+      <span className={`badge bg-${tagColor} rounded-pill me-2`} style={{ fontFamily: 'FiraSans-Light, sans-serif' }}>
+          {tagContent === 'Transferência' && <MDBIcon fas icon="exchange-alt" className="me-1" />}
+          {tagContent === 'Em 3 Dias' && <MDBIcon fas icon="clock" className="me-1" />}
+          {tagContent === 'Agendado' && <MDBIcon fas icon="bed" className="me-1" />}
+          {tagContent}
+        </span>
       )}
     </MDBListGroupItem>
   );

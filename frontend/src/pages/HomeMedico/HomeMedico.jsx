@@ -121,7 +121,7 @@ function ModalEnviarFarmacia({ isOpen, onClose, onSubmit }) {
           </MDBModalHeader>
           <MDBModalBody style={{ fontFamily: 'FiraSans-Light, sans-serif' }}>
 
-          A prescrição será encaminhada para a farmácia
+          A prescrição será encaminhada para a farmácia.
 
           </MDBModalBody>
           <MDBModalFooter>
@@ -176,13 +176,11 @@ function ModalAltaObito({ isOpen, onClose, selectedPaciente }) {
       <MDBModalDialog>
         <MDBModalContent>
           <MDBModalHeader>
-            <MDBModalTitle style={{ fontFamily: 'FiraSans-Medium, sans-serif' }}>Confirmação de Alta Óbito</MDBModalTitle>
+            <MDBModalTitle style={{ fontFamily: 'FiraSans-Medium, sans-serif' }}>Confirmação de registro de Óbito</MDBModalTitle>
             <MDBBtn className='btn-close' color='none' onClick={handleClose}></MDBBtn>
           </MDBModalHeader>
           <MDBModalBody style={{ fontFamily: 'FiraSans-Light, sans-serif' }}>
-
-          Confirme que o paciente está recebendo alta
-
+          Confirme que o paciente está recebendo alta por óbito. A sessão do paciente será encerrada, e todos os seus registros poderão ser verificados na página de pacientes.
           </MDBModalBody>
           <MDBModalFooter>
           <MDBBtn
@@ -198,7 +196,7 @@ function ModalAltaObito({ isOpen, onClose, selectedPaciente }) {
             borderRadius: '8px',
             padding: '10px 20px',
           }}
-          onClick={handleAltaObito} >Confirmar Alta</MDBBtn>
+          onClick={handleAltaObito} >Confirmar Óbito</MDBBtn>
           </MDBModalFooter>
         </MDBModalContent>
       </MDBModalDialog>
@@ -241,7 +239,7 @@ function ModalAltaNormal({ isOpen, onClose, selectedPaciente }) {
             <MDBBtn className='btn-close' color='none' onClick={handleClose}></MDBBtn>
           </MDBModalHeader>
           <MDBModalBody style={{ fontFamily: 'FiraSans-Light, sans-serif' }}>
-            Confirme que o paciente está recebendo alta normal
+          Confirme que o paciente está recebendo alta normal. A sessão atual do paciente será encerrada, e ele será colocado na lista de espera para a próxima sessão.
           </MDBModalBody>
           <MDBModalFooter>
             <MDBBtn 
@@ -298,9 +296,7 @@ function ModalAltaDefinitiva({ isOpen, onClose, selectedPaciente }) {
             <MDBBtn className='btn-close' color='none' onClick={handleClose}></MDBBtn>
           </MDBModalHeader>
           <MDBModalBody style={{ fontFamily: 'FiraSans-Light, sans-serif' }}>
-
-          Confirme que o paciente está recebendo alta definitiva
-
+          Confirme que o paciente está recebendo alta definitiva. A sessão do paciente será encerrada, e todos os seus registros poderão ser verificados na página de pacientes.
           </MDBModalBody>
           <MDBModalFooter>
           <MDBBtn 
@@ -359,7 +355,7 @@ function ModalTransferencia({ isOpen, onClose, selectedPaciente, formValue }) {
           </MDBModalHeader>
           <MDBModalBody style={{ fontFamily: 'FiraSans-Light, sans-serif' }}>
 
-          Autorização para a regulação confirmar transferência
+          Autorização para a regulação confirmar transferência do paciente.
 
           </MDBModalBody>
           <MDBModalFooter>
@@ -864,6 +860,7 @@ function QuadroFicha({ selectedPaciente, historico }) {
                    style={{
                     borderRadius: '8px',
                     padding: '10px 20px',
+                    marginLeft: '10px'
                   }}
                   onClick={toggleModalAltaObito}>
                   <MDBIcon fas icon="exclamation" className="me-2" />

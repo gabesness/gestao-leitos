@@ -68,7 +68,7 @@ function ModalDevolverMedico({ isOpen, onClose, selectedPaciente, formValue }) {
           </MDBModalHeader>
           <MDBModalBody style={{ fontFamily: 'FiraSans-Light, sans-serif' }}>
 
-          A prescrição será devolvida ao médico
+          A prescrição será devolvida ao médico para que ele possa fazer alterações.
 
           </MDBModalBody>
           <MDBModalFooter>

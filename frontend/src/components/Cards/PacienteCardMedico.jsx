@@ -10,16 +10,16 @@ function PacienteCardMedico({ paciente, selectedPaciente, handlePacienteClick })
     tagColor = 'primary';
   } else if (paciente.estagio_atual === 'DEVOLVIDO_PELA_FARMACIA') {
     tagContent = 'Farmácia';
-    tagColor = 'success';
+    tagColor = 'warning';
   } else if (paciente.estagio_atual === 'DEVOLVIDO_PELA_REGULACAO') {
     tagContent = 'Transferência';
-    tagColor = 'warning';
+    tagColor = 'success';
   } else if (paciente.estagio_atual === 'INTERNADO') {
     tagContent = 'Internado';
     tagColor = 'primary';
   } else if (paciente.estagio_atual === 'ALTA_NORMAL') {
     tagContent = 'Em 3 Dias';
-    tagColor = 'primary';
+    tagColor = 'info';
   }
   return (
     <MDBListGroupItem
@@ -35,8 +35,9 @@ function PacienteCardMedico({ paciente, selectedPaciente, handlePacienteClick })
       {tagContent && (
       <span className={`badge bg-${tagColor} rounded-pill me-2`} style={{ fontFamily: 'FiraSans-Light, sans-serif' }}>
           {tagContent === 'Nova' && <MDBIcon fas icon="plus-circle" className="me-1" />}
-          {tagContent === 'Farmácia' && <MDBIcon fas icon="pills" className="me-1" />}
+          {tagContent === 'Farmácia' && <MDBIcon fas icon="undo" className="me-1" />}
           {tagContent === 'Transferência' && <MDBIcon fas icon="exchange-alt" className="me-1" />}
+          {tagContent === 'Em 3 Dias' && <MDBIcon fas icon="clock" className="me-1" />}
           {tagContent === 'Internado' && <MDBIcon fas icon="bed" className="me-1" />}
           {tagContent}
         </span>

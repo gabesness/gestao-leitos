@@ -68,9 +68,7 @@ function ModalDevolverMedico({ isOpen, onClose, selectedPaciente, formValue }) {
           </MDBModalHeader>
           <MDBModalBody style={{ fontFamily: 'FiraSans-Light, sans-serif' }}>
 
-          A prescrição será devolvida ao médico por falta de vagas, 
-          para que possa ser autorizada a transferência do paciente.
-
+          A prescrição será devolvida ao médico para que a transferência do paciente possa ser autorizada.
 
           </MDBModalBody>
           <MDBModalFooter>
@@ -248,7 +246,7 @@ function ModalTransferencia({ isOpen, onClose, selectedPaciente, formValue }) {
           </MDBModalHeader>
           <MDBModalBody style={{ fontFamily: 'FiraSans-Light, sans-serif' }}>
 
-          Confirmar que o paciente foi transferido.
+          Confirmar a transferência do paciente.
 
           </MDBModalBody>
           <MDBModalFooter>
@@ -558,7 +556,9 @@ function QuadroFicha({ selectedPaciente, historico }) {
                   borderRadius: '8px',
                   padding: '10px 20px',
                 }}
-                >CONFIRMAR TRANSFERÊNCIA</MDBBtn>
+                >
+                <MDBIcon fas icon="check" className="me-2" />
+                  CONFIRMAR TRANSFERÊNCIA</MDBBtn>
               </div>
             </>
           );

@@ -144,6 +144,7 @@ function Login() {
                 padding: '10px 20px',
               }}
             >
+            <MDBIcon fas icon="sign-in-alt" className="me-2" />
               ENTRAR
             </MDBBtn>
 
