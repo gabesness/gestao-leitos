@@ -126,6 +126,27 @@ class PacienteViewSet(GenericViewSet):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     @extend_schema(
+            summary="Deletar paciente",
+            description="""
+                        Permite ao Administrador deletar pacientes.
+                        *** ATENÇÃO *** Deletar um paciente é uma ação PERMANENTE!
+                        Solicitar a confirmação de exclusão e deixar isso CLARO para o usuário.
+                        """
+    )
+    @action(detail=True, methods=['DELETE'])
+    def deletar_paciente(self, request, pk=None):
+        try:
+            paciente = self.get_object()
+            paciente.delete()
+
+            return Response({'OK': 'Paciente deletado com sucesso'}, status=status.HTTP_200_OK)
+        
+        except Paciente.DoesNotExist:
+            return Response({'Erro': 'Paciente não encontrado'}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({'Erro': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    @extend_schema(
             summary="Histórico da sessão atual",
             description="Busca pelos Registros de um paciente referentes à sua sessão mais recente",
     )
