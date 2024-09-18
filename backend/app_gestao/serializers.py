@@ -46,7 +46,8 @@ class UserSerializer(DynamicFieldsModelSerializer):
         instance.first_name = validated_data.get('first_name', instance.first_name)
         instance.last_name = validated_data.get('last_name', instance.last_name)
         instance.email = validated_data.get('email', instance.email)
-        instance.set_password(validated_data.get('password', instance.password))
+        if validated_data.get('password'):
+            instance.set_password(validated_data.get('password'))
         instance.is_active = validated_data.get('is_active', instance.is_active)
         instance.save()
         return instance
