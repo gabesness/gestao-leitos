@@ -10,7 +10,7 @@ class ListaLeito(admin.ModelAdmin):
     list_display_links = ("id", "numero")
 
 class ListaSessao(admin.ModelAdmin):
-    list_display = ('id', 'leito', 'paciente', 'data_internacao', 'data_alta')
+    list_display = ('id', 'leito', 'paciente', 'numero', 'data_internacao', 'data_alta')
     list_display_links = ('id', 'leito')
 
 class ListaRegistro(admin.ModelAdmin):

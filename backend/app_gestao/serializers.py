@@ -56,7 +56,8 @@ class SessaoSerializer(DynamicFieldsModelSerializer):
 
     class Meta:
         model = Sessao
-        fields = ['id', 'leito', 'paciente', 'data_alta', 'criada_em']
+        fields = ['id', 'leito', 'paciente', 'numero', 'data_alta', 'criada_em']
+        read_only_fields = ['id', 'numero', 'data_alta', 'criada_em']
 
 class RegistroSerializer(DynamicFieldsModelSerializer):
     usuario = serializers.SerializerMethodField()

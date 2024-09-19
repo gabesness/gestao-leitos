@@ -75,7 +75,7 @@ class Paciente(models.Model):
     # Apos chama-los, NECESSARIO chamar tambem o metodo atualizar_estagio()
 
     def criar_prescricao(self):
-        s = Sessao(paciente=self, numero=0)
+        s = Sessao(paciente=self)
         s.save()
         self.save()
     
@@ -122,13 +122,22 @@ class Leito(models.Model):
 
 class Sessao(models.Model):
     paciente = models.ForeignKey("Paciente", on_delete=models.CASCADE)
-    numero = models.IntegerField()
+    numero = models.IntegerField(default=None, editable=False)
     leito = models.ForeignKey("Leito", on_delete=models.CASCADE, null=True, blank=True, editable=False)
     data_internacao = models.DateTimeField(null=True, blank=True)
     data_alta = models.DateTimeField(null=True, blank=True, editable=False)
     def agora():
-        return datetime.now()
+        return timezone.now()
     criada_em = models.DateTimeField(editable=False, default=agora)
+
+    def gerar_numero(self, paciente):
+        n = Sessao.objects.filter(paciente=paciente).count()
+        return n + 1
+    
+    def save(self, *args, **kwargs):
+        if self.numero is None:
+            self.numero = self.gerar_numero(self.paciente)
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"Sessao criada em {self.criada_em}"
@@ -146,7 +155,7 @@ class Registro(models.Model):
     mensagem = models.TextField()
 
     def agora():
-        return datetime.now()
+        return timezone.now()
     
     criado_em = models.DateTimeField(editable=False, default=agora)
 
