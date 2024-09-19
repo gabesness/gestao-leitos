@@ -213,6 +213,63 @@ function ModalEditarPaciente({ isOpen, onClose, selectedPaciente }) {
   );
 }
 
+function ModalDeletarPaciente({ isOpen, onClose, selectedPaciente }) {
+    
+  const handleDeletarPaciente = async () => {
+      if (!selectedPaciente) return;
+  
+      try {
+        const response = await axios.delete(`${AxiosURL}/pacientes/${selectedPaciente.id}/deletar_paciente/`, {
+          id_usuario: localStorage.getItem('idUser'),
+        });
+        toast.success(response.data.OK);
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);      } catch (error) {
+        console.error("Erro ao deletar:", error);
+        toast.error(error.response.data.erro);
+      }
+    };
+  
+  
+  const handleClose = () => {
+    if (isOpen) {
+      onClose();
+    }
+  };
+
+  return (
+    <MDBModal open={isOpen} onClose={handleClose} tabIndex='-1' appendToBody>
+      <MDBModalDialog>
+        <MDBModalContent>
+          <MDBModalHeader>
+            <MDBModalTitle style={{ fontFamily: 'FiraSans-Medium, sans-serif' }}>Deletar paciente</MDBModalTitle>
+            <MDBBtn className='btn-close' color='none' onClick={handleClose}></MDBBtn>
+          </MDBModalHeader>
+          <MDBModalBody style={{ fontFamily: 'FiraSans-Light, sans-serif' }}>
+
+          Confirme que o paciente será deletado, Todos os dados do paciente serão perdidos. Esta ação não pode ser desfeita.
+
+          </MDBModalBody>
+          <MDBModalFooter>
+          <MDBBtn color='danger' onClick={handleClose}
+           style={{
+            borderRadius: '8px',
+            padding: '10px 20px',
+          }}>Cancelar</MDBBtn>
+          <MDBBtn onClick={handleDeletarPaciente}
+           style={{
+            borderRadius: '8px',
+            padding: '10px 20px',
+          }}>Deletar</MDBBtn>
+          </MDBModalFooter>
+        </MDBModalContent>
+      </MDBModalDialog>
+      <ToastContainer />
+    </MDBModal>
+  );
+}
+
 
 function QuadroLista({ pacientes, selectedPaciente, handlePacienteClick, }) {
   const [currentPage, setCurrentPage] = useState(1);
@@ -333,6 +390,7 @@ function QuadroLista({ pacientes, selectedPaciente, handlePacienteClick, }) {
 function QuadroFicha({ selectedPaciente, historico }) {
   const [selectedSession, setSelectedSession] = useState('Todas');
   const [showEditModal, setShowEditModal] = useState(false); // Novo estado para o modal de edição
+  const [showDeleteModal, setShowDeleteModal] = useState(false); // Novo estado para o modal de deleção
   const cargo = localStorage.getItem('cargo');
 
   const uniqueSessions = ['Todas', ...new Set(historico.map(item => item.sessao))];
@@ -347,6 +405,14 @@ function QuadroFicha({ selectedPaciente, historico }) {
 
   const closeEditModal = () => {
     setShowEditModal(false);
+  };
+
+  const handleDeleteClick = () => {
+    setShowDeleteModal(true);
+  };
+
+  const closeDeleteModal = () => {
+    setShowDeleteModal(false);
   };
 
   function baixarHistoricoComoPDF(historico, nomePaciente) {
@@ -419,6 +485,18 @@ function QuadroFicha({ selectedPaciente, historico }) {
                    <MDBIcon fas icon="file-download" className='me-1'  />
                      Baixar Histórico
                 </MDBBtn>
+                {cargo === 'Administrador' && (
+                  <MDBBtn
+                    className='mx-2'
+                    color='secondary'
+                    rippleColor='light'
+                    style={{ borderRadius: '8px', padding: '10px 20px' }}
+                    onClick={handleDeleteClick}
+                  >
+                    <MDBIcon fas icon="trash" className='me-1' />
+                    Deletar Paciente
+                  </MDBBtn>
+                )}
 
 
                 <MDBDropdown style={{ marginLeft: 'auto' }}>
@@ -494,6 +572,7 @@ function QuadroFicha({ selectedPaciente, historico }) {
       )}
       {/* Modal de Edição */}
       <ModalEditarPaciente isOpen={showEditModal} onClose={closeEditModal} selectedPaciente={selectedPaciente} />
+      <ModalDeletarPaciente isOpen={showDeleteModal} onClose={closeDeleteModal} selectedPaciente={selectedPaciente} />
     </MDBCol>
   );
 }
