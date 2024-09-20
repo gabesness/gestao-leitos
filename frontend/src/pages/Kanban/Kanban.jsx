@@ -137,7 +137,7 @@ function ModalFicha({ isOpen, onClose, selectedPaciente, historico}) {
 }
 
 
-function Kanban() {
+function Monitoramento() {
   const [pacientes, setPacientes] = useState([]);
   const [historico, setHistorico] = useState([]);
   const [selectedPaciente, setSelectedPaciente] = useState(null);
@@ -175,7 +175,7 @@ function Kanban() {
     <MDBContainer fluid className='p-1 background-radial-gradient overflow-hidden d-flex justify-content-center'  style={{ minHeight: '100vh' }}>
       <MDBCard className='my-5 bg-glass max-width-card' style={{ width: '100%', maxWidth: '1200px', borderRadius: '38px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '15px 50px 10px 50px' }}>
-        <h2 style={{ fontFamily: 'FiraSans-SemiBold, sans-serif' }}>Kanban</h2>
+        <h2 style={{ fontFamily: 'FiraSans-SemiBold, sans-serif' }}>Monitoramento</h2>
         <MDBTooltip
           placement="left"
           tag="div"
@@ -360,4 +360,4 @@ function Kanban() {
   
 }
 
-export default Kanban;
+export default Monitoramento;

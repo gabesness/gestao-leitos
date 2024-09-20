@@ -7,7 +7,7 @@ import HomeMedico from '../pages/HomeMedico/HomeMedico';
 import HomeFarmacia from '../pages/HomeFarmacia/HomeFarmacia';
 import HomeRegulacao from '../pages/HomeRegulacao/HomeRegulacao';
 import HomeAdm from '../pages/HomeAdm/HomeAdm';
-import Kanban from '../pages/Kanban/Kanban';
+import Monitoramento from '../pages/Kanban/Kanban';
 import Pacientes from '../pages/Pacientes/Pacientes';
 import MinhaConta from '../pages/MinhaConta/MinhaConta';
 import Dashboard from '../pages/Dashboard/Dashboard';
@@ -25,7 +25,7 @@ function RouteHandler() {
       <Route path="/HomeMedico" element={<PrivateRoute element={<HomeMedico />} allowedRoles={['Médico']} />} />
       <Route path="/HomeFarmacia" element={<PrivateRoute element={<HomeFarmacia />} allowedRoles={['Farmácia']} />} />
       <Route path="/HomeRegulacao" element={<PrivateRoute element={<HomeRegulacao />} allowedRoles={['Regulação']} />} />
-      <Route path="/Kanban" element={<Kanban />} />
+      <Route path="/Monitoramento" element={<Monitoramento />} />
       <Route path="/SemAutorizacao" element={<SemAutorizacao />} />
       <Route path="/Pacientes" element={<Pacientes />} />
       <Route path="/MinhaConta" element={<PrivateRoute element={<MinhaConta />} allowedRoles={['Administrador', 'Médico', 'Farmácia', 'Regulação', 'Recepção']} />} />

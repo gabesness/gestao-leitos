@@ -673,6 +673,9 @@ function QuadroFicha({ selectedPaciente, historico }) {
       });
       if (response.status === 200) {
         toast.success('Prescrição encaminhada à farmácia');
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
       }
     } catch (error) {
       console.error('Erro ao encaminhar para farmácia', error);
@@ -781,13 +784,12 @@ function QuadroFicha({ selectedPaciente, historico }) {
                         id="sessoes"
                         name="sessoes_prescritas"
                         type="number" 
-                        style={{ 
-                          fontFamily: 'FiraSans-Light, sans-serif' 
-                      }}
+                        style={{ fontFamily: 'FiraSans-Light, sans-serif' }}
                         value={formValue.sessoes_prescritas} 
                         onChange={onChange}
                         disabled={!isPrescricaoCriada}  
-                        maxLength="5"
+                        maxLength="3"
+                        min="1"
                         />
               </div>
               <div>
@@ -802,7 +804,8 @@ function QuadroFicha({ selectedPaciente, historico }) {
                         value={formValue.dias_intervalo} 
                         onChange={onChange}
                         disabled={!isPrescricaoCriada}  
-                        maxLength="5"
+                        maxLength="3"
+                        min="1"
                         />
               </div>
             </div>

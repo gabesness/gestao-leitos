@@ -38,7 +38,7 @@ export default function Navbar() {
   };
 
   const handleKanbanClick = () => {
-    window.location.href = '/kanban';
+    window.location.href = '/Monitoramento';
   };
 
   const handlePacientesClick = () => {
@@ -133,7 +133,7 @@ export default function Navbar() {
                 <MDBNavbarLink
                   href='#'
                   onClick={handleKanbanClick}
-                  className={location.pathname === '/kanban' ? 'active' : ''}
+                  className={location.pathname === '/Monitoramento' ? 'active' : ''}
                 >
                   <MDBIcon icon='columns' fas style={{ fontSize: '1.4rem' }} />
                 </MDBNavbarLink>
