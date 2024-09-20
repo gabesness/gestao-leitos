@@ -31,10 +31,6 @@ class Paciente(models.Model):
     #@property
     def sessao_atual(self):
         return Sessao.objects.filter(paciente=self).order_by("-criada_em").first()
-    
-    def numero_sessao_atual(self):
-        # A sessao atual eh sempre a ultima sessao, logo seu numero eh a quantidade de sessoes que existem para o paciente
-        return Sessao.objects.filter(paciente=self).count()
 
     #@property
     def historico_atual(self):

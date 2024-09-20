@@ -61,6 +61,7 @@ class SessaoSerializer(DynamicFieldsModelSerializer):
 
 class RegistroSerializer(DynamicFieldsModelSerializer):
     usuario = serializers.SerializerMethodField()
+    sessao = serializers.SerializerMethodField()
     class Meta:
         model = Registro
         fields = ['id', 'usuario', 'paciente', 'sessao', 'estagio_atual', 'mensagem', 'criado_em']
@@ -68,6 +69,10 @@ class RegistroSerializer(DynamicFieldsModelSerializer):
     def get_usuario(self, obj) -> dict:
         usuario = obj.usuario
         return UserSerializer(usuario, fields=['username', 'first_name', 'last_name', 'groups']).data
+    
+    def get_sessao(self, obj) -> int:
+        sessao = obj.sessao
+        return SessaoSerializer(sessao, fields=['numero']).data['numero']
 
 class PacienteSerializer(DynamicFieldsModelSerializer):
     sessao_atual = serializers.SerializerMethodField()
@@ -78,7 +83,7 @@ class PacienteSerializer(DynamicFieldsModelSerializer):
 
     class Meta:
         model = Paciente
-        fields = ['id', 'nome', 'prontuario', 'estagio_atual', 'leito', 'plano_terapeutico', 'sessao_atual', 'numero_sessao_atual', 'historico_atual', 'historico_completo']
+        fields = ['id', 'nome', 'prontuario', 'estagio_atual', 'leito', 'plano_terapeutico', 'sessao_atual', 'historico_atual', 'historico_completo']
         read_only_fields = ['id', 'estagio_atual', 'leito', 'plano_terapeutico', 'sessao_atual', 'historico_atual', 'historico_completo']
 
     def update(self, instance, validated_data):
