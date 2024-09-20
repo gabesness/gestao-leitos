@@ -25,6 +25,8 @@ export default function Navbar() {
   const [nome, setNome] = useState('');
   const location = useLocation(); // Use the useLocation hook
   const permittedRoles = ['Administrador', 'Médico', 'Regulação', 'Farmácia'];
+  const rolesWithUserIcon = ['Administrador', 'Médico', 'Recepção', 'Regulação', 'Farmácia'];
+
 
   useEffect(() => {
     const nomeArmazenado = localStorage.getItem('nome');
@@ -150,16 +152,15 @@ export default function Navbar() {
               <div className="ms-auto d-flex align-items-center">
                 <MDBNavbarNav right className="d-flex align-items-center">
                 <span style={{ fontSize: '1.2rem', marginRight: '5px', color: '#0000008C' }}>{nome}</span>
-                <MDBNavbarLink
-                    style={{ cursor: 'pointer' }}
-                    onClick={handleMinhaContaClick}
-                  >
-                    <MDBIcon
-                      icon='user-circle'
-                      fas
-                      style={{ fontSize: '1.6rem' }}
-                    />
-                  </MDBNavbarLink>
+                {rolesWithUserIcon.includes(localStorage.getItem('cargo')) && ( // Condição para exibir o ícone do usuário
+                    <MDBNavbarLink
+                      style={{ cursor: 'pointer' }}
+                      onClick={handleMinhaContaClick}
+                    >
+                      <MDBIcon icon='user-circle' fas style={{ fontSize: '1.6rem' }} />
+                    </MDBNavbarLink>
+                  )}
+                  
                   <MDBNavbarLink
                     style={{ cursor: 'pointer' }}
                     onClick={handleSignOutClick}

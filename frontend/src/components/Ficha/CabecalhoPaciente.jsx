@@ -20,7 +20,7 @@ const CabecalhoPaciente = ({ selectedPaciente }) => {
               <p style={{ marginBottom: '0px', fontFamily: 'FiraSans-Light, sans-serif', fontSize: '1.1rem' }}>
               Sessão:&nbsp; 
                 <span style={{ fontFamily: 'FiraSans-LightItalic, sans-serif' }}>
-                  {selectedPaciente.numero_sessao_atual ? selectedPaciente.numero_sessao_atual : " Sem leito"}
+                  {selectedPaciente.numero_sessao_atual ? selectedPaciente.numero_sessao_atual : " Sem sessão"}
                 </span>
               </p>
               <p style={{ marginBottom: '0px', fontFamily: 'FiraSans-Light, sans-serif', fontSize: '1.1rem' }}>
