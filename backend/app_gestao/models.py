@@ -27,6 +27,8 @@ class Paciente(models.Model):
     estagio_atual = models.CharField(max_length=128, choices=EstagioEnum.choices, default=EstagioEnum.CADASTRADO)
     leito = models.ForeignKey("Leito", on_delete=models.CASCADE, null=True, blank=True)
     plano_terapeutico = models.ForeignKey("Plano_terapeutico", on_delete=models.CASCADE, null=True, blank=True)
+    criado_em = models.DateTimeField(auto_now_add=True)
+    atualizado_em = models.DateTimeField(auto_now=True)
 
     #@property
     def sessao_atual(self):
@@ -122,9 +124,8 @@ class Sessao(models.Model):
     leito = models.ForeignKey("Leito", on_delete=models.CASCADE, null=True, blank=True, editable=False)
     data_internacao = models.DateTimeField(null=True, blank=True)
     data_alta = models.DateTimeField(null=True, blank=True, editable=False)
-    def agora():
-        return timezone.now()
-    criada_em = models.DateTimeField(editable=False, default=agora)
+    criada_em = models.DateTimeField(auto_now_add=True)
+    atualizada_em = models.DateField(auto_now=True)
 
     def gerar_numero(self, paciente):
         n = Sessao.objects.filter(paciente=paciente).count()
@@ -149,11 +150,8 @@ class Registro(models.Model):
     estagio_atual = models.CharField(max_length=128, choices=EstagioEnum.choices, editable=False)
     # Qual eh a mensagem?
     mensagem = models.TextField()
-
-    def agora():
-        return timezone.now()
     
-    criado_em = models.DateTimeField(editable=False, default=agora)
+    criado_em = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"Registro de {self.estagio_atual} por {self.usuario}"
@@ -233,7 +231,7 @@ class Estatisticas():
                 numero_sessoes.append(Sessao.objects.filter(data_alta__gte=data_inicio, paciente_id=pair['id']).count())
         data = []
         for i in range(1, max(numero_sessoes)+1):
-            s = "sessao" if i == 1 else "sessoes"
+            s = "sessão" if i == 1 else "sessões"
             data.append({f"{i} {s}": numero_sessoes.count(i)})
 
         return data

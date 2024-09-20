@@ -26,7 +26,7 @@ def helper_gerar_senha(size=8, chars=ascii_letters + digits):
 
 # Create your views here.
 class PacienteViewSet(GenericViewSet):
-    queryset = Paciente.objects.all().order_by('nome')
+    queryset = Paciente.objects.all().order_by('-atualizado_em')
     serializer_class = PacienteSerializer
 
     @extend_schema(
@@ -35,7 +35,7 @@ class PacienteViewSet(GenericViewSet):
         )
     @action(detail=False, methods=['GET'], url_path='lista')
     def todos(self, request):
-        queryset = self.get_queryset()
+        queryset = self.get_queryset().order_by('nome')
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
@@ -503,11 +503,8 @@ class PrescricaoViewSet(GenericViewSet):
             user = User.objects.get(id=request.data['id_usuario'])
             if user:
                 if serializer.data['estagio_atual'] == 'ENCAMINHADO_PARA_FARMACIA':
-                    if request.data['mensagem'] == '':
-                        return Response({'Erro': 'O campo "mensagem" precisa ser preenchido'}, status=status.HTTP_400_BAD_REQUEST)
-                    else:
-                        serializer.atualizar_estagio(obj=paciente, usuario=user, estagio='DEVOLVIDO_PELA_FARMACIA', mensagem=request.data['mensagem'])
-                        return Response({'OK': 'devolvido com sucesso'}, status=status.HTTP_204_NO_CONTENT)
+                    serializer.atualizar_estagio(obj=paciente, usuario=user, estagio='DEVOLVIDO_PELA_FARMACIA', mensagem=request.data['mensagem'])
+                    return Response({'OK': 'devolvido com sucesso'}, status=status.HTTP_204_NO_CONTENT)
                 else:
                     return Response({'erro': 'estagio_atual invalido'}, status=status.HTTP_400_BAD_REQUEST)
             else: raise User.DoesNotExist
