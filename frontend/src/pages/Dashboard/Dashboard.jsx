@@ -113,68 +113,38 @@ function Dashboard() {
   };
 
 
-
-  const dataLinha = [
-    { name: 'Jan', Taxa: 30 },
-    { name: 'Fev', Taxa: 20 },
-    { name: 'Mar', Taxa: 27 },
-    { name: 'Abr', Taxa: 18 },
-    { name: 'Mai', Taxa: 23 },
-    { name: 'Jun', Taxa: 34 },
-  ];
-
   const handleDropdownSelect = (selected) => {
     setDropdownTitle(selected);
   };
 
   const handleDownloadPDF = () => {
     const input = document.getElementById('pdf-content');
-    const lastChart = input.querySelector('.last-chart');
-  
-    // Captura a primeira parte do conteúdo (sem o último gráfico)
-    html2canvas(input, {
-      ignoreElements: element => element === lastChart // Ignora o último gráfico na captura
-    }).then((canvas) => {
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF('p', 'mm', 'a4');
-      const imgWidth = 210;
-      const pageHeight = 295;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-      let heightLeft = imgHeight;
-  
-      // Adiciona o cabeçalho na primeira página
-      pdf.setFontSize(16);
-      pdf.text('Estatísticas do Oncoleitos', 105, 15, { align: 'center' }); // Adiciona o texto no topo centralizado
-  
-      // Adiciona a primeira parte do conteúdo
-      pdf.addImage(imgData, 'PNG', 0, 20, imgWidth, imgHeight - 20); // Ajusta a posição para baixo do cabeçalho
-      heightLeft -= pageHeight - 20; // Ajusta o comprimento disponível após o cabeçalho
-  
-      // Adiciona páginas para o conteúdo que excede o comprimento da página
-      while (heightLeft >= 0) {
-        pdf.addPage();
+
+    // Captura o conteúdo
+    html2canvas(input).then((canvas) => {
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        const imgWidth = 210;
+        const pageHeight = 295;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+        // Se o conteúdo não couber em uma página, redimensiona
+        const heightLeft = imgHeight - 20; // 20 para o cabeçalho
+        if (heightLeft > pageHeight) {
+            const scaleFactor = (pageHeight - 20) / imgHeight;
+            pdf.addImage(imgData, 'PNG', 0, 20, imgWidth, imgHeight * scaleFactor);
+        } else {
+            pdf.addImage(imgData, 'PNG', 0, 20, imgWidth, imgHeight);
+        }
+
+        // Adiciona o cabeçalho
         pdf.setFontSize(16);
         pdf.text('Estatísticas do Oncoleitos', 105, 15, { align: 'center' });
-        pdf.addImage(imgData, 'PNG', 0, 20, imgWidth, imgHeight - 20);
-        heightLeft -= pageHeight - 20; // Ajusta o comprimento disponível após o cabeçalho
-      }
-  
-      // Captura o último gráfico separado
-      html2canvas(lastChart).then((lastChartCanvas) => {
-        const lastChartImgData = lastChartCanvas.toDataURL('image/png');
-        
-        // Adiciona uma nova página para o último gráfico
-        pdf.addPage();
-        pdf.setFontSize(16);
-        pdf.text('Estatísticas do Oncoleitos', 105, 15, { align: 'center' });
-        pdf.addImage(lastChartImgData, 'PNG', 0, 20, imgWidth, lastChartCanvas.height * imgWidth / lastChartCanvas.width);
-        
+
         // Salva o PDF
         pdf.save('dashboard-estatisticas.pdf');
-      });
     });
-  };
-  
+};
   
   return (
     <MDBContainer fluid className='p-1 background-radial-gradient overflow-hidden d-flex justify-content-center' style={{ minHeight: '100vh' }}>
@@ -240,10 +210,15 @@ function Dashboard() {
       </div>
 
         <MDBCardBody id="pdf-content" className='p-5'>
+
+
           {/* Gráfico de Linhas (3 Linhas): historico_altas */}
           <MDBCard className='mb-4' style={{ borderTopLeftRadius: '30px', borderTopRightRadius: '30px', borderBottomLeftRadius: '20px', borderBottomRightRadius: '20px' }}>
             <MDBCardBody>
-            <h4 style={{ marginBottom: '5px' }}>Relação entre tipos de altas</h4>
+            <h4 style={{ marginBottom: '5px' }}>Relação entre altas</h4>
+            <p style={{ marginBottom: "10px", fontSize: "0.9rem", color: "#6c757d" }}>
+              Este gráfico mostra a frequência dos pacientes que receberam alta por óbito, alta definitiva e transferência  ao longo do período.
+            </p>
               <ResponsiveContainer width="100%" height={400}>
                 <LineChart
                   data={dados.historico_altas}
@@ -259,20 +234,27 @@ function Dashboard() {
                   <YAxis />
                   <Tooltip />
                   <Legend />
-                  <Line type="monotone" dataKey="Alta" stroke="#8884d8" strokeWidth={3} />
-                  <Line type="monotone" dataKey="Óbito" stroke="#82ca9d" strokeWidth={3} />
-                  <Line type="monotone" dataKey="Transferência" stroke="#ff7300" strokeWidth={3} />
+                  <Line type="monotone" dataKey="Alta" name="Alta Definitiva" stroke="#8884d8" strokeWidth={3} />
+                  <Line type="monotone" dataKey="Óbito" name="Alta Óbito" stroke="#82ca9d" strokeWidth={3} />
+                  <Line type="monotone" dataKey="Transferência" name="Transferidos" stroke="#ff7300" strokeWidth={3} />
                 </LineChart>
               </ResponsiveContainer>
             </MDBCardBody>
           </MDBCard>
   
+
+
           {/* Histogramas (lado a lado) */}
           <div className="d-flex justify-content-between">
+
+
             {/* Histograma 1: histograma_tempo_internacao */}
             <MDBCard className='mb-4' style={{ flex: 1, marginRight: '10px', borderTopLeftRadius: '30px', borderTopRightRadius: '30px', borderBottomLeftRadius: '20px', borderBottomRightRadius: '20px' }}>
               <MDBCardBody>
               <h4 style={{ marginBottom: '5px' }}>Tempo médio de internação</h4>
+              <p style={{ marginBottom: "10px", fontSize: "0.9rem", color: "#6c757d" }}>
+                Este gráfico representa a distribuição do tempo de internação dos pacientes durante ao longo do período.
+              </p>
                 <ResponsiveContainer width="100%" height={300}>
                   <BarChart data={dados.histograma_tempo_internacao}>
                     <CartesianGrid strokeDasharray="3 3" />
@@ -280,16 +262,20 @@ function Dashboard() {
                     <YAxis />
                     <Tooltip />
                     <Legend />
-                    <Bar dataKey="freq" fill="#8884d8" strokeWidth={2} />
+                    <Bar name="Pacientes" dataKey="freq" fill="#8884d8" strokeWidth={2} />
                   </BarChart>
                 </ResponsiveContainer>
               </MDBCardBody>
             </MDBCard>
   
+
             {/* Histograma 2: histograma_num_sessoes */}
             <MDBCard className='mb-4' style={{ flex: 1, marginLeft: '10px', borderTopLeftRadius: '30px', borderTopRightRadius: '30px', borderBottomLeftRadius: '20px', borderBottomRightRadius: '20px' }}>
               <MDBCardBody>
               <h4 style={{ marginBottom: '5px' }}>Quantidade de sessões</h4>
+              <p style={{ marginBottom: "10px", fontSize: "0.9rem", color: "#6c757d" }}>
+                Este gráfico representa a distribuição do número de sessões realizadas pelos pacientes ao longo do período.
+              </p>
                 <ResponsiveContainer width="100%" height={300}>
                   <BarChart data={dados.histograma_num_sessoes}>
                     <CartesianGrid strokeDasharray="3 3" />
@@ -304,12 +290,16 @@ function Dashboard() {
             </MDBCard>
           </div>
   
+
           {/* Gráfico de Barras: pacientes_novos */}
           <MDBCard className='mb-4' style={{ borderTopLeftRadius: '30px', borderTopRightRadius: '30px', borderBottomLeftRadius: '20px', borderBottomRightRadius: '20px' }}>
             <MDBCardBody>
-            <h4 style={{ marginBottom: '5px' }}>Pacientes novos cadastrados</h4>
+              <h4 style={{ marginBottom: '5px' }}>Novos tratamentos</h4>
+              <p style={{ marginBottom: "10px", fontSize: "0.9rem", color: "#6c757d" }}>
+              Representa o número de pacientes que iniciaram tratamento ao longo período.
+            </p>
               <ResponsiveContainer width="100%" height={400}>
-                <BarChart
+                <LineChart
                   data={dados.pacientes_novos}
                   margin={{
                     top: 20,
@@ -323,35 +313,13 @@ function Dashboard() {
                   <YAxis />
                   <Tooltip />
                   <Legend />
-                  <Bar dataKey="Pacientes" fill="#8884d8" strokeWidth={2} />
-                </BarChart>
+                  <Line type="monotone" dataKey="Pacientes" stroke="#8884d8" strokeWidth={3} />
+                </LineChart>
               </ResponsiveContainer>
             </MDBCardBody>
           </MDBCard>
   
           {/* Gráfico de Linhas (Linha Simples) */}
-          <MDBCard className='mb-4 last-chart' style={{ borderTopLeftRadius: '30px', borderTopRightRadius: '30px', borderBottomLeftRadius: '20px', borderBottomRightRadius: '20px' }}>
-            <MDBCardBody>
-            <h4 style={{ marginBottom: '5px' }}>Taxa de ocupação dos leitos</h4>
-              <ResponsiveContainer width="100%" height={400}>
-                <LineChart
-                  data={dataLinha}
-                  margin={{
-                    top: 20,
-                    right: 30,
-                    left: 20,
-                    bottom: 5,
-                  }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <Tooltip />
-                  <Line type="monotone" dataKey="Taxa" stroke="#8884d8" strokeWidth={3} />
-                </LineChart>
-              </ResponsiveContainer>
-            </MDBCardBody>
-          </MDBCard>
         </MDBCardBody>
       </MDBCard>
     </MDBContainer>
