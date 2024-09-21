@@ -33,6 +33,34 @@ class Paciente(models.Model):
     #@property
     def sessao_atual(self):
         return Sessao.objects.filter(paciente=self).order_by("-criada_em").first()
+    
+    def data_prox_sessao(self):
+        sessao_atual = self.sessao_atual()
+        plano = self.plano_terapeutico
+        # se houver sessao atual para o paciente
+        if sessao_atual:
+            # se a sessao atual ja tiver acabado, acrescente o numero de dias ate a proxima
+            if sessao_atual.data_alta:
+                return sessao_atual.data_alta + timedelta(days=plano.dias_intervalo)
+            # se a sessao estiver comecado:
+            #   verifique se ha plano para o paciente;
+            #   se sim, e caso esteja no estagio de prescricao criada:
+            #       retorne a ultima data de alta e acrescente o numero de dias ate a proxima
+            #   se sim, e nao estiver no estagio de prescricao criada (ja foi enviada p/ farmacia):
+            #       retorne a data informada no campo data_sugerida
+            #   se nao houver plano para o paciente (caso de primeira prescricao):
+            #       retorne a data de hoje
+            else:
+                if plano:  
+                    if self.estagio_atual == 'PRESCRICAO_CRIADA':
+                        # Ultima alta do paciente
+                        data_ultima_alta = Sessao.objects.filter(paciente=self, data_alta__isnull=False).first().data_alta
+                        return data_ultima_alta + timedelta(days=plano.dias_intervalo)
+                    else:
+                        return plano.data_sugerida
+                else:
+                    return timezone.now()
+
 
     #@property
     def historico_atual(self):

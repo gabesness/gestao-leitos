@@ -76,6 +76,7 @@ class RegistroSerializer(DynamicFieldsModelSerializer):
 
 class PacienteSerializer(DynamicFieldsModelSerializer):
     sessao_atual = serializers.SerializerMethodField()
+    data_prox_sessao = serializers.SerializerMethodField()
     historico_atual = serializers.SerializerMethodField()
     historico_completo = serializers.SerializerMethodField()
     plano_terapeutico = serializers.SerializerMethodField()
@@ -83,7 +84,7 @@ class PacienteSerializer(DynamicFieldsModelSerializer):
 
     class Meta:
         model = Paciente
-        fields = ['id', 'nome', 'prontuario', 'estagio_atual', 'leito', 'plano_terapeutico', 'sessao_atual', 'historico_atual', 'historico_completo']
+        fields = ['id', 'nome', 'prontuario', 'estagio_atual', 'leito', 'plano_terapeutico', 'sessao_atual', 'data_prox_sessao', 'historico_atual', 'historico_completo']
         read_only_fields = ['id', 'estagio_atual', 'leito', 'plano_terapeutico', 'sessao_atual', 'historico_atual', 'historico_completo']
 
     def update(self, instance, validated_data):
@@ -99,6 +100,9 @@ class PacienteSerializer(DynamicFieldsModelSerializer):
         else:
             return None
 
+    def get_data_prox_sessao(self, obj) -> timezone:
+        return obj.data_prox_sessao()
+    
     def get_historico_atual(self, obj) -> list:
         historico = obj.historico_atual()
         return RegistroSerializer(historico, many=True).data
