@@ -217,7 +217,7 @@ function Dashboard() {
             <MDBCardBody>
             <h4 style={{ marginBottom: '5px' }}>Relação entre altas</h4>
             <p style={{ marginBottom: "10px", fontSize: "0.9rem", color: "#6c757d" }}>
-              Este gráfico mostra a frequência dos pacientes que receberam alta por óbito, alta definitiva e transferência  ao longo do período.
+              Representa a quantidade de pacientes que receberam alta por óbito, alta definitiva e transferência ao longo do período.
             </p>
               <ResponsiveContainer width="100%" height={400}>
                 <LineChart
@@ -253,7 +253,7 @@ function Dashboard() {
               <MDBCardBody>
               <h4 style={{ marginBottom: '5px' }}>Tempo médio de internação</h4>
               <p style={{ marginBottom: "10px", fontSize: "0.9rem", color: "#6c757d" }}>
-                Este gráfico representa a distribuição do tempo de internação dos pacientes durante ao longo do período.
+                Representa a distribuição do tempo de internação dos paciente ao longo do período.
               </p>
                 <ResponsiveContainer width="100%" height={300}>
                   <BarChart data={dados.histograma_tempo_internacao}>
@@ -274,7 +274,7 @@ function Dashboard() {
               <MDBCardBody>
               <h4 style={{ marginBottom: '5px' }}>Quantidade de sessões</h4>
               <p style={{ marginBottom: "10px", fontSize: "0.9rem", color: "#6c757d" }}>
-                Este gráfico representa a distribuição do número de sessões realizadas pelos pacientes ao longo do período.
+                Representa a distribuição do número de sessões realizadas pelos pacientes ao longo do período.
               </p>
                 <ResponsiveContainer width="100%" height={300}>
                   <BarChart data={dados.histograma_num_sessoes}>
@@ -296,7 +296,7 @@ function Dashboard() {
             <MDBCardBody>
               <h4 style={{ marginBottom: '5px' }}>Novos tratamentos</h4>
               <p style={{ marginBottom: "10px", fontSize: "0.9rem", color: "#6c757d" }}>
-              Representa o número de pacientes que iniciaram tratamento ao longo período.
+              Representa o número de pacientes que iniciaram o tratamento ao longo do período.
             </p>
               <ResponsiveContainer width="100%" height={400}>
                 <LineChart
