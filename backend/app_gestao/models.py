@@ -272,7 +272,7 @@ class Estatisticas():
         """
         Retorna quantos novos pacientes entraram no sistema por tempo.
         1. Considere os dias informados. Se dias=None, considere todo o período.
-        2. Para cada dia dentro do intervalo, conte quantos Registros têm o status PACIENTE_CADASTRADO.
+        2. Para cada dia dentro do intervalo, conte quantos Registros têm o status PRESCRICAO_CRIADA.
         3. Para intervalos acima de 30 dias, envie de n em n dias em vez de dias individuais.
         """
         

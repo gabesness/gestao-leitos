@@ -306,8 +306,9 @@ class PrescricaoViewSet(GenericViewSet):
                             else: return Response({plano_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
                         # Se já houver plano para esse paciente, recuperar o existente e alterar as suas informações
                         else:
-                            plano_serializer = paciente_serializer.data['plano_terapeutico'] # consulta o plano terapeutico do paciente
-                            plano_terapeutico = plano_serializer.update(obj=Plano_terapeutico.objects.get(id=plano_serializer['id']), validated_data=plano_json)
+                            plano = Plano_terapeutico.objects.get(id=paciente_serializer.data['plano_terapeutico']['id']) # consulta o plano terapeutico do paciente
+                            plano_serializer = Plano_terapeuticoSerializer(plano)
+                            plano_serializer.update(obj=plano, validated_data=plano_json)
                         paciente_serializer.atualizar_estagio(obj=paciente, usuario=user, estagio='ENCAMINHADO_PARA_FARMACIA', mensagem=request.data['mensagem'])
                         return Response({'OK': 'Plano terapêutico criado e paciente encaminhado à Farmacia'}, status=status.HTTP_200_OK)
                     else: return Response({'Erro': 'Data de internação deve ser no mínimo no dia seguinte'}, status=status.HTTP_400_BAD_REQUEST)
