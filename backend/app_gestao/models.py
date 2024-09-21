@@ -1,5 +1,5 @@
 from django.db import models
-from datetime import datetime, timedelta
+from datetime import timedelta
 from django.contrib.auth.models import User
 from django.utils import timezone
 from .helpers import estagio_to_readable

@@ -40,6 +40,32 @@ class PacienteViewSet(GenericViewSet):
         return Response(serializer.data)
 
     @extend_schema(
+            summary="Lista de pacientes do quadro Kanban",
+            description="""
+                        Para as colunas:
+                        ALTA_DEFINITIVA,
+                        ALTA_OBITO e
+                        TRANSFERIDO
+                        Somente devem aparecer pacientes dos últimos 7 dias
+                        """
+    )
+    @action(detail=False, methods=['GET'])
+    def lista_kanban(self, request):
+        try:
+            estagios_temporarios = ['ALTA_DEFINITIVA', 'ALTA_OBITO', 'TRANSFERIDO']
+            intervalo = timezone.now() - timedelta(days=10)
+
+            pacientes_temporarios = self.get_queryset().filter(estagio_atual__in=estagios_temporarios, atualizado_em__gte=intervalo)
+            pacientes_fixos = self.get_queryset().exclude(estagio_atual__in=estagios_temporarios)
+
+            pacientes = pacientes_fixos | pacientes_temporarios
+            serializer = self.get_serializer(pacientes_temporarios, many=True)
+
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'Erro': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    @extend_schema(
         summary="Pacientes do médico",
         description="Pacientes com os estágios de prescrição criada, devolvido (pela farmácia ou regulação) e internado",
     )
