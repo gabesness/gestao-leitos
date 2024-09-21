@@ -41,7 +41,7 @@ function ModalDevolverMedico({ isOpen, onClose, selectedPaciente, formValue }) {
         id_usuario: localStorage.getItem('idUser'),
         mensagem: formValue.mensagem  // Incluir a mensagem no corpo da requisição
       });
-      toast.success(response.data.OK);
+      toast.success('Solicitação de transferência enviada ao médico');
       setTimeout(() => {
         window.location.reload();
       }, 2000);
@@ -334,6 +334,7 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
 
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
+    setCurrentPage(1);
   };
 
   const indexOfLastPost = currentPage * postsPerPage;
@@ -391,7 +392,10 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
 
             }}
             color={activeTab === 'pendentes' ? 'white' : 'dark'}
-            onClick={() => setActiveTab('pendentes')}
+            onClick={() => {
+              setActiveTab('pendentes');
+              setCurrentPage(1);
+            }}
           >
             Pendentes
           </MDBBtn>
@@ -410,8 +414,11 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
 
             }}
             color={activeTab === 'agendados' ? 'white' : 'dark'}
-            onClick={() => setActiveTab('agendados')}
-          >
+            onClick={() => {
+              setActiveTab('agendados');
+              setCurrentPage(1);
+            }}         
+             >
             Agendados
           </MDBBtn>
         </div>
@@ -455,6 +462,7 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
                 postsPerPage={postsPerPage}
                 totalPosts={searchedPacientes.length}
                 paginate={paginate}
+                currentPage={currentPage}
               />
             </div>
           )}

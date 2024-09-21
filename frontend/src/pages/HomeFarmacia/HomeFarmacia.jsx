@@ -162,6 +162,7 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
 
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
+    setCurrentPage(1);
   };
 
   const indexOfLastPost = currentPage * postsPerPage;
@@ -230,6 +231,7 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
                 postsPerPage={postsPerPage}
                 totalPosts={searchedPacientes.length}
                 paginate={paginate}
+                currentPage={currentPage}
               />
             </div>
           )}

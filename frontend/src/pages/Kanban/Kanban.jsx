@@ -145,7 +145,7 @@ function Monitoramento() {
   useEffect(() => {
     const fetchPacientes = async () => {
       try {
-        const response = await axios.get(`${AxiosURL}/pacientes/lista/`);
+        const response = await axios.get(`${AxiosURL}/pacientes/lista_kanban/`);
         setPacientes(response.data);
       } catch (error) {
         console.error("Erro ao buscar os usuários:", error);

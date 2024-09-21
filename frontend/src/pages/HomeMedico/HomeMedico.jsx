@@ -385,6 +385,7 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
 
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
+    setCurrentPage(1);
   };
 
   const indexOfLastPost = currentPage * postsPerPage;
@@ -449,7 +450,10 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
 
             }}
             color={activeTab === 'pendentes' ? 'white' : 'dark'}
-            onClick={() => setActiveTab('pendentes')}
+            onClick={() => {
+              setActiveTab('pendentes');
+              setCurrentPage(1);
+            }}     
           >
             Pendentes
           </MDBBtn>
@@ -467,7 +471,10 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
               fontFamily: 'FiraSans-Medium, sans-serif' 
             }}
             color={activeTab === 'internados' ? 'white' : 'dark'}
-            onClick={() => setActiveTab('internados')}
+            onClick={() => {
+              setActiveTab('internados');
+              setCurrentPage(1);
+            }}     
           >
             Internados
           </MDBBtn>
@@ -525,6 +532,7 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
                 postsPerPage={postsPerPage}
                 totalPosts={searchedPacientes.length}
                 paginate={paginate}
+                currentPage={currentPage}
               />
             </div>
           )}

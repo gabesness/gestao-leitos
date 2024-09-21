@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 function Pagination({
-  postsPerPage, totalPosts, paginate,
+  postsPerPage, totalPosts, paginate, currentPage,
 }) {
   const pageNumbers = [];
 
@@ -13,13 +13,24 @@ function Pagination({
   return (
     <div>
       <nav>
-        <ul className="pagination">
+        <ul style={{ display: 'flex', listStyleType: 'none', padding: 0 }}>
           {pageNumbers.map((number) => (
-            <li key={number} className="page-item">
+            <li key={number} style={{ margin: '0 5px' }}>
               <button
                 onClick={() => paginate(number)}
                 type="button"
-                className="page-link"
+                style={{
+                  width: '40px', // Largura fixa para os botões quadrados
+                  height: '40px', // Altura fixa para os botões quadrados
+                  backgroundColor: number === currentPage ? '#3B71CA' : '#f8f9fa',
+                  color: number === currentPage ? '#fff' : '#000',
+                  border: 'none',
+                  borderRadius: '5px',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
               >
                 {number}
               </button>
@@ -30,10 +41,12 @@ function Pagination({
     </div>
   );
 }
+
 Pagination.propTypes = {
-  postsPerPage: PropTypes.isRequired,
-  totalPosts: PropTypes.isRequired,
-  paginate: PropTypes.isRequired,
+  postsPerPage: PropTypes.number.isRequired,
+  totalPosts: PropTypes.number.isRequired,
+  paginate: PropTypes.func.isRequired,
+  currentPage: PropTypes.number.isRequired,
 };
 
 export default Pagination;

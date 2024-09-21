@@ -153,6 +153,7 @@ function QuadroLista({ usuarios, activeTab, selectedUser, handleUserClick, setAc
 
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
+    setCurrentPage(1);
   };
 
   const indexOfLastPost = currentPage * postsPerPage;
@@ -203,7 +204,10 @@ function QuadroLista({ usuarios, activeTab, selectedUser, handleUserClick, setAc
               fontFamily: 'FiraSans-Medium, sans-serif',
             }}
             color={activeTab === 'ativos' ? 'white' : 'dark'}
-            onClick={() => setActiveTab('ativos')}
+            onClick={() => {
+              setActiveTab('ativos');
+              setCurrentPage(1);
+            }}
           >
             <MDBIcon fas icon="user-friends" className="me-2" />
             Ativos
@@ -222,7 +226,10 @@ function QuadroLista({ usuarios, activeTab, selectedUser, handleUserClick, setAc
               fontFamily: 'FiraSans-Medium, sans-serif',
             }}
             color={activeTab === 'inativos' ? 'white' : 'dark'}
-            onClick={() => setActiveTab('inativos')}
+            onClick={() => {
+              setActiveTab('inativos');
+              setCurrentPage(1);
+            }}
           >
           <MDBIcon fas icon="user-alt-slash" className="me-2" />
             Inativos
@@ -283,6 +290,7 @@ function QuadroLista({ usuarios, activeTab, selectedUser, handleUserClick, setAc
                 postsPerPage={postsPerPage}
                 totalPosts={searchedUsuarios.length}
                 paginate={paginate}
+                currentPage={currentPage}
               />
             </div>
           )}
