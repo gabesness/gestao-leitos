@@ -3,7 +3,6 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.sites.shortcuts import get_current_site
-#from django.middleware.csrf import get_token
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.views.decorators.csrf import csrf_exempt
@@ -59,7 +58,7 @@ class PacienteViewSet(GenericViewSet):
             pacientes_fixos = self.get_queryset().exclude(estagio_atual__in=estagios_temporarios)
 
             pacientes = pacientes_fixos | pacientes_temporarios
-            serializer = self.get_serializer(pacientes_temporarios, many=True)
+            serializer = self.get_serializer(pacientes, many=True)
 
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
