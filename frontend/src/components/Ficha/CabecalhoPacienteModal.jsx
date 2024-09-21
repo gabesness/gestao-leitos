@@ -16,9 +16,11 @@ const CabecalhoPaciente = ({ selectedPaciente }) => {
                 <div style={{ textAlign: 'right' }}>
                 <p style={{ marginBottom: '0px', fontFamily: 'FiraSans-Light, sans-serif', fontSize: '1.1rem' }}>
               Sessão:&nbsp; 
-                <span style={{ fontFamily: 'FiraSans-LightItalic, sans-serif' }}>
-                  {selectedPaciente.numero_sessao_atual ? selectedPaciente.numero_sessao_atual : " Sem sessão"}
-                </span>
+              <span style={{ fontFamily: 'FiraSans-LightItalic, sans-serif' }}>
+                {selectedPaciente.sessao_atual.numero !== null && selectedPaciente.sessao_atual.numero !== undefined
+                ? selectedPaciente.sessao_atual.numero
+                 : "Sem sessão"}               
+                 </span>
               </p>
               <p style={{ marginBottom: '0px', fontFamily: 'FiraSans-Light, sans-serif', fontSize: '1.1rem' }}>
                 Leito:&nbsp; 
