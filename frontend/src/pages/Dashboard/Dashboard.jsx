@@ -185,19 +185,25 @@ function Dashboard() {
         </h2>
         <div className="d-flex align-items-center justify-content-between" style={{ marginRight: '50px', marginTop: '38px' }}>
        
+      
         <MDBBtn 
-        className='mx-2' 
-        color='secondary' 
-        rippleColor='light' 
-        style={{
-          borderRadius: '8px',
-          padding: '10px 20px',
-        }}
-        onClick={handleDownloadPDF}
-        >
-          <MDBIcon fas icon="file-download" className='me-1' />
-          Baixar Estatísticas
-        </MDBBtn>
+  className='mx-2' 
+  color='secondary'
+  rippleColor='light' 
+  style={{
+    borderRadius: '8px',
+    padding: '10px 20px',
+    backgroundColor: 'white',
+  }}
+  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f0f0f0'}
+  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'white'}
+  onMouseDown={(e) => e.currentTarget.style.backgroundColor = '#e0e0e0'}
+  onMouseUp={(e) => e.currentTarget.style.backgroundColor = '#f0f0f0'}
+  onClick={handleDownloadPDF}
+>
+  <MDBIcon fas icon="file-download" className='me-1' />
+  Baixar Estatísticas
+</MDBBtn>
  
  
         <MDBDropdown style={{ marginTop: '0px', marginRight: '0px', marginBottom: '0' }}>
