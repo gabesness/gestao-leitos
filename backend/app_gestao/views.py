@@ -1076,9 +1076,9 @@ class UserViewSet(GenericViewSet):
                 serializer = self.get_serializer(user)
                 token = default_token_generator.make_token(user)
                 uid = urlsafe_base64_encode(force_bytes(user.pk))
-                domain = get_current_site(request).domain
+                domain = get_current_site(request).domain.split(':')[0]
                 protocol = 'https' if request.is_secure() else 'http'
-                reset_link = f"{protocol}://{domain}/redefinir-senha/{token}/{uid}"
+                reset_link = f"{protocol}://{domain}:3000/redefinir-senha/{token}/{uid}"
                 send_mail(
                     subject="Redefinição de senha",
                     message=f"""
