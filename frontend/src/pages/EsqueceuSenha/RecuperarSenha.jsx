@@ -61,9 +61,16 @@ function RecuperarSenha() {
   };
 
   return (
-    <MDBContainer fluid className='p-4 background-radial-gradient overflow-hidden d-flex align-items-center justify-content-center' style={{ minHeight: '100vh', marginTop: '-100px' }}>
-      <MDBCard className='my-5 bg-glass max-width-card'>
-        <MDBCardBody className='p-5'>
+    <MDBContainer
+    fluid
+    className="p-4 background-radial-gradient overflow-hidden d-flex align-items-center justify-content-center"
+    style={{ minHeight: '100vh', marginTop: '-100px' }}
+  >
+    <MDBCard className="my-5 bg-glass max-width-card">
+      <MDBCardBody className="p-4 text-center">
+        <h2 style={{ marginBottom: '10px', fontFamily: 'FiraSans-SemiBold, sans-serif' }}>
+          Redefinir senha
+        </h2>
           <form onSubmit={handleSubmit}>
             <MDBInput
               label="Digite a nova senha"
