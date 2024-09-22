@@ -288,7 +288,7 @@ class PrescricaoViewSet(GenericViewSet):
             paciente = self.get_object()
             paciente_serializer = self.get_serializer(paciente)
             user = User.objects.get(id=request.data['id_usuario'])
-            estagios_aceitos = ['PRESCRICAO_CRIADA', 'DEVOLVIDO_PELA_FARMACIA']
+            estagios_aceitos = ['PRESCRICAO_CRIADA', 'DEVOLVIDO_PELA_FARMACIA', 'DEVOLVIDO_PELA_REGULACAO_PARA_MEDICO']
             data_sugerida = datetime.strptime(request.data.get('plano_terapeutico')['data_sugerida'],'%Y-%m-%d').date()
 
             if user:
