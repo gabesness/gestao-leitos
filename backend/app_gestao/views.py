@@ -1036,7 +1036,7 @@ class UserViewSet(GenericViewSet):
                     message=f"""
                             Prezado(a) usuário(a),\n
                             Verificamos uma solicitação de redefinição de sua senha por parte do Administrador do sistema.\n
-                            Sua senha provisória é: {password}.\n
+                            Sua senha provisória é: {password}\n
                             Recomendamos alterar a senha quando acessar o sistema novamente. Em caso de dúvidas, entre em contato com a Administração.\n
                             Atenciosamente,\n
                             Oncoleitos - Gestão de Leitos Oncológicos
@@ -1076,9 +1076,9 @@ class UserViewSet(GenericViewSet):
                 serializer = self.get_serializer(user)
                 token = default_token_generator.make_token(user)
                 uid = urlsafe_base64_encode(force_bytes(user.pk))
-                domain = get_current_site(request).domain.split(':')[0]
+                base_domain = get_current_site(request).domain.split(':')[0]
                 protocol = 'https' if request.is_secure() else 'http'
-                reset_link = f"{protocol}://{domain}:3000/redefinir-senha/{token}/{uid}"
+                reset_link = f"{protocol}://{base_domain}:3000/redefinir-senha/{token}/{uid}"
                 send_mail(
                     subject="Redefinição de senha",
                     message=f"""
