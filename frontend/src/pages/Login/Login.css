@@ -1,9 +1,9 @@
 .background-radial-gradient {
     background-color: hsl(218, 41%, 15%);
-    background-image: url('../../assets/bd_dna.png'); /* Substitua 'sua-imagem.jpg' pelo nome da sua imagem */
-    background-repeat: no-repeat; /* Isso evita a repetição da imagem */
-    background-size: cover; /* Ajusta o tamanho da imagem para cobrir todo o elemento */
-    background-position: center; /* Posiciona a imagem no centro do elemento */
+    background-image: url('../../assets/bd_dna.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
 }
 
   
@@ -34,4 +34,15 @@
   .max-width-card {
     max-width: 400px;
     width: 100%;
+  }
+
+  @font-face {
+    font-family: 'FiraSans';
+    src: url('../../assets/fonts/FiraSans-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+  
+  body {
+    font-family: 'FiraSans', sans-serif;
   }

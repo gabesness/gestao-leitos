@@ -5,22 +5,32 @@ const CabecalhoPaciente = ({ selectedPaciente }) => {
   return (
     <div style={{ padding: '5px', background: 'linear-gradient(to top, #2c8fe6, #82c2fa)', borderTopLeftRadius: '6px', borderTopRightRadius: '6px' }}>
       {selectedPaciente && (
-        <>
-          <div style={{ padding: '10px', color: 'black', flex: '1' }}>
-            <h3 style={{ marginBottom: '0px' }}>{selectedPaciente.nome}</h3>
-            <div style={{ display: 'grid', gridTemplateColumns: 'auto auto', justifyContent: 'space-between' }}>
-              <p style={{ marginBottom: '0px' }}><strong>Prontuário:</strong> {selectedPaciente.prontuario}</p>
-              <div style={{ textAlign: 'right' }}>
-              <p style={{ marginBottom: '0px' }}>
-                <strong>Sessão:</strong> {selectedPaciente.sessao ? selectedPaciente.sessao : "A confirmar"}
+              <>
+              <div style={{ padding: '10px', color: 'black', flex: '1', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div>
+                  <h3 style={{ marginBottom: '0px', fontFamily: 'FiraSans-Medium, sans-serif' }}>{selectedPaciente.nome}</h3>
+                  <p style={{ marginBottom: '0px', fontFamily: 'FiraSans-Light, sans-serif', fontSize: '1.1rem' }}>
+                    Prontuário: {selectedPaciente.prontuario}
+                  </p>
+                </div>
+                <div style={{ textAlign: 'right' }}>
+                <p style={{ marginBottom: '0px', fontFamily: 'FiraSans-Light, sans-serif', fontSize: '1.1rem' }}>
+              Sessão:&nbsp; 
+              <span style={{ fontFamily: 'FiraSans-LightItalic, sans-serif' }}>
+                {selectedPaciente.sessao_atual.numero !== null && selectedPaciente.sessao_atual.numero !== undefined
+                ? selectedPaciente.sessao_atual.numero
+                 : "Sem sessão"}               
+                 </span>
               </p>
-              <p style={{ marginBottom: '0px' }}>
-                <strong>Leito:</strong> {selectedPaciente.leito ? selectedPaciente.leito : "A confirmar"}
+              <p style={{ marginBottom: '0px', fontFamily: 'FiraSans-Light, sans-serif', fontSize: '1.1rem' }}>
+                Leito:&nbsp; 
+                <span style={{ fontFamily: 'FiraSans-LightItalic, sans-serif' }}>
+                  {selectedPaciente.leito ? selectedPaciente.leito : " Sem Leito"}
+                </span>
               </p>
-            </div>
-            </div>
-          </div>
-        </>
+                </div>
+              </div>
+            </>
       )}
     </div>
   );

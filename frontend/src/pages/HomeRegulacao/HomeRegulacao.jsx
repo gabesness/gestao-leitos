@@ -8,12 +8,8 @@ import {
   MDBCard,
   MDBCardBody,
   MDBInput,
-  MDBCheckbox,
   MDBIcon,
-  MDBBadge, 
   MDBListGroup, 
-  MDBListGroupItem,
-  MDBRipple,
   MDBTextArea,
   MDBModal,
   MDBModalHeader,
@@ -22,13 +18,7 @@ import {
   MDBModalDialog,
   MDBModalContent,
   MDBModalTitle,
-  MDBDropdown,
-  MDBDropdownMenu,
-  MDBDropdownItem,
-  MDBDropdownToggle,
-  MDBCardTitle,
-  MDBCardText,
-  UserListItem,
+  MDBTooltip,
 }
 from 'mdb-react-ui-kit';
 import './HomeRegulacao.css';
@@ -48,12 +38,11 @@ function ModalDevolverMedico({ isOpen, onClose, selectedPaciente, formValue }) {
     if (!selectedPaciente) return;
 
     try {
-      const response = await axios.patch(`${AxiosURL}/prescricoes/${selectedPaciente.id}/devolver_regulacao/`, {
+      const response = await axios.patch(`${AxiosURL}/prescricoes/${selectedPaciente.id}/devolver_regulacao_medico/`, {
         id_usuario: localStorage.getItem('idUser'),
-        mensagem: formValue.mensagem  // Incluir a mensagem no corpo da requisição
+        mensagem: formValue.mensagem 
       });
-      console.log("Prescrição devolvida com sucesso:", response.data);
-      toast.success('Prescrição devolvida com sucesso!');
+      toast.success('Prescrição devolvida ao médico');
       setTimeout(() => {
         window.location.reload();
       }, 2000);
@@ -62,7 +51,6 @@ function ModalDevolverMedico({ isOpen, onClose, selectedPaciente, formValue }) {
       toast.error(error.response.data.Erro);
     }
   };
- 
  
  
   const handleClose = () => {
@@ -76,19 +64,88 @@ function ModalDevolverMedico({ isOpen, onClose, selectedPaciente, formValue }) {
       <MDBModalDialog>
         <MDBModalContent>
           <MDBModalHeader>
-            <MDBModalTitle>Devolução ao médico</MDBModalTitle>
+            <MDBModalTitle style={{ fontFamily: 'FiraSans-Medium, sans-serif' }}>Devolução ao Médico</MDBModalTitle>
             <MDBBtn className='btn-close' color='none' onClick={handleClose}></MDBBtn>
           </MDBModalHeader>
-          <MDBModalBody>
+          <MDBModalBody style={{ fontFamily: 'FiraSans-Light, sans-serif' }}>
 
-          A prescrição será devolvida ao médico por falta de vagas, 
-          para que possar ser autorizado o encaminhamento para outro hospital.
-
+          A prescrição será devolvida ao médico para que possa ser editada.
 
           </MDBModalBody>
           <MDBModalFooter>
-          <MDBBtn color='danger' onClick={handleClose}>Cancelar</MDBBtn>
-          <MDBBtn onClick={handleDevolver}>Devolver</MDBBtn>
+          <MDBBtn color='danger' onClick={handleClose}
+           style={{
+            borderRadius: '8px',
+            padding: '10px 20px',
+          }}
+          >Cancelar</MDBBtn>
+          <MDBBtn onClick={handleDevolver}
+           style={{
+            borderRadius: '8px',
+            padding: '10px 20px',
+          }}
+          >Devolver</MDBBtn>
+          </MDBModalFooter>
+        </MDBModalContent>
+      </MDBModalDialog>
+      <ToastContainer />
+    </MDBModal>
+  );
+}
+
+function ModalPedirTransferencia({ isOpen, onClose, selectedPaciente, formValue }) {
+
+  const handlePedirTransferencia = async () => {
+    if (!selectedPaciente) return;
+
+    try {
+      const response = await axios.patch(`${AxiosURL}/prescricoes/${selectedPaciente.id}/devolver_regulacao/`, {
+        id_usuario: localStorage.getItem('idUser'),
+        mensagem: formValue.mensagem  // Incluir a mensagem no corpo da requisição
+      });
+      toast.success('Solicitação de transferência enviada ao médico');
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
+    } catch (error) {
+      console.error("Erro ao devolver a prescrição:", error);
+      toast.error(error.response.data.Erro);
+    }
+  };
+ 
+ 
+  const handleClose = () => {
+    if (isOpen) {
+      onClose();
+    }
+  };
+
+  return (
+    <MDBModal open={isOpen} onClose={handleClose} tabIndex='-1' appendToBody>
+      <MDBModalDialog>
+        <MDBModalContent>
+          <MDBModalHeader>
+            <MDBModalTitle style={{ fontFamily: 'FiraSans-Medium, sans-serif' }}>Solicitação de transferência</MDBModalTitle>
+            <MDBBtn className='btn-close' color='none' onClick={handleClose}></MDBBtn>
+          </MDBModalHeader>
+          <MDBModalBody style={{ fontFamily: 'FiraSans-Light, sans-serif' }}>
+
+          A prescrição será devolvida ao médico para que a transferência do paciente possa ser autorizada.
+
+          </MDBModalBody>
+          <MDBModalFooter>
+          <MDBBtn color='danger' onClick={handleClose}
+           style={{
+            borderRadius: '8px',
+            padding: '10px 20px',
+          }}
+          >Cancelar</MDBBtn>
+          <MDBBtn onClick={handlePedirTransferencia}
+           style={{
+            borderRadius: '8px',
+            padding: '10px 20px',
+          }}
+          >Solicitar Transferência</MDBBtn>
           </MDBModalFooter>
         </MDBModalContent>
       </MDBModalDialog>
@@ -107,8 +164,7 @@ function ModalAgendamento({ isOpen, onClose, selectedPaciente, selectedLeito, fo
         id_usuario: localStorage.getItem('idUser'),
         mensagem: formValue.mensagem  // Incluir a mensagem no corpo da requisição
       });
-      console.log("Prescrição Agendada com sucesso:", response.data);
-      toast.success('Paciente agendado com sucesso!');
+      toast.success(response.data.OK);
       setTimeout(() => {
         window.location.reload();
       }, 2000);
@@ -117,7 +173,6 @@ function ModalAgendamento({ isOpen, onClose, selectedPaciente, selectedLeito, fo
       toast.error(error.response.data.erro);
     }
   };
-  
   
   
   const handleClose = () => {
@@ -131,17 +186,26 @@ function ModalAgendamento({ isOpen, onClose, selectedPaciente, selectedLeito, fo
       <MDBModalDialog>
         <MDBModalContent>
           <MDBModalHeader>
-            <MDBModalTitle>Confirmar agendamento</MDBModalTitle>
+            <MDBModalTitle style={{ fontFamily: 'FiraSans-Medium, sans-serif' }}>Confirmar agendamento</MDBModalTitle>
             <MDBBtn className='btn-close' color='none' onClick={handleClose}></MDBBtn>
           </MDBModalHeader>
-          <MDBModalBody>
+          <MDBModalBody style={{ fontFamily: 'FiraSans-Light, sans-serif' }}>
 
-          O paciente será agendado.
+          O paciente {selectedPaciente ? ` ${selectedPaciente.nome}`  : ''} será agendado no leito {selectedLeito ? ` ${selectedLeito.numero}` : ''}
 
           </MDBModalBody>
           <MDBModalFooter>
-          <MDBBtn color='danger' onClick={handleClose}>Cancelar</MDBBtn>
-          <MDBBtn onClick={handleAgendar} >Agendar</MDBBtn>
+          <MDBBtn color='danger' onClick={handleClose}
+           style={{
+            borderRadius: '8px',
+            padding: '10px 20px',
+          }}
+          >Cancelar</MDBBtn>
+          <MDBBtn onClick={handleAgendar} 
+           style={{
+            borderRadius: '8px',
+            padding: '10px 20px',
+          }}>Agendar</MDBBtn>
           </MDBModalFooter>
         </MDBModalContent>
       </MDBModalDialog>
@@ -159,8 +223,7 @@ function ModalInternacao({ isOpen, onClose, selectedPaciente }) {
       const response = await axios.patch(`${AxiosURL}/prescricoes/${selectedPaciente.id}/internar/`, {
         id_usuario: localStorage.getItem('idUser'),
       });
-      console.log("Prescrição devolvida com sucesso:", response.data);
-      toast.success('Paciente internado!');
+      toast.success(response.data.OK);
       setTimeout(() => {
         window.location.reload();
       }, 2000);
@@ -182,17 +245,27 @@ function ModalInternacao({ isOpen, onClose, selectedPaciente }) {
       <MDBModalDialog>
         <MDBModalContent>
           <MDBModalHeader>
-            <MDBModalTitle>Confirmar internação</MDBModalTitle>
+            <MDBModalTitle style={{ fontFamily: 'FiraSans-Medium, sans-serif' }}>Confirmar internação</MDBModalTitle>
             <MDBBtn className='btn-close' color='none' onClick={handleClose}></MDBBtn>
           </MDBModalHeader>
-          <MDBModalBody>
+          <MDBModalBody style={{ fontFamily: 'FiraSans-Light, sans-serif' }}>
 
           Confirmar que o paciente foi internado.
 
           </MDBModalBody>
           <MDBModalFooter>
-          <MDBBtn color='danger' onClick={handleClose}>Cancelar</MDBBtn>
-          <MDBBtn onClick={handleInternar}>Internado</MDBBtn>
+          <MDBBtn color='danger' onClick={handleClose}
+           style={{
+            borderRadius: '8px',
+            padding: '10px 20px',
+          }}
+          >Cancelar</MDBBtn>
+          <MDBBtn onClick={handleInternar}
+           style={{
+            borderRadius: '8px',
+            padding: '10px 20px',
+          }}
+          >Internado</MDBBtn>
           </MDBModalFooter>
         </MDBModalContent>
       </MDBModalDialog>
@@ -210,8 +283,7 @@ function ModalTransferencia({ isOpen, onClose, selectedPaciente, formValue }) {
         id_usuario: localStorage.getItem('idUser'),
         mensagem: formValue.mensagem  
       });
-      console.log("Prescrição devolvida com sucesso:", response.data);
-      toast.success('Paciente transferido!');
+      toast.success('Paciente registrado como transferido');
       setTimeout(() => {
         window.location.reload();
       }, 2000);    } catch (error) {
@@ -231,17 +303,27 @@ function ModalTransferencia({ isOpen, onClose, selectedPaciente, formValue }) {
       <MDBModalDialog>
         <MDBModalContent>
           <MDBModalHeader>
-            <MDBModalTitle>Confirmar transferência</MDBModalTitle>
+            <MDBModalTitle style={{ fontFamily: 'FiraSans-Medium, sans-serif' }}>Confirmar transferência</MDBModalTitle>
             <MDBBtn className='btn-close' color='none' onClick={handleClose}></MDBBtn>
           </MDBModalHeader>
-          <MDBModalBody>
+          <MDBModalBody style={{ fontFamily: 'FiraSans-Light, sans-serif' }}>
 
-          Confirmar que o paciente foi transferido.
+          Confirmar a transferência do paciente.
 
           </MDBModalBody>
           <MDBModalFooter>
-          <MDBBtn color='danger' onClick={handleClose}>Cancelar</MDBBtn>
-          <MDBBtn onClick={handleTransferir} >Transferido</MDBBtn>
+          <MDBBtn color='danger' onClick={handleClose}
+           style={{
+            borderRadius: '8px',
+            padding: '10px 20px',
+          }}
+          >Cancelar</MDBBtn>
+          <MDBBtn onClick={handleTransferir} 
+           style={{
+            borderRadius: '8px',
+            padding: '10px 20px',
+          }}
+          >Transferido</MDBBtn>
           </MDBModalFooter>
         </MDBModalContent>
       </MDBModalDialog>
@@ -259,7 +341,7 @@ function ModalAltaObito({ isOpen, onClose, selectedPaciente }) {
         const response = await axios.patch(`${AxiosURL}/prescricoes/${selectedPaciente.id}/dar_alta/2/`, {
           id_usuario: localStorage.getItem('idUser'),
         });
-        toast.success('Prescrição atualizada!');
+        toast.success(response.data.OK);
         setTimeout(() => {
           window.location.reload();
         }, 2000);      } catch (error) {
@@ -280,17 +362,24 @@ function ModalAltaObito({ isOpen, onClose, selectedPaciente }) {
       <MDBModalDialog>
         <MDBModalContent>
           <MDBModalHeader>
-            <MDBModalTitle>Confirmação de Falecimento</MDBModalTitle>
+            <MDBModalTitle style={{ fontFamily: 'FiraSans-Medium, sans-serif' }}>Confirmação de Falecimento</MDBModalTitle>
             <MDBBtn className='btn-close' color='none' onClick={handleClose}></MDBBtn>
           </MDBModalHeader>
-          <MDBModalBody>
+          <MDBModalBody style={{ fontFamily: 'FiraSans-Light, sans-serif' }}>
 
-          Confirme que o paciente faleceu
-
+          Confirme que o paciente está recebendo alta por óbito. A sessão do paciente será encerrada, e todos os seus registros poderão ser verificados na página de pacientes.
           </MDBModalBody>
           <MDBModalFooter>
-          <MDBBtn color='danger' onClick={handleClose}>Cancelar</MDBBtn>
-          <MDBBtn onClick={handleAltaObito}>Confirmar Alta</MDBBtn>
+          <MDBBtn color='danger' onClick={handleClose}
+           style={{
+            borderRadius: '8px',
+            padding: '10px 20px',
+          }}>Cancelar</MDBBtn>
+          <MDBBtn onClick={handleAltaObito}
+           style={{
+            borderRadius: '8px',
+            padding: '10px 20px',
+          }}>Confirmar Alta</MDBBtn>
           </MDBModalFooter>
         </MDBModalContent>
       </MDBModalDialog>
@@ -306,6 +395,7 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
 
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
+    setCurrentPage(1);
   };
 
   const indexOfLastPost = currentPage * postsPerPage;
@@ -358,10 +448,15 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
               borderBottomLeftRadius: '0px',
               boxShadow: 'none',
               color: activeTab === 'pendentes' ? '#000000' : '#6c757d',
-              backgroundColor: activeTab === 'pendentes' ? 'white' : '#D3D3D3'
+              backgroundColor: activeTab === 'pendentes' ? 'white' : '#D3D3D3',
+              fontFamily: 'FiraSans-Medium, sans-serif' 
+
             }}
             color={activeTab === 'pendentes' ? 'white' : 'dark'}
-            onClick={() => setActiveTab('pendentes')}
+            onClick={() => {
+              setActiveTab('pendentes');
+              setCurrentPage(1);
+            }}
           >
             Pendentes
           </MDBBtn>
@@ -375,18 +470,25 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
               borderBottomRightRadius: '0px',
               boxShadow: 'none',
               color: activeTab === 'agendados' ? '#000000' : '#6c757d',
-              backgroundColor: activeTab === 'agendados' ? 'white' : '#D3D3D3'
+              backgroundColor: activeTab === 'agendados' ? 'white' : '#D3D3D3',
+              fontFamily: 'FiraSans-Medium, sans-serif' 
+
             }}
             color={activeTab === 'agendados' ? 'white' : 'dark'}
-            onClick={() => setActiveTab('agendados')}
-          >
+            onClick={() => {
+              setActiveTab('agendados');
+              setCurrentPage(1);
+            }}         
+             >
             Agendados
           </MDBBtn>
         </div>
   
         {/* Conteúdo */}
-        <MDBCardBody className="p-2 d-flex flex-column" style={{ flex: '1 1 auto', minHeight: '0' }}>
+        <MDBCardBody className="d-flex flex-column" style={{ flex: '1 1 auto', minHeight: '0' }}>
           {/* Cabeçalho */}
+          <div className="d-flex align-items-center mb-2" style={{ marginTop: '-12px' }}>
+
           <MDBInput
             type="text"
             label={
@@ -400,6 +502,8 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
             className="flex-grow-1 mb-2 mt-0"
             style={{ height: '32px' }}
           />
+                    </div>
+
           {/* Listagem */}
           <MDBListGroup light style={{ flex: '1 1 auto', overflowY: 'auto' }}>
             {currentPacientes.map((paciente, index) => (
@@ -419,6 +523,7 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
                 postsPerPage={postsPerPage}
                 totalPosts={searchedPacientes.length}
                 paginate={paginate}
+                currentPage={currentPage}
               />
             </div>
           )}
@@ -442,6 +547,10 @@ function QuadroFicha({ selectedPaciente, historico }) {
   // Modal de devolver ao medico
   const [isModalDevolverMedicoOpen, setIsModalDevolverMedicoOpen] = useState(false);
   const toggleModalDevolverMedico = () => setIsModalDevolverMedicoOpen(!isModalDevolverMedicoOpen);
+  
+  // Modal Pedir Transferencia
+  const [isModalPedirTransferenciaOpen, setIsModalPedirTransferenciaOpen] = useState(false);
+  const toggleModalPedirTransferencia = () => setIsModalPedirTransferenciaOpen(!isModalPedirTransferenciaOpen);
   
   // Modal Agendamento
   const [isModalAgendamentoOpen, setIsModalAgendamentoOpen] = useState(false);
@@ -497,31 +606,80 @@ function QuadroFicha({ selectedPaciente, historico }) {
     fetchLeitos();
   }, []);
 
+  const calcularDiasRestantes = (data) => {
+    const hoje = new Date();
+    const dataSessao = new Date(data);
+    const diffTime = dataSessao - hoje;
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // Retorna a diferença em dias
+  };
+
+  const { data_prox_sessao = '' } = selectedPaciente || {};
+  const formattedDataProxSessao = data_prox_sessao ? data_prox_sessao.split('T')[0] : '';
+  const diasRestantes = calcularDiasRestantes(formattedDataProxSessao);
+
+
+  
     // Botões da Direita
     const renderButtons = () => {
       switch (selectedPaciente.estagio_atual) {
         case 'ENCAMINHADO_PARA_AGENDAMENTO':
-          return <MDBBtn style={{ marginLeft: '10px' }} onClick={toggleModalAgendamento} >AGENDAR</MDBBtn>;
+          const isDisabled = diasRestantes > 1 || !selectedLeito;
+    
+          return (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <MDBBtn
+                onClick={toggleModalAgendamento}
+                style={{ borderRadius: '8px', padding: '10px 20px' }}
+                disabled={isDisabled} // Desativa se faltar mais de 1 dia ou se nenhum leito estiver selecionado
+              >
+                <MDBIcon fas icon="check" className="me-2" />
+                AGENDAR LEITO
+              </MDBBtn>
+    
+              {isDisabled && diasRestantes > 1 && (
+            <MDBTooltip
+              placement="right"
+              tag="div"
+              title="Só é possível agendar um leito com até 1 dia de antecedência."
+            >
+              <MDBIcon
+                fas
+                icon="info-circle"
+                style={{ fontSize: '1.5em', color: 'grey' }}
+              />
+            </MDBTooltip>
+              )}
+            </div>
+          );
+    
         case 'AUTORIZADO_PARA_TRANSFERENCIA':
           return (
-            <>
-              <div>
-                <MDBBtn style={{ marginLeft: '10px' }} onClick={toggleModalTransferencia} >CONFIRMAR TRANSFERÊNCIA</MDBBtn>
-              </div>
-            </>
+            <MDBBtn
+              onClick={toggleModalTransferencia}
+              style={{ borderRadius: '8px', padding: '10px 20px' }}
+            >
+              <MDBIcon fas icon="check" className="me-2" />
+              CONFIRMAR TRANSFERÊNCIA
+            </MDBBtn>
           );
+    
         case 'AGENDADO':
           return (
-            <>
-              <div>
-                <MDBBtn color='primary' onClick={toggleModalInternacao} >CONFIRMAR INTERNAÇÃO</MDBBtn>
-              </div>
-            </>
+            <MDBBtn
+              color="primary"
+              style={{ borderRadius: '8px', padding: '10px 20px' }}
+              onClick={toggleModalInternacao}
+            >
+              <MDBIcon fas icon="check" className="me-2" />
+              CONFIRMAR INTERNAÇÃO
+            </MDBBtn>
           );
+    
         default:
           return null;
       }
     };
+    
 
   return (
   <MDBCol md='8'>
@@ -540,7 +698,7 @@ function QuadroFicha({ selectedPaciente, historico }) {
       {/* histórico */}
 
       <div className="col-md-6">
-      <h4>Histórico</h4>
+      <h4 style={{ fontFamily: 'FiraSans-Medium, sans-serif' }}>Histórico</h4>
       <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
       {historico.map((registro, index) => {
                     const { dataFormatada, horaFormatada } = formatarData(registro.criado_em);
@@ -564,13 +722,16 @@ function QuadroFicha({ selectedPaciente, historico }) {
 
         <div className="col-md-6">
           <div>
-            <h4>Dados da Solicitação</h4>
+          <h4 style={{ fontFamily: 'FiraSans-Medium, sans-serif' }}>Dados da Solicitação</h4>
             <MDBInput 
-                    label="Data de Entrada" 
+                    label="Próxima Sessão" 
                     id="textAreaExample" 
                     type="date" 
+                    style={{  
+                      fontFamily: 'FiraSans-Light, sans-serif' 
+                      }}
                     className="mb-3" 
-                    value={selectedPaciente.plano_terapeutico?.data_sugerida || ''} 
+                    value={formattedDataProxSessao}
                     disabled 
                   />
 
@@ -579,6 +740,9 @@ function QuadroFicha({ selectedPaciente, historico }) {
               <MDBInput 
                         label="Nº de Sessões" 
                         id="sessoes" 
+                        style={{ 
+                          fontFamily: 'FiraSans-Light, sans-serif' 
+                      }}
                         value={selectedPaciente.plano_terapeutico?.sessoes_prescritas || ''} 
                         disabled 
                       />
@@ -587,6 +751,9 @@ function QuadroFicha({ selectedPaciente, historico }) {
               <MDBInput 
                         label="Dias de intervalo" 
                         id="intervaloDias" 
+                        style={{ 
+                          fontFamily: 'FiraSans-Light, sans-serif' 
+                      }}
                         value={selectedPaciente.plano_terapeutico?.dias_intervalo || ''} 
                         disabled 
                       />
@@ -603,7 +770,7 @@ function QuadroFicha({ selectedPaciente, historico }) {
                     fas
                     icon="bed"
                     style={{
-                      fontSize: '28px',
+                      fontSize: '30px',
                       cursor: leito.ocupado ? 'not-allowed' : 'pointer',
                       color: selectedLeito?.numero === leito.numero ? '#1E90FF' : (leito.ocupado ? '#A9A9A9' : '#14A44D'),
                     }}
@@ -613,7 +780,7 @@ function QuadroFicha({ selectedPaciente, historico }) {
                 </div>
               ))}
             </div>
-            <p>Reservar: {selectedLeito ? `Leito ${selectedLeito.numero}` : ''}</p>
+            <p>Leito selecionado: {selectedLeito ? `Leito ${selectedLeito.numero}` : ''}</p>
           </>
         )}
 
@@ -622,11 +789,15 @@ function QuadroFicha({ selectedPaciente, historico }) {
             <MDBTextArea 
                     label="Observações" 
                     id="textAreaExample" 
-                    rows={4}
-                    style={{ resize: 'none' }}
+                    rows={2}
+                    style={{ 
+                      resize: 'none', 
+                      fontFamily: 'FiraSans-Light, sans-serif' 
+                  }}
                     name="mensagem"
                     value={formValue.mensagem} 
                     onChange={onChange}
+                    maxLength="256"
                     />
           </div>
         </div>
@@ -636,12 +807,43 @@ function QuadroFicha({ selectedPaciente, historico }) {
     {/* Botões */}
 
     <div style={{ padding: '20px', marginTop: '10px', display: 'flex', justifyContent: 'space-between', borderTop: '1px solid rgba(0,0,0,.125)' }}>
-        <div>
-          {selectedPaciente.estagio_atual === 'ENCAMINHADO_PARA_AGENDAMENTO' && (
-              <MDBBtn color='success' style={{ marginLeft: '10px' }} onClick={toggleModalDevolverMedico} >DEVOLVER</MDBBtn>
-          )}
+    <div>
+        {selectedPaciente.estagio_atual === 'ENCAMINHADO_PARA_AGENDAMENTO' && (
+            <>
+                <MDBBtn
+                    color='secondary'
+                    style={{
+                        borderRadius: '8px',
+                        padding: '10px 20px',
+                        marginRight: '10px', // Margem entre os botões
+                    }}
+                    onClick={toggleModalDevolverMedico}>
+                    <MDBIcon fas icon="undo-alt" className="me-2" />
+                    DEVOLVER AO MÉDICO
+                </MDBBtn>
+                <MDBBtn
+                    color='secondary'
+                    style={{
+                        borderRadius: '8px',
+                        padding: '10px 20px',
+                    }}
+                    onClick={toggleModalPedirTransferencia}>
+                    <MDBIcon fas icon="exchange-alt" className="me-2" />
+                    SOLICITAR TRANSFERÊNCIA
+                </MDBBtn>
+            </>
+        )}
           {selectedPaciente.estagio_atual === 'AGENDADO' && (
-              <MDBBtn color='danger' style={{ marginLeft: '10px' }} onClick={toggleModalAltaObito} >ALTA ÓBITO</MDBBtn>
+              <MDBBtn 
+              color='secondary' 
+              style={{
+                borderRadius: '8px',
+                padding: '10px 20px',
+              }}
+              onClick={toggleModalAltaObito} >
+              <MDBIcon fas icon="exclamation" className="me-2" />
+                ALTA ÓBITO
+                </MDBBtn>
           )}
         </div>
         <div>
@@ -657,6 +859,7 @@ function QuadroFicha({ selectedPaciente, historico }) {
     )}
   {/* Modais */}
   <ModalDevolverMedico isOpen={isModalDevolverMedicoOpen} onClose={toggleModalDevolverMedico} selectedPaciente={selectedPaciente} formValue={formValue} />
+  <ModalPedirTransferencia isOpen={isModalPedirTransferenciaOpen} onClose={toggleModalPedirTransferencia} selectedPaciente={selectedPaciente} formValue={formValue} />
   <ModalAgendamento isOpen={isModalAgendamentoOpen} onClose={toggleModalAgendamento} selectedPaciente={selectedPaciente} selectedLeito={selectedLeito} formValue={formValue}/>
   <ModalTransferencia isOpen={isModalTransferenciaOpen} onClose={toggleModalTransferencia} selectedPaciente={selectedPaciente} formValue={formValue}/>
   <ModalAltaObito isOpen={isModalAltaObitoOpen} onClose={toggleModalAltaObito} selectedPaciente={selectedPaciente}/>
@@ -698,8 +901,9 @@ function HomeRegulacao() {
 
   return (
     <MDBContainer fluid className='p-1 background-radial-gradient overflow-hidden d-flex justify-content-center'  style={{ minHeight: '100vh' }}>
-      <MDBCard className='my-5 bg-glass max-width-card' style={{ width: '100%', maxWidth: '1200px' }}>
-      <h2 style={{ marginTop: '15px', marginLeft: '50px', marginBottom: '-22px' }}>Prescrições</h2>
+      <MDBCard className='my-5 bg-glass max-width-card' style={{ width: '100%', maxWidth: '1200px', borderRadius: '38px' }}>
+      <h2 style={{ marginTop: '15px', marginLeft: '50px', marginBottom: '-22px', fontFamily: 'FiraSans-SemiBold, sans-serif' 
+ }}>Prescrições</h2>
       <MDBCardBody className='p-5'>
           <MDBRow>
           <QuadroLista

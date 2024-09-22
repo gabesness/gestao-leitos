@@ -9,20 +9,12 @@ import {
   MDBCardBody,
   MDBCardHeader,
   MDBInput,
-  MDBCheckbox,
   MDBIcon,
-  MDBBadge, 
-  MDBListGroup, 
-  MDBListGroupItem,
-  MDBRipple,
   MDBTextArea,
   MDBModal,
-  MDBModalHeader,
-  MDBModalBody,
-  MDBModalFooter,
   MDBModalDialog,
   MDBModalContent,
-  MDBModalTitle,
+  MDBTooltip,
 }
 from 'mdb-react-ui-kit';
 import './Kanban.css';
@@ -43,7 +35,9 @@ function ModalFicha({ isOpen, onClose, selectedPaciente, historico}) {
 
   const planoTerapeutico = selectedPaciente?.plano_terapeutico || {};
   const { medicamentos = '', data_sugerida = '', sessoes_prescritas = '', dias_intervalo = '' } = planoTerapeutico;
-
+  const { data_prox_sessao = '' } = selectedPaciente || {};
+  const formattedDataProxSessao = data_prox_sessao ? data_prox_sessao.split('T')[0] : '';
+  
   return (
     <MDBModal open={isOpen} onClose={handleClose} tabIndex='-1' appendToBody> 
       <MDBModalDialog style={{ maxWidth: '55%' }}>  
@@ -59,7 +53,7 @@ function ModalFicha({ isOpen, onClose, selectedPaciente, historico}) {
               {/* histórico */}
 
               <div className="col-md-6">
-              <h4>Histórico</h4>
+              <h4 style={{ fontFamily: 'FiraSans-Medium, sans-serif' }}>Histórico</h4>
               <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
               {historico.map((registro, index) => {
                     const { dataFormatada, horaFormatada } = formatarData(registro.criado_em);
@@ -82,23 +76,30 @@ function ModalFicha({ isOpen, onClose, selectedPaciente, historico}) {
 
                 <div className="col-md-6">
                   <div>
-                    <h4>Dados da Solicitação</h4>
+                  <h4 style={{ fontFamily: 'FiraSans-Medium, sans-serif' }}>Dados da Solicitação</h4>
+                    
                     <MDBTextArea 
                     label="Medicamentos" 
                     id="textAreaExample" 
                     rows={4} 
-                    style={{ resize: 'none' }}
+                    style={{ 
+                      resize: 'none', 
+                      fontFamily: 'FiraSans-Light, sans-serif' 
+                  }}
                     className="mb-3" 
                     value={medicamentos}
                     disabled 
                   />                    
                   
                   <MDBInput 
-                    label="Data de Entrada" 
+                    label="Próxima Sessão" 
                     id="textAreaExample" 
                     type="date" 
+                    style={{  
+                      fontFamily: 'FiraSans-Light, sans-serif' 
+                      }}
                     className="mb-3" 
-                    value={data_sugerida}
+                    value={formattedDataProxSessao}
                     disabled 
                   />
 
@@ -107,6 +108,9 @@ function ModalFicha({ isOpen, onClose, selectedPaciente, historico}) {
                       <MDBInput 
                         label="Nº de Sessões" 
                         id="sessoes" 
+                        style={{ 
+                          fontFamily: 'FiraSans-Light, sans-serif' 
+                      }}
                         value={sessoes_prescritas}
                         disabled 
                       />                      </div>
@@ -114,6 +118,9 @@ function ModalFicha({ isOpen, onClose, selectedPaciente, historico}) {
                       <MDBInput 
                         label="Dias de intervalo" 
                         id="intervaloDias" 
+                        style={{ 
+                          fontFamily: 'FiraSans-Light, sans-serif' 
+                      }}
                         value={dias_intervalo}
                         disabled 
                       />                      </div>
@@ -132,7 +139,7 @@ function ModalFicha({ isOpen, onClose, selectedPaciente, historico}) {
 }
 
 
-function Kanban() {
+function Monitoramento() {
   const [pacientes, setPacientes] = useState([]);
   const [historico, setHistorico] = useState([]);
   const [selectedPaciente, setSelectedPaciente] = useState(null);
@@ -140,7 +147,7 @@ function Kanban() {
   useEffect(() => {
     const fetchPacientes = async () => {
       try {
-        const response = await axios.get(`${AxiosURL}/pacientes/lista/`);
+        const response = await axios.get(`${AxiosURL}/pacientes/lista_kanban/`);
         setPacientes(response.data);
       } catch (error) {
         console.error("Erro ao buscar os usuários:", error);
@@ -168,17 +175,30 @@ function Kanban() {
 
   return (
     <MDBContainer fluid className='p-1 background-radial-gradient overflow-hidden d-flex justify-content-center'  style={{ minHeight: '100vh' }}>
-      <MDBCard className='my-5 bg-glass max-width-card' style={{ width: '100%', maxWidth: '1200px' }}>
-      <h2 style={{ marginTop: '15px', marginLeft: '50px', marginBottom: '10px' }}>Kanban</h2>
+      <MDBCard className='my-5 bg-glass max-width-card' style={{ width: '100%', maxWidth: '1200px', borderRadius: '38px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '15px 50px 10px 50px' }}>
+        <h2 style={{ fontFamily: 'FiraSans-SemiBold, sans-serif' }}>Monitoramento</h2>
+        <MDBTooltip
+          placement="left"
+          tag="div"
+          title="Os dados das colunas Alta e Transferido se referem aos últimos 10 dias."
+          >
+            <MDBIcon 
+              fas 
+              icon="info-circle" 
+              style={{ fontSize: '1.5em' }} 
+            />
+          </MDBTooltip>
+      </div>
         <MDBCardBody className='p-3'>
           <MDBRow className='g-2'>
             {/* Coluna de Médico */}
             <MDBCol md='2'>
               <MDBCard>
-                <MDBCardHeader className="text-center" style={{ fontSize: "22px", padding: "5px 15px", backgroundColor: "#b4c5e4" }}>
+                <MDBCardHeader className="text-center bg-info" style={{ fontSize: "20px", padding: "10px 15px"}}>
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-                    <MDBIcon fas icon="user-md" style={{ marginRight: "8px" }} />
-                    <strong>Médico</strong>
+                    <MDBIcon fas icon="user-md" className="text-white" style={{ marginRight: "8px" }} />
+                    <strong className="text-white">Médico</strong>
                   </div>
                 </MDBCardHeader>
                 <MDBCardBody className='p-2' style={{ height: '600px', overflowY: 'auto' }}>
@@ -187,7 +207,7 @@ function Kanban() {
                     paciente.estagio_atual === 'DEVOLVIDO_PELA_FARMACIA' ||
                     paciente.estagio_atual === 'DEVOLVIDO_PELA_REGULACAO'
                   ).map((paciente, index) => (
-                    <div key={index}>
+                    <div key={index} className="clickable">
                       <PacienteCard
                         paciente={paciente}
                         selectedPaciente={selectedPaciente}
@@ -204,15 +224,15 @@ function Kanban() {
             {/* Coluna da Farmácia */}
             <MDBCol md='2'>
               <MDBCard>
-                <MDBCardHeader className="text-center" style={{ fontSize: "22px", padding: "5px 15px", backgroundColor: "#b4c5e4" }}>
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-                    <MDBIcon fas icon="pills" style={{ marginRight: "8px" }} />
-                    <strong>Farmácia</strong>
+              <MDBCardHeader className="text-center bg-info" style={{ fontSize: "20px", padding: "10px 15px"}}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <MDBIcon fas icon="pills" className="text-white" style={{ marginRight: "8px" }} />
+                    <strong className="text-white">Farmácia</strong>
                   </div>
                 </MDBCardHeader>
                 <MDBCardBody className='p-2' style={{ height: '600px', overflowY: 'auto' }}>
                 {pacientes.filter(paciente => paciente.estagio_atual === 'ENCAMINHADO_PARA_FARMACIA').map((paciente, index) => (
-                    <div key={index}>
+                    <div key={index} className="clickable">
                       <PacienteCard
                         paciente={paciente}
                         selectedPaciente={selectedPaciente}
@@ -229,10 +249,10 @@ function Kanban() {
             {/* Coluna da Regulação */}
             <MDBCol md='2'>
               <MDBCard>
-                <MDBCardHeader className="text-center" style={{ fontSize: "22px", padding: "5px 15px", backgroundColor: "#b4c5e4" }}>
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-                    <MDBIcon far icon="calendar-alt" style={{ marginRight: "8px" }} />
-                    <strong>Regulação</strong>
+              <MDBCardHeader className="text-center bg-info" style={{ fontSize: "20px", padding: "10px 15px"}}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <MDBIcon far icon="calendar-alt" className="text-white" style={{ marginRight: "8px" }} />
+                    <strong className="text-white">Regulação</strong>
                   </div>
                 </MDBCardHeader>
                 <MDBCardBody className='p-2' style={{ height: '600px', overflowY: 'auto' }}>
@@ -241,7 +261,7 @@ function Kanban() {
                     paciente.estagio_atual === 'AGENDADO' ||
                     paciente.estagio_atual === 'AUTORIZADO_PARA_TRANSFERENCIA'
                   ).map((paciente, index) => (
-                    <div key={index}>
+                    <div key={index} className="clickable">
                       <PacienteCard
                         paciente={paciente}
                         selectedPaciente={selectedPaciente}
@@ -258,15 +278,15 @@ function Kanban() {
             {/* Coluna da Internação */}
             <MDBCol md='2'>
               <MDBCard>
-                <MDBCardHeader className="text-center" style={{ fontSize: "22px", padding: "5px 15px", backgroundColor: "#b4c5e4" }}>
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-                    <MDBIcon fas icon="bed" style={{ marginRight: "8px" }} />
-                    <strong>Internação</strong>
+              <MDBCardHeader className="text-center bg-info" style={{ fontSize: "20px", padding: "10px 15px"}}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <MDBIcon fas icon="bed" className="text-white" style={{ marginRight: "8px" }} />
+                    <strong className="text-white">Internação</strong>
                   </div>
                 </MDBCardHeader>
                 <MDBCardBody className='p-2' style={{ height: '600px', overflowY: 'auto' }}>
                   {pacientes.filter(paciente => paciente.estagio_atual === 'INTERNADO').map((paciente, index) => (
-                    <div key={index}>
+                    <div key={index} className="clickable">
                       <PacienteCard
                         paciente={paciente}
                         selectedPaciente={selectedPaciente}
@@ -283,10 +303,10 @@ function Kanban() {
             {/* Coluna da Alta */}
             <MDBCol md='2'>
               <MDBCard>
-                <MDBCardHeader className="text-center" style={{ fontSize: "22px", padding: "5px 15px", backgroundColor: "#b4c5e4" }}>
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-                    <MDBIcon fas icon="check-circle" style={{ marginRight: "8px" }} />
-                    <strong>Alta</strong>
+              <MDBCardHeader className="text-center bg-info" style={{ fontSize: "20px", padding: "10px 15px"}}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <MDBIcon fas icon="check-circle" className="text-white" style={{ marginRight: "8px" }} />
+                    <strong className="text-white">Alta</strong>
                   </div>
                 </MDBCardHeader>
                 <MDBCardBody className='p-2' style={{ height: '600px', overflowY: 'auto' }}>
@@ -295,7 +315,7 @@ function Kanban() {
                     paciente.estagio_atual === 'ALTA_OBITO' ||
                     paciente.estagio_atual === 'ALTA_DEFINITIVA'
                   ).map((paciente, index) => (
-                    <div key={index}>
+                    <div key={index} className="clickable">
                       <PacienteCard
                         paciente={paciente}
                         selectedPaciente={selectedPaciente}
@@ -312,15 +332,15 @@ function Kanban() {
             {/* Coluna da Transferência */}
             <MDBCol md='2'>
               <MDBCard>
-                <MDBCardHeader className="text-center" style={{ fontSize: "22px", padding: "5px 15px", backgroundColor: "#b4c5e4" }}>
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-                    <MDBIcon fas icon="hospital-alt" style={{ marginRight: "8px" }} />
-                    <strong>Transferido</strong>
+              <MDBCardHeader className="text-center bg-info" style={{ fontSize: "20px", padding: "10px 15px"}}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <MDBIcon fas icon="hospital-alt" className="text-white" style={{ marginRight: "8px" }} />
+                    <strong className="text-white">Transferido</strong>
                   </div>
                 </MDBCardHeader>
                 <MDBCardBody className='p-2' style={{ height: '600px', overflowY: 'auto' }}>
                   {pacientes.filter(paciente => paciente.estagio_atual === 'TRANSFERIDO').map((paciente, index) => (
-                    <div key={index}>
+                    <div key={index} className="clickable">
                       <PacienteCard
                         paciente={paciente}
                         selectedPaciente={selectedPaciente}
@@ -342,4 +362,4 @@ function Kanban() {
   
 }
 
-export default Kanban;
+export default Monitoramento;

@@ -35,3 +35,18 @@
     max-width: 400px;
     width: 100%;
   }
+
+  @font-face {
+    font-family: 'FiraSans';
+    src: url('../../assets/fonts/FiraSans-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+  
+  body {
+    font-family: 'FiraSans', sans-serif;
+  }
+
+  .clickable {
+    cursor: pointer;
+  }

@@ -48,5 +48,16 @@
     background-color: #d9d9d9;
   }
 
-  
+  @font-face {
+    font-family: 'FiraSans-Regular';
+    src: url('../../assets/fonts/FiraSans-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-weight: 1 1000;
+  }
+
+  body {
+    font-family: 'FiraSans-Regular', sans-serif;
+  }
+
   

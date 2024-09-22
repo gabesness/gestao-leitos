@@ -29,16 +29,39 @@ class DynamicFieldsModelSerializer(serializers.ModelSerializer):
 class UserSerializer(DynamicFieldsModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username', 'password', 'first_name', 'last_name', 'email', 'groups']
+        fields = ['id', 'username', 'password', 'first_name', 'last_name', 'email', 'groups', 'is_active']
+        extra_kwargs = { 'password': {'write_only': True} }
+    
+    def create(self, validated_data):
+        password = validated_data.pop('password', None)
+        groups = validated_data.pop('groups', [])
+        user = User.objects.create_user(**validated_data)
+        if password:
+            user.set_password(password)
+        if groups:
+            user.groups.set(groups)
+        return user
+    
+    def update(self, instance, validated_data):
+        instance.first_name = validated_data.get('first_name', instance.first_name)
+        instance.last_name = validated_data.get('last_name', instance.last_name)
+        instance.email = validated_data.get('email', instance.email)
+        if validated_data.get('password'):
+            instance.set_password(validated_data.get('password'))
+        instance.is_active = validated_data.get('is_active', instance.is_active)
+        instance.save()
+        return instance
 
 class SessaoSerializer(DynamicFieldsModelSerializer):
 
     class Meta:
         model = Sessao
-        fields = ['id', 'leito', 'paciente', 'data_alta', 'criada_em']
+        fields = ['id', 'leito', 'paciente', 'numero', 'data_alta', 'criada_em']
+        read_only_fields = ['id', 'numero', 'data_alta', 'criada_em']
 
 class RegistroSerializer(DynamicFieldsModelSerializer):
     usuario = serializers.SerializerMethodField()
+    sessao = serializers.SerializerMethodField()
     class Meta:
         model = Registro
         fields = ['id', 'usuario', 'paciente', 'sessao', 'estagio_atual', 'mensagem', 'criado_em']
@@ -46,18 +69,30 @@ class RegistroSerializer(DynamicFieldsModelSerializer):
     def get_usuario(self, obj) -> dict:
         usuario = obj.usuario
         return UserSerializer(usuario, fields=['username', 'first_name', 'last_name', 'groups']).data
+    
+    def get_sessao(self, obj) -> int:
+        sessao = obj.sessao
+        return SessaoSerializer(sessao, fields=['numero']).data['numero']
 
 class PacienteSerializer(DynamicFieldsModelSerializer):
     sessao_atual = serializers.SerializerMethodField()
+    data_prox_sessao = serializers.SerializerMethodField()
     historico_atual = serializers.SerializerMethodField()
     historico_completo = serializers.SerializerMethodField()
     plano_terapeutico = serializers.SerializerMethodField()
+    leito = serializers.SerializerMethodField()
 
     class Meta:
         model = Paciente
-        fields = ['id', 'nome', 'prontuario', 'estagio_atual', 'leito', 'plano_terapeutico', 'sessao_atual', 'historico_atual', 'historico_completo']
+        fields = ['id', 'nome', 'prontuario', 'estagio_atual', 'leito', 'plano_terapeutico', 'sessao_atual', 'data_prox_sessao', 'historico_atual', 'historico_completo']
         read_only_fields = ['id', 'estagio_atual', 'leito', 'plano_terapeutico', 'sessao_atual', 'historico_atual', 'historico_completo']
 
+    def update(self, instance, validated_data):
+        instance.nome = validated_data.get('nome', instance.nome)
+        instance.save()
+        return instance
+    
+    # METODOS INTERNOS PROPRIOS
     def get_sessao_atual(self, obj) -> dict:
         sessao = obj.sessao_atual()
         if sessao:
@@ -65,6 +100,9 @@ class PacienteSerializer(DynamicFieldsModelSerializer):
         else:
             return None
 
+    def get_data_prox_sessao(self, obj) -> timezone:
+        return obj.data_prox_sessao()
+    
     def get_historico_atual(self, obj) -> list:
         historico = obj.historico_atual()
         return RegistroSerializer(historico, many=True).data
@@ -76,6 +114,13 @@ class PacienteSerializer(DynamicFieldsModelSerializer):
     def get_plano_terapeutico(self, obj) -> dict:
         plano_terapeutico = obj.plano_terapeutico
         return Plano_terapeuticoSerializer(plano_terapeutico).data
+    
+    def get_leito(self, obj):
+        leito = obj.leito
+        if leito:
+            return LeitoSerializer(leito).data.get('numero')
+        else:
+            return None
     
     def atualizar_estagio(self, obj, usuario, estagio, mensagem):
         obj.atualizar_estagio(usuario, estagio, mensagem)

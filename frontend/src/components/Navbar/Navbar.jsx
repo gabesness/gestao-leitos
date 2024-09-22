@@ -17,12 +17,16 @@ import {
   MDBDropdownItem
 } from 'mdb-react-ui-kit';
 import { AxiosURL } from '../../axios/Config';
+import LogoTitulo from '../../assets/Logo_oncoleitos_titulo.png';
+
 
 export default function Navbar() {
   const [openNavSecond, setOpenNavSecond] = useState(false);
   const [nome, setNome] = useState('');
   const location = useLocation(); // Use the useLocation hook
   const permittedRoles = ['Administrador', 'Médico', 'Regulação', 'Farmácia'];
+  const rolesWithUserIcon = ['Administrador', 'Médico', 'Recepção', 'Regulação', 'Farmácia'];
+
 
   useEffect(() => {
     const nomeArmazenado = localStorage.getItem('nome');
@@ -36,7 +40,7 @@ export default function Navbar() {
   };
 
   const handleKanbanClick = () => {
-    window.location.href = '/kanban';
+    window.location.href = '/Monitoramento';
   };
 
   const handlePacientesClick = () => {
@@ -72,7 +76,7 @@ export default function Navbar() {
     }
   };
 
-  const isHomePage = location.pathname === '/';
+  const isHomePage = location.pathname === '/' || location.pathname === '/esqueceusenha' || location.pathname === '/SemAutorizacao' || location.pathname === '/recuperarsenha';
 
 
   const handleSignOutClick = async () => {
@@ -91,11 +95,14 @@ export default function Navbar() {
     }
   };
 
+  
 
   return (
-    <MDBNavbar expand='lg' light>
+    <MDBNavbar expand='lg' light style={{ backgroundColor: '#fff' }}>
       <MDBContainer fluid>
-        <MDBNavbarBrand href='#'>Sistema</MDBNavbarBrand>
+      <MDBNavbarBrand href='#'>
+          <img src={LogoTitulo} alt="Logo" style={{ height: '20px' }} />
+        </MDBNavbarBrand>
         {!isHomePage && (
           <>
             <MDBNavbarToggler
@@ -128,7 +135,7 @@ export default function Navbar() {
                 <MDBNavbarLink
                   href='#'
                   onClick={handleKanbanClick}
-                  className={location.pathname === '/kanban' ? 'active' : ''}
+                  className={location.pathname === '/Monitoramento' ? 'active' : ''}
                 >
                   <MDBIcon icon='columns' fas style={{ fontSize: '1.4rem' }} />
                 </MDBNavbarLink>
@@ -145,16 +152,15 @@ export default function Navbar() {
               <div className="ms-auto d-flex align-items-center">
                 <MDBNavbarNav right className="d-flex align-items-center">
                 <span style={{ fontSize: '1.2rem', marginRight: '5px', color: '#0000008C' }}>{nome}</span>
-                <MDBNavbarLink
-                    style={{ cursor: 'pointer' }}
-                    onClick={handleMinhaContaClick}
-                  >
-                    <MDBIcon
-                      icon='user-circle'
-                      fas
-                      style={{ fontSize: '1.6rem' }}
-                    />
-                  </MDBNavbarLink>
+                {rolesWithUserIcon.includes(localStorage.getItem('cargo')) && ( // Condição para exibir o ícone do usuário
+                    <MDBNavbarLink
+                      style={{ cursor: 'pointer' }}
+                      onClick={handleMinhaContaClick}
+                    >
+                      <MDBIcon icon='user-circle' fas style={{ fontSize: '1.6rem' }} />
+                    </MDBNavbarLink>
+                  )}
+                  
                   <MDBNavbarLink
                     style={{ cursor: 'pointer' }}
                     onClick={handleSignOutClick}
