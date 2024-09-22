@@ -5,9 +5,26 @@ function PacienteCardMedico({ paciente, selectedPaciente, handlePacienteClick })
   let tagContent = '';
   let tagColor = '';
 
-  if (paciente.estagio_atual === 'ENCAMINHADO_PARA_AGENDAMENTO') {
-    tagContent = 'Em 3 Dias';
-    tagColor = 'info';
+  const calculateDaysRemaining = (dataProxSessao) => {
+    const today = new Date();
+    const sessionDate = new Date(dataProxSessao);
+    const timeDifference = sessionDate - today;
+    const daysDifference = Math.ceil(timeDifference / (1000 * 60 * 60 * 24));
+    return daysDifference;
+  };
+
+  if (paciente.estagio_atual === 'ENCAMINHADO_PARA_AGENDAMENTO' && paciente?.data_prox_sessao) {
+    const daysRemaining = calculateDaysRemaining(paciente.data_prox_sessao);
+    if (daysRemaining === 1) {
+      tagContent = 'Amanhã';
+      tagColor = 'info';
+    } else if (daysRemaining > 1) {
+      tagContent = `Em ${daysRemaining} dias`;
+      tagColor = 'info';
+    } else {
+      tagContent = 'Atrasado';
+      tagColor = 'danger';
+    }
   } else if (paciente.estagio_atual === 'AUTORIZADO_PARA_TRANSFERENCIA') {
     tagContent = 'Transferência';
     tagColor = 'success';
@@ -29,7 +46,7 @@ function PacienteCardMedico({ paciente, selectedPaciente, handlePacienteClick })
       {tagContent && (
       <span className={`badge bg-${tagColor} rounded-pill me-2`} style={{ fontFamily: 'FiraSans-Light, sans-serif' }}>
           {tagContent === 'Transferência' && <MDBIcon fas icon="exchange-alt" className="me-1" />}
-          {tagContent === 'Em 3 Dias' && <MDBIcon fas icon="clock" className="me-1" />}
+          {(tagContent.includes('dias') || tagContent === 'Amanhã' || tagContent === 'Atrasado') && <MDBIcon fas icon="clock" className="me-1" />}
           {tagContent === 'Agendado' && <MDBIcon fas icon="bed" className="me-1" />}
           {tagContent}
         </span>
