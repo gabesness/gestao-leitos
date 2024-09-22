@@ -16,12 +16,12 @@ function PacienteCardMedico({ paciente, selectedPaciente, handlePacienteClick })
   if (paciente.estagio_atual === 'PRESCRICAO_CRIADA') {
     tagContent = 'Nova';
     tagColor = 'primary';
-  } else if (paciente.estagio_atual === 'DEVOLVIDO_PELA_FARMACIA') {
-    tagContent = 'Farmácia';
+  } else if (paciente.estagio_atual === 'DEVOLVIDO_PELA_FARMACIA' || paciente.estagio_atual === 'DEVOLVIDO_PELA_REGULACAO_PARA_MEDICO') {
+    tagContent = 'Devolvido';
     tagColor = 'warning';
   } else if (paciente.estagio_atual === 'DEVOLVIDO_PELA_REGULACAO') {
     tagContent = 'Transferência';
-    tagColor = 'success';
+    tagColor = 'secondary';
   } else if (paciente.estagio_atual === 'INTERNADO') {
     tagContent = 'Internado';
     tagColor = 'primary';
@@ -29,7 +29,7 @@ function PacienteCardMedico({ paciente, selectedPaciente, handlePacienteClick })
     const daysRemaining = calculateDaysRemaining(paciente.data_prox_sessao);
     if (daysRemaining === 1) {
       tagContent = 'Amanhã';
-      tagColor = 'info';
+      tagColor = 'success';
     } else if (daysRemaining > 1) {
       tagContent = `Em ${daysRemaining} dias`;
       tagColor = 'info';
@@ -53,7 +53,7 @@ function PacienteCardMedico({ paciente, selectedPaciente, handlePacienteClick })
       {tagContent && (
       <span className={`badge bg-${tagColor} rounded-pill me-2`} style={{ fontFamily: 'FiraSans-Light, sans-serif' }}>
           {tagContent === 'Nova' && <MDBIcon fas icon="plus-circle" className="me-1" />}
-          {tagContent === 'Farmácia' && <MDBIcon fas icon="undo" className="me-1" />}
+          {tagContent === 'Devolvido' && <MDBIcon fas icon="undo" className="me-1" />}
           {tagContent === 'Transferência' && <MDBIcon fas icon="exchange-alt" className="me-1" />}
           {(tagContent.includes('dias') || tagContent === 'Amanhã' || tagContent === 'Atrasado') && <MDBIcon fas icon="clock" className="me-1" />}
           {tagContent === 'Internado' && <MDBIcon fas icon="bed" className="me-1" />}

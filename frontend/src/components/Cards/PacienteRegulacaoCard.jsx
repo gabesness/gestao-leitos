@@ -17,7 +17,7 @@ function PacienteCardMedico({ paciente, selectedPaciente, handlePacienteClick })
     const daysRemaining = calculateDaysRemaining(paciente.data_prox_sessao);
     if (daysRemaining === 1) {
       tagContent = 'Amanhã';
-      tagColor = 'info';
+      tagColor = 'success';
     } else if (daysRemaining > 1) {
       tagContent = `Em ${daysRemaining} dias`;
       tagColor = 'info';
@@ -27,7 +27,7 @@ function PacienteCardMedico({ paciente, selectedPaciente, handlePacienteClick })
     }
   } else if (paciente.estagio_atual === 'AUTORIZADO_PARA_TRANSFERENCIA') {
     tagContent = 'Transferência';
-    tagColor = 'success';
+    tagColor = 'secondary';
   } else if (paciente.estagio_atual === 'AGENDADO') {
     tagContent = 'Agendado';
     tagColor = 'primary';

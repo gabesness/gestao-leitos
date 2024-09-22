@@ -18,6 +18,7 @@ import {
   MDBModalDialog,
   MDBModalContent,
   MDBModalTitle,
+  MDBTooltip,
 }
 from 'mdb-react-ui-kit';
 import './HomeRegulacao.css';
@@ -34,6 +35,67 @@ import 'react-toastify/dist/ReactToastify.css';
 function ModalDevolverMedico({ isOpen, onClose, selectedPaciente, formValue }) {
 
   const handleDevolver = async () => {
+    if (!selectedPaciente) return;
+
+    try {
+      const response = await axios.patch(`${AxiosURL}/prescricoes/${selectedPaciente.id}/devolver_regulacao_medico/`, {
+        id_usuario: localStorage.getItem('idUser'),
+        mensagem: formValue.mensagem 
+      });
+      toast.success('Prescrição devolvida ao médico');
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
+    } catch (error) {
+      console.error("Erro ao devolver a prescrição:", error);
+      toast.error(error.response.data.Erro);
+    }
+  };
+ 
+ 
+  const handleClose = () => {
+    if (isOpen) {
+      onClose();
+    }
+  };
+
+  return (
+    <MDBModal open={isOpen} onClose={handleClose} tabIndex='-1' appendToBody>
+      <MDBModalDialog>
+        <MDBModalContent>
+          <MDBModalHeader>
+            <MDBModalTitle style={{ fontFamily: 'FiraSans-Medium, sans-serif' }}>Devolução ao Médico</MDBModalTitle>
+            <MDBBtn className='btn-close' color='none' onClick={handleClose}></MDBBtn>
+          </MDBModalHeader>
+          <MDBModalBody style={{ fontFamily: 'FiraSans-Light, sans-serif' }}>
+
+          A prescrição será devolvida ao médico para que possa ser editada.
+
+          </MDBModalBody>
+          <MDBModalFooter>
+          <MDBBtn color='danger' onClick={handleClose}
+           style={{
+            borderRadius: '8px',
+            padding: '10px 20px',
+          }}
+          >Cancelar</MDBBtn>
+          <MDBBtn onClick={handleDevolver}
+           style={{
+            borderRadius: '8px',
+            padding: '10px 20px',
+          }}
+          >Devolver</MDBBtn>
+          </MDBModalFooter>
+        </MDBModalContent>
+      </MDBModalDialog>
+      <ToastContainer />
+    </MDBModal>
+  );
+}
+
+function ModalPedirTransferencia({ isOpen, onClose, selectedPaciente, formValue }) {
+
+  const handlePedirTransferencia = async () => {
     if (!selectedPaciente) return;
 
     try {
@@ -78,7 +140,7 @@ function ModalDevolverMedico({ isOpen, onClose, selectedPaciente, formValue }) {
             padding: '10px 20px',
           }}
           >Cancelar</MDBBtn>
-          <MDBBtn onClick={handleDevolver}
+          <MDBBtn onClick={handlePedirTransferencia}
            style={{
             borderRadius: '8px',
             padding: '10px 20px',
@@ -486,6 +548,10 @@ function QuadroFicha({ selectedPaciente, historico }) {
   const [isModalDevolverMedicoOpen, setIsModalDevolverMedicoOpen] = useState(false);
   const toggleModalDevolverMedico = () => setIsModalDevolverMedicoOpen(!isModalDevolverMedicoOpen);
   
+  // Modal Pedir Transferencia
+  const [isModalPedirTransferenciaOpen, setIsModalPedirTransferenciaOpen] = useState(false);
+  const toggleModalPedirTransferencia = () => setIsModalPedirTransferenciaOpen(!isModalPedirTransferenciaOpen);
+  
   // Modal Agendamento
   const [isModalAgendamentoOpen, setIsModalAgendamentoOpen] = useState(false);
   const toggleModalAgendamento = () => {
@@ -539,58 +605,81 @@ function QuadroFicha({ selectedPaciente, historico }) {
     };
     fetchLeitos();
   }, []);
+
+  const calcularDiasRestantes = (data) => {
+    const hoje = new Date();
+    const dataSessao = new Date(data);
+    const diffTime = dataSessao - hoje;
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // Retorna a diferença em dias
+  };
+
   const { data_prox_sessao = '' } = selectedPaciente || {};
   const formattedDataProxSessao = data_prox_sessao ? data_prox_sessao.split('T')[0] : '';
+  const diasRestantes = calcularDiasRestantes(formattedDataProxSessao);
 
+
+  
     // Botões da Direita
     const renderButtons = () => {
       switch (selectedPaciente.estagio_atual) {
         case 'ENCAMINHADO_PARA_AGENDAMENTO':
-          return <MDBBtn onClick={toggleModalAgendamento}  
-          style={{
-            borderRadius: '8px',
-            padding: '10px 20px',
-          }}
-          disabled={!selectedLeito} >
-         <MDBIcon fas icon="check" className="me-2" />
-            AGENDAR LEITO
-            </MDBBtn>;
+          const isDisabled = diasRestantes > 1 || !selectedLeito;
+    
+          return (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <MDBBtn
+                onClick={toggleModalAgendamento}
+                style={{ borderRadius: '8px', padding: '10px 20px' }}
+                disabled={isDisabled} // Desativa se faltar mais de 1 dia ou se nenhum leito estiver selecionado
+              >
+                <MDBIcon fas icon="check" className="me-2" />
+                AGENDAR LEITO
+              </MDBBtn>
+    
+              {isDisabled && diasRestantes > 1 && (
+            <MDBTooltip
+              placement="right"
+              tag="div"
+              title="Só é possível agendar um leito com até 1 dia de antecedência."
+            >
+              <MDBIcon
+                fas
+                icon="info-circle"
+                style={{ fontSize: '1.5em', color: 'grey' }}
+              />
+            </MDBTooltip>
+              )}
+            </div>
+          );
+    
         case 'AUTORIZADO_PARA_TRANSFERENCIA':
           return (
-            <>
-              <div>
-                <MDBBtn 
-                onClick={toggleModalTransferencia} 
-                style={{
-                  borderRadius: '8px',
-                  padding: '10px 20px',
-                }}
-                >
-                <MDBIcon fas icon="check" className="me-2" />
-                  CONFIRMAR TRANSFERÊNCIA</MDBBtn>
-              </div>
-            </>
+            <MDBBtn
+              onClick={toggleModalTransferencia}
+              style={{ borderRadius: '8px', padding: '10px 20px' }}
+            >
+              <MDBIcon fas icon="check" className="me-2" />
+              CONFIRMAR TRANSFERÊNCIA
+            </MDBBtn>
           );
+    
         case 'AGENDADO':
           return (
-            <>
-              <div>
-                <MDBBtn color='primary' 
-                 style={{
-                  borderRadius: '8px',
-                  padding: '10px 20px',
-                }}
-                onClick={toggleModalInternacao} >
-                <MDBIcon fas icon="check" className="me-2" />
-                  CONFIRMAR INTERNAÇÃO
-                  </MDBBtn>
-              </div>
-            </>
+            <MDBBtn
+              color="primary"
+              style={{ borderRadius: '8px', padding: '10px 20px' }}
+              onClick={toggleModalInternacao}
+            >
+              <MDBIcon fas icon="check" className="me-2" />
+              CONFIRMAR INTERNAÇÃO
+            </MDBBtn>
           );
+    
         default:
           return null;
       }
     };
+    
 
   return (
   <MDBCol md='8'>
@@ -718,19 +807,32 @@ function QuadroFicha({ selectedPaciente, historico }) {
     {/* Botões */}
 
     <div style={{ padding: '20px', marginTop: '10px', display: 'flex', justifyContent: 'space-between', borderTop: '1px solid rgba(0,0,0,.125)' }}>
-        <div>
-          {selectedPaciente.estagio_atual === 'ENCAMINHADO_PARA_AGENDAMENTO' && (
-              <MDBBtn 
-              color='secondary' 
-              style={{
-                borderRadius: '8px',
-                padding: '10px 20px',
-              }}
-              onClick={toggleModalDevolverMedico} >
-              <MDBIcon fas icon="undo-alt" className="me-2" />
-                SOLICITAR TRANSFERÊNCIA
+    <div>
+        {selectedPaciente.estagio_atual === 'ENCAMINHADO_PARA_AGENDAMENTO' && (
+            <>
+                <MDBBtn
+                    color='secondary'
+                    style={{
+                        borderRadius: '8px',
+                        padding: '10px 20px',
+                        marginRight: '10px', // Margem entre os botões
+                    }}
+                    onClick={toggleModalDevolverMedico}>
+                    <MDBIcon fas icon="undo-alt" className="me-2" />
+                    DEVOLVER AO MÉDICO
                 </MDBBtn>
-          )}
+                <MDBBtn
+                    color='secondary'
+                    style={{
+                        borderRadius: '8px',
+                        padding: '10px 20px',
+                    }}
+                    onClick={toggleModalPedirTransferencia}>
+                    <MDBIcon fas icon="exchange-alt" className="me-2" />
+                    SOLICITAR TRANSFERÊNCIA
+                </MDBBtn>
+            </>
+        )}
           {selectedPaciente.estagio_atual === 'AGENDADO' && (
               <MDBBtn 
               color='secondary' 
@@ -757,6 +859,7 @@ function QuadroFicha({ selectedPaciente, historico }) {
     )}
   {/* Modais */}
   <ModalDevolverMedico isOpen={isModalDevolverMedicoOpen} onClose={toggleModalDevolverMedico} selectedPaciente={selectedPaciente} formValue={formValue} />
+  <ModalPedirTransferencia isOpen={isModalPedirTransferenciaOpen} onClose={toggleModalPedirTransferencia} selectedPaciente={selectedPaciente} formValue={formValue} />
   <ModalAgendamento isOpen={isModalAgendamentoOpen} onClose={toggleModalAgendamento} selectedPaciente={selectedPaciente} selectedLeito={selectedLeito} formValue={formValue}/>
   <ModalTransferencia isOpen={isModalTransferenciaOpen} onClose={toggleModalTransferencia} selectedPaciente={selectedPaciente} formValue={formValue}/>
   <ModalAltaObito isOpen={isModalAltaObitoOpen} onClose={toggleModalAltaObito} selectedPaciente={selectedPaciente}/>

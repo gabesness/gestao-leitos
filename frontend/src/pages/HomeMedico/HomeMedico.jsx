@@ -396,7 +396,9 @@ function QuadroLista({ pacientes, activeTab, selectedPaciente, handlePacienteCli
       ['PRESCRICAO_CRIADA', 
       'DEVOLVIDO_PELA_FARMACIA',
       'ALTA_NORMAL',  
-      'DEVOLVIDO_PELA_REGULACAO']
+      'DEVOLVIDO_PELA_REGULACAO',
+     'DEVOLVIDO_PELA_REGULACAO_PARA_MEDICO'
+    ]
       .includes(paciente.estagio_atual) 
       : 
       paciente.estagio_atual === 'INTERNADO'
@@ -572,7 +574,8 @@ function QuadroFicha({ selectedPaciente, historico }) {
   useEffect(() => {
     if (selectedPaciente && 
       (selectedPaciente.estagio_atual === 'PRESCRICAO_CRIADA' || 
-       selectedPaciente.estagio_atual === 'DEVOLVIDO_PELA_FARMACIA')) {
+       selectedPaciente.estagio_atual === 'DEVOLVIDO_PELA_FARMACIA'|| 
+       selectedPaciente.estagio_atual === 'DEVOLVIDO_PELA_REGULACAO_PARA_MEDICO')) {
       setIsPrescricaoCriada(true);
     } else {
       setIsPrescricaoCriada(false);
@@ -584,7 +587,8 @@ function QuadroFicha({ selectedPaciente, historico }) {
   const renderButtons = () => {
     switch (selectedPaciente.estagio_atual) {
       case 'PRESCRICAO_CRIADA':
-      case 'DEVOLVIDO_PELA_FARMACIA':
+        case 'DEVOLVIDO_PELA_FARMACIA':
+        case 'DEVOLVIDO_PELA_REGULACAO_PARA_MEDICO':
         return <MDBBtn 
         style={{
           borderRadius: '8px',
