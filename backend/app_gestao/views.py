@@ -74,6 +74,7 @@ class PacienteViewSet(GenericViewSet):
             'PRESCRICAO_CRIADA',
             'DEVOLVIDO_PELA_FARMACIA',
             'DEVOLVIDO_PELA_REGULACAO',
+            'DEVOLVIDO_PELA_REGULACAO_PARA_MEDICO',
             'INTERNADO',
             'ALTA_NORMAL',
             ]
@@ -245,11 +246,11 @@ class PrescricaoViewSet(GenericViewSet):
                     serializer.atualizar_estagio(obj=paciente, usuario=user, estagio='PRESCRICAO_CRIADA', mensagem='Prescrição criada!')
                     return Response({'OK': 'Prescrição criada com sucesso!'}, status=status.HTTP_200_OK)
                 else:
-                    return Response({'erro': 'Já existe prescrição para este paciente!'},status=status.HTTP_400_BAD_REQUEST)
+                    return Response({'Erro': 'Já existe prescrição para este paciente!'},status=status.HTTP_400_BAD_REQUEST)
             else: raise User.DoesNotExist
-        except Paciente.DoesNotExist: return Response({'erro': 'Paciente não encontrado'}, status=status.HTTP_400_BAD_REQUEST)
-        except User.DoesNotExist: return Response({'erro': 'Usuário não encontrado'}, status=status.HTTP_404_NOT_FOUND)
-        except Exception as e: return Response({'erro': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)  
+        except Paciente.DoesNotExist: return Response({'Erro': 'Paciente não encontrado'}, status=status.HTTP_400_BAD_REQUEST)
+        except User.DoesNotExist: return Response({'Erro': 'Usuário não encontrado'}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e: return Response({'Erro': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)  
     
     @extend_schema(
         summary="Enviar prescrição do médico para a Farmácia",
@@ -311,7 +312,7 @@ class PrescricaoViewSet(GenericViewSet):
                         paciente_serializer.atualizar_estagio(obj=paciente, usuario=user, estagio='ENCAMINHADO_PARA_FARMACIA', mensagem=request.data['mensagem'])
                         return Response({'OK': 'Plano terapêutico criado e paciente encaminhado à Farmacia'}, status=status.HTTP_200_OK)
                     else: return Response({'Erro': 'Data de internação deve ser no mínimo no dia seguinte'}, status=status.HTTP_400_BAD_REQUEST)
-                else: return Response({'erro': 'Paciente já foi encaminhado à farmácia!'}, status=status.HTTP_400_BAD_REQUEST)
+                else: return Response({'Erro': 'Paciente já foi encaminhado à farmácia!'}, status=status.HTTP_400_BAD_REQUEST)
             else: raise User.DoesNotExist
         except User.DoesNotExist: return Response({'Erro': 'Usuário inválido'}, status=status.HTTP_401_UNAUTHORIZED)
         except Exception as e: return Response({'Erro': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -351,7 +352,7 @@ class PrescricaoViewSet(GenericViewSet):
                         mensagem=request.data['mensagem'])
                     return Response(status=status.HTTP_204_NO_CONTENT)
                 else:
-                    return Response({'erro': 'Estágio atual inválido'}, status=status.HTTP_400_BAD_REQUEST)
+                    return Response({'Erro': 'Estágio atual inválido'}, status=status.HTTP_400_BAD_REQUEST)
             else:
                 raise User.DoesNotExist
         except User.DoesNotExist: return Response({'Erro': 'Usuário inválido'}, status=status.HTTP_401_UNAUTHORIZED)
@@ -443,7 +444,7 @@ class PrescricaoViewSet(GenericViewSet):
                     serializer.atualizar_estagio(obj=paciente, usuario=user, estagio='INTERNADO', mensagem="Paciente internado.")
                     return Response({'OK': 'Paciente internado com sucesso!'}, status=status.HTTP_200_OK)
                 else:
-                    return Response({'erro': 'estagio_atual invalido'}, status=status.HTTP_400_BAD_REQUEST)
+                    return Response({'Erro': 'estagio_atual invalido'}, status=status.HTTP_400_BAD_REQUEST)
             else: raise User.DoesNotExist
         except User.DoesNotExist: return Response({'Erro': 'Usuário inválido'}, status=status.HTTP_401_UNAUTHORIZED)
         except Exception as e: return Response({'Erro': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -484,7 +485,7 @@ class PrescricaoViewSet(GenericViewSet):
                         paciente.dar_alta()
                         paciente.atualizar_estagio(usuario=user, estagio='ALTA_OBITO', mensagem="Registrado o óbito do paciente nesta data.")
                     else:
-                        return Response({'erro': 'tipo de alta não definido'}, status=status.HTTP_400_BAD_REQUEST)
+                        return Response({'Erro': 'tipo de alta não definido'}, status=status.HTTP_400_BAD_REQUEST)
                     return Response({'OK': 'Alta registrada com sucesso!'}, status=status.HTTP_200_OK)
                 elif paciente.estagio_atual == 'AGENDADO':
                     if tipo_alta in ['0', '1']:
@@ -493,10 +494,10 @@ class PrescricaoViewSet(GenericViewSet):
                         paciente.dar_alta()
                         paciente.atualizar_estagio(usuario=user, estagio='ALTA_OBITO', mensagem="Registrado o óbito do paciente nesta data.")
                     else:
-                        return Response({'erro': 'tipo de alta não definido'}, status=status.HTTP_400_BAD_REQUEST)
+                        return Response({'Erro': 'tipo de alta não definido'}, status=status.HTTP_400_BAD_REQUEST)
                     return Response({'OK': 'Alta registrada com sucesso!'}, status=status.HTTP_200_OK)
                 else:
-                    return Response({'erro': 'estagio_atual inválido'}, status=status.HTTP_400_BAD_REQUEST)
+                    return Response({'Erro': 'estagio_atual inválido'}, status=status.HTTP_400_BAD_REQUEST)
             else: raise User.DoesNotExist
         except User.DoesNotExist: return Response({'Erro': 'Usuário inválido'}, status=status.HTTP_401_UNAUTHORIZED)
         except Exception as e: return Response({'Erro': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -530,7 +531,7 @@ class PrescricaoViewSet(GenericViewSet):
             if user:
                 if serializer.data['estagio_atual'] == 'ENCAMINHADO_PARA_FARMACIA':
                     serializer.atualizar_estagio(obj=paciente, usuario=user, estagio='DEVOLVIDO_PELA_FARMACIA', mensagem=request.data['mensagem'])
-                    return Response({'OK': 'devolvido com sucesso'}, status=status.HTTP_204_NO_CONTENT)
+                    return Response({'OK': 'Prescrição devolvida com sucesso'}, status=status.HTTP_204_NO_CONTENT)
                 else:
                     return Response({'erro': 'estagio_atual invalido'}, status=status.HTTP_400_BAD_REQUEST)
             else: raise User.DoesNotExist
@@ -567,13 +568,56 @@ class PrescricaoViewSet(GenericViewSet):
             if user:
                 if serializer.data['estagio_atual'] in estagios_aceitos:
                     serializer.atualizar_estagio(obj=paciente, usuario=user, estagio='DEVOLVIDO_PELA_REGULACAO', mensagem=request.data['mensagem'])
-                    return Response({'OK': 'devolvido com sucesso'}, status=status.HTTP_204_NO_CONTENT)
+                    return Response({'OK': 'Prescrição devolvida com sucesso'}, status=status.HTTP_204_NO_CONTENT)
                 else:
                     return Response({'erro': 'estagio_atual invalido'}, status=status.HTTP_400_BAD_REQUEST)
             else: raise User.DoesNotExist
         except User.DoesNotExist: return Response({'Erro': 'Usuário inválido'}, status=status.HTTP_401_UNAUTHORIZED)
         except Exception as e: return Response({'Erro': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
+    @extend_schema(
+        summary="Devolver prescrição da regulação para alteração da prescrição",
+        description="""
+                    Permite à Regulação devolver a prescrição ao médico;
+                    O médico poderá alterar os dados novamente:
+                        - medicamentos, num. de sessões, dias, etc.
+                    * Altera o estagio do paciente para DEVOLVIDO_PELA_REGULACAO_PARA_MEDICO;
+                    * Cria o Registro
+                    """,
+        request={
+            'application/json': {
+                'type': 'object',
+                'properties': {
+                    'id_usuario': {
+                        'type': 'string'
+                    },
+                    'mensagem': {
+                        'type': 'string'
+                    }
+                },
+                'required': ['id_usuario']
+            }
+        }
+    )
+    @action(detail=True, methods=['PATCH'])
+    def devolver_regulacao_medico(self, request, pk=None):
+        try:
+            paciente = self.get_object()
+            serializer = paciente.serializer()
+            user = User.objects.get(id=request.data.get('id_usuario'))
+            estagios_aceitos = ['ENCAMINHADO_PARA_AGENDAMENTO']
+            if user:
+                if serializer.data['estagio_atual'] in estagios_aceitos:
+                    serializer.atualizar_estagio(obj=paciente, usuario=user, estagio='DEVOLVIDO_PELA_REGULACAO_PARA_MEDICO', mensagem=request.data['mensagem'])
+                    return Response({'OK': 'Prescrição devolvida com sucesso'}, status=status.HTTP_200_OK)
+                else: return Response({'Erro': 'Estágio atual inválido'}, status=status.HTTP_400_BAD_REQUEST)
+            else: raise User.DoesNotExist
+        except User.DoesNotExist:
+            return Response({'Erro': 'Usuário inválido'}, status=status.HTTP_401_UNAUTHORIZED)
+        except Exception as e:
+            return Response({'Erro': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
     @extend_schema(
         summary="Autorização de transferência",
         description="""O médico recebe a solicitação de transferência da Regulação e faz a autorização;
@@ -604,9 +648,9 @@ class PrescricaoViewSet(GenericViewSet):
             if user:
                 if serializer.data['estagio_atual'] == 'DEVOLVIDO_PELA_REGULACAO':
                     serializer.atualizar_estagio(obj=paciente, usuario=user, estagio='AUTORIZADO_PARA_TRANSFERENCIA', mensagem=request.data['mensagem'])
-                    return Response({'OK': 'devolvido com sucesso'}, status=status.HTTP_204_NO_CONTENT)
+                    return Response({'OK': 'Paciente autorizado para transferência'}, status=status.HTTP_204_NO_CONTENT)
                 else:
-                    return Response({'erro': 'estagio_atual invalido'}, status=status.HTTP_400_BAD_REQUEST)
+                    return Response({'Erro': 'estagio_atual invalido'}, status=status.HTTP_400_BAD_REQUEST)
             else: raise User.DoesNotExist
         except User.DoesNotExist: return Response({'Erro': 'Usuário inválido'}, status=status.HTTP_401_UNAUTHORIZED)
         except Exception as e: return Response({'Erro': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -641,9 +685,9 @@ class PrescricaoViewSet(GenericViewSet):
             if user:
                 if serializer.data['estagio_atual'] == 'AUTORIZADO_PARA_TRANSFERENCIA':
                     serializer.atualizar_estagio(obj=paciente, usuario=user, estagio='TRANSFERIDO', mensagem=request.data['mensagem'])
-                    return Response({'OK': 'devolvido com sucesso'}, status=status.HTTP_204_NO_CONTENT)
+                    return Response({'OK': 'Paciente transferido'}, status=status.HTTP_204_NO_CONTENT)
                 else:
-                    return Response({'erro': 'estagio_atual invalido'}, status=status.HTTP_400_BAD_REQUEST)
+                    return Response({'Erro': 'estagio_atual invalido'}, status=status.HTTP_400_BAD_REQUEST)
             else: raise User.DoesNotExist
         except User.DoesNotExist: return Response({'Erro': 'Usuário inválido'}, status=status.HTTP_401_UNAUTHORIZED)
         except Exception as e: return Response({'Erro': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

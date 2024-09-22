@@ -11,6 +11,7 @@ class EstagioEnum(models.TextChoices):
     PRESCRICAO_CRIADA = "PRESCRICAO_CRIADA" # Prescricao criada
     PRESCRICAO_DEVOLVIDA_PELA_FARMACIA = "DEVOLVIDO_PELA_FARMACIA" # Prescricao devolvida ao medico pela farmacia para alteracao de medicamentos
     PRESCRICAO_DEVOLVIDA_PELA_REGULACAO = "DEVOLVIDO_PELA_REGULACAO" # Prescricao devolvida ao medico pela regulacao para autorizacao de encaminhamento
+    PRESCRICAO_DEVOLVIDA_PELA_REGULACAO_PARA_MEDICO = "DEVOLVIDO_PELA_REGULACAO_PARA_MEDICO" # Prescricao devolvida ao medico pela regulacao para alteracao da prescricao
     ENCAMINHADO_PARA_FARMACIA = "ENCAMINHADO_PARA_FARMACIA" # Paciente encaminhado para a farmacia
     ENCAMINHADO_PARA_AGENDAMENTO = "ENCAMINHADO_PARA_AGENDAMENTO" # Encaminhado para a Regulacao agendar o paciente
     AUTORIZADO_PARA_TRANSFERENCIA = "AUTORIZADO_PARA_TRANSFERENCIA" # Paciente autorizado pelo medico para ser transferido para outro hospital, pendente conf. pela regulacao
