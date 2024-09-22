@@ -35,7 +35,9 @@ function ModalFicha({ isOpen, onClose, selectedPaciente, historico}) {
 
   const planoTerapeutico = selectedPaciente?.plano_terapeutico || {};
   const { medicamentos = '', data_sugerida = '', sessoes_prescritas = '', dias_intervalo = '' } = planoTerapeutico;
-
+  const { data_prox_sessao = '' } = selectedPaciente || {};
+  const formattedDataProxSessao = data_prox_sessao ? data_prox_sessao.split('T')[0] : '';
+  
   return (
     <MDBModal open={isOpen} onClose={handleClose} tabIndex='-1' appendToBody> 
       <MDBModalDialog style={{ maxWidth: '55%' }}>  
@@ -90,14 +92,14 @@ function ModalFicha({ isOpen, onClose, selectedPaciente, historico}) {
                   />                    
                   
                   <MDBInput 
-                    label="Data de Entrada" 
+                    label="Próxima Sessão" 
                     id="textAreaExample" 
                     type="date" 
                     style={{  
                       fontFamily: 'FiraSans-Light, sans-serif' 
                       }}
                     className="mb-3" 
-                    value={data_sugerida}
+                    value={formattedDataProxSessao}
                     disabled 
                   />
 

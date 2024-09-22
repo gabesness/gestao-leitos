@@ -627,14 +627,17 @@ function QuadroFicha({ selectedPaciente, historico }) {
 
 
   // Envio da prescrição
+  const { data_prox_sessao = '' } = selectedPaciente || {};
+  const formattedDataProxSessao = data_prox_sessao ? data_prox_sessao.split('T')[0] : '';
 
   const [formValue, setFormValue] = useState({
     sessoes_prescritas: '',
     dias_intervalo: '',
-    data_sugerida: '',
+    data_sugerida: formattedDataProxSessao || '',
     medicamentos: '',
     mensagem: ''
   });
+
 
   const isFormValid = () => {
     const sessoesPrescritasValida = formValue.sessoes_prescritas !== '' && !isNaN(Number(formValue.sessoes_prescritas));
@@ -653,16 +656,26 @@ function QuadroFicha({ selectedPaciente, historico }) {
       setFormValue({
         sessoes_prescritas: selectedPaciente.plano_terapeutico.sessoes_prescritas || '',
         dias_intervalo: selectedPaciente.plano_terapeutico.dias_intervalo || '',
-        data_sugerida: selectedPaciente.plano_terapeutico.data_sugerida || '',
+        data_sugerida: formattedDataProxSessao || '', // Use formattedDataProxSessao
         medicamentos: selectedPaciente.plano_terapeutico.medicamentos || '',
         mensagem: ''
       });
+    } else if (selectedPaciente) {
+      setFormValue(prevState => ({
+        ...prevState,
+        data_sugerida: formattedDataProxSessao // Atualiza somente data_sugerida
+      }));
     }
-  }, [selectedPaciente]);
+  }, [selectedPaciente, formattedDataProxSessao]); // Adicione formattedDataProxSessao como dependência
+  
 
 
   const onChange = (e) => {
-    setFormValue({ ...formValue, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormValue(prevState => ({
+      ...prevState,
+      [name]: value,
+    }));
   };
 
   async function EncaminharPaciente(event) {
@@ -771,19 +784,21 @@ function QuadroFicha({ selectedPaciente, historico }) {
         />
             
             <MDBInput 
-                    label="Data de Entrada" 
-                    id="textAreaExample" 
-                    type="date" 
-                    style={{  
+                  label="Próxima Sessão" 
+                  id="textAreaExample" 
+                  type="date" 
+                  style={{  
                       fontFamily: 'FiraSans-Light, sans-serif' 
-                      }}
-                    className="mb-3"
-                    name="data_sugerida"
-                    value={formValue.data_sugerida} 
-                    onChange={onChange}
-                    min={new Date().toISOString().split("T")[0]}
-                    disabled={!isPrescricaoCriada}  
-                    />
+                  }}
+                  className="mb-3"
+                  name="data_sugerida"
+                  value={formValue.data_sugerida}
+                  onChange={(e) => {
+                      setFormValue({ ...formValue, data_sugerida: e.target.value });
+                  }}
+                  min={new Date().toISOString().split("T")[0]}
+                  disabled={!isPrescricaoCriada}  
+              />
 
             <div className="d-flex align-items-center mb-3">
               <div className="me-2">

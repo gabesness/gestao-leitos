@@ -260,7 +260,8 @@ function QuadroFicha({ selectedPaciente, historico }) {
   // Modal enviar regulacao
   const [isModalEnviarRegulacaoOpen, setIsModalEnviarRegulacaoOpen] = useState(false);
   const toggleModalEnviarRegulacao = () => setIsModalEnviarRegulacaoOpen(!isModalEnviarRegulacaoOpen);
-
+  const { data_prox_sessao = '' } = selectedPaciente || {};
+  const formattedDataProxSessao = data_prox_sessao ? data_prox_sessao.split('T')[0] : '';
   return (
   <MDBCol md='8'>
   {selectedPaciente && (
@@ -317,14 +318,14 @@ function QuadroFicha({ selectedPaciente, historico }) {
                   />
             
             <MDBInput 
-                    label="Data de Entrada" 
+                    label="Próxima Sessão" 
                     id="textAreaExample" 
                     type="date" 
                     style={{  
                       fontFamily: 'FiraSans-Light, sans-serif' 
                       }}
                     className="mb-3" 
-                    value={selectedPaciente.plano_terapeutico?.data_sugerida || ''} 
+                    value={formattedDataProxSessao}
                     disabled 
                   />
 

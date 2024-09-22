@@ -305,8 +305,7 @@ function ModalAltaObito({ isOpen, onClose, selectedPaciente }) {
           </MDBModalHeader>
           <MDBModalBody style={{ fontFamily: 'FiraSans-Light, sans-serif' }}>
 
-          Confirme que o paciente faleceu
-
+          Confirme que o paciente está recebendo alta por óbito. A sessão do paciente será encerrada, e todos os seus registros poderão ser verificados na página de pacientes.
           </MDBModalBody>
           <MDBModalFooter>
           <MDBBtn color='danger' onClick={handleClose}
@@ -540,6 +539,8 @@ function QuadroFicha({ selectedPaciente, historico }) {
     };
     fetchLeitos();
   }, []);
+  const { data_prox_sessao = '' } = selectedPaciente || {};
+  const formattedDataProxSessao = data_prox_sessao ? data_prox_sessao.split('T')[0] : '';
 
     // Botões da Direita
     const renderButtons = () => {
@@ -634,14 +635,14 @@ function QuadroFicha({ selectedPaciente, historico }) {
           <div>
           <h4 style={{ fontFamily: 'FiraSans-Medium, sans-serif' }}>Dados da Solicitação</h4>
             <MDBInput 
-                    label="Data de Entrada" 
+                    label="Próxima Sessão" 
                     id="textAreaExample" 
                     type="date" 
                     style={{  
                       fontFamily: 'FiraSans-Light, sans-serif' 
                       }}
                     className="mb-3" 
-                    value={selectedPaciente.plano_terapeutico?.data_sugerida || ''} 
+                    value={formattedDataProxSessao}
                     disabled 
                   />
 
