@@ -603,7 +603,7 @@ class PrescricaoViewSet(GenericViewSet):
     def devolver_regulacao_medico(self, request, pk=None):
         try:
             paciente = self.get_object()
-            serializer = paciente.serializer()
+            serializer = self.get_serializer(paciente)
             user = User.objects.get(id=request.data.get('id_usuario'))
             estagios_aceitos = ['ENCAMINHADO_PARA_AGENDAMENTO']
             if user:
