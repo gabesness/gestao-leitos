@@ -55,7 +55,7 @@ class Paciente(models.Model):
                 if plano:  
                     if self.estagio_atual == 'PRESCRICAO_CRIADA':
                         # Ultima alta do paciente
-                        data_ultima_alta = Sessao.objects.filter(paciente=self, data_alta__isnull=False).first().data_alta
+                        data_ultima_alta = Sessao.objects.filter(paciente=self, data_alta__isnull=False).order_by('-criada_em').first().data_alta
                         return data_ultima_alta + timedelta(days=plano.dias_intervalo)
                     else:
                         return plano.data_sugerida
