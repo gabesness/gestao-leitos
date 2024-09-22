@@ -76,7 +76,7 @@ export default function Navbar() {
     }
   };
 
-  const isHomePage = location.pathname === '/' || location.pathname === '/esqueceusenha' || location.pathname === '/SemAutorizacao' || location.pathname === '/recuperarsenha';
+  const isHomePage = location.pathname === '/' || location.pathname === '/esqueceusenha' || location.pathname === '/SemAutorizacao' ||  location.pathname.startsWith('/redefinir-senha');
 
 
   const handleSignOutClick = async () => {
