@@ -1182,10 +1182,9 @@ class EstatisticaViewSet(GenericViewSet):
     serializer_class = RegistroSerializer
 
     @extend_schema(
-            summary="*** INCOMPLETA *** Estatísticas de todo o período",
+            summary="Estatísticas de todo o período",
             description="""
                         Retorna os dados para a dashboard de todo o período.
-                        *** Falta taxa de ocupacao ***
                         """
     )
     @action(detail=False, methods=['GET'])
@@ -1203,11 +1202,10 @@ class EstatisticaViewSet(GenericViewSet):
             return Response({'Erro': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @extend_schema(
-            summary="*** INCOMPLETA *** Estatísticas do sistema",
+            summary="Estatísticas do sistema",
             description="""
                         Mostra as estatísticas do sistema.
                         Aceita como parâmetro <int: dias>, o sistema irá considerar apenas os n últimos dias.
-                        *** Falta taxa de ocupação ***
                         """
     )
     @action(detail=False, methods=['GET'], url_path='(?P<dias>[^/.]+)')
