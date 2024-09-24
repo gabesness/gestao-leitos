@@ -372,6 +372,9 @@ class PrescricaoViewSet(GenericViewSet):
             'properties': {
                 'id_usuario': {
                     'type': 'string'
+                },
+                'mensagem': {
+                    'type': 'string'
                 }
             },
             'required': ['id_usuario']
@@ -404,7 +407,7 @@ class PrescricaoViewSet(GenericViewSet):
                                     obj=paciente,
                                     usuario=user,
                                     estagio='AGENDADO',
-                                    mensagem=f"Paciente {paciente.nome} agendado para internação."
+                                    mensagem=request.data['mensagem']
                                     )
                                 return Response({'OK': 'Agendado com sucesso'}, status=status.HTTP_200_OK)
                     else:
