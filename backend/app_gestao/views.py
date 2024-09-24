@@ -801,11 +801,11 @@ class UserViewSet(GenericViewSet):
                            Admin deve informar nome de usuário, nome, sobrenome, email e cargo.\n
                            A senha será gerada automaticamente e enviada para o email cadastrado.\n
                            Obs.: o cargo (campo 'groups') é um ÚNICO número, seguindo os criterios abaixo:\n
-                           1 - Medico;\n
-                           2 - Farmacia;\n
-                           3 - Administracao;\n
-                           4 - Regulacao;\n
-                           5 - Recepcao\n
+                           1 - Médico;\n
+                           2 - Farmácia;\n
+                           3 - Administrador;\n
+                           4 - Regulação;\n
+                           5 - Recepção\n
                            NÃO É POSSÍVEL criar dois usuarios de usernames iguais\n
                            NÃO É POSSÍVEL criar dois usuarios com o mesmo email (evita conflito de recuperar senha)
                            """,
