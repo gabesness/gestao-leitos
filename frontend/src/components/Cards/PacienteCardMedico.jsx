@@ -30,6 +30,9 @@ function PacienteCardMedico({ paciente, selectedPaciente, handlePacienteClick })
     if (daysRemaining === 1) {
       tagContent = 'Amanhã';
       tagColor = 'success';
+    } else if (daysRemaining === 0) {
+      tagContent = 'Hoje';
+      tagColor = 'success';
     } else if (daysRemaining > 1) {
       tagContent = `Em ${daysRemaining} dias`;
       tagColor = 'info';
@@ -55,7 +58,9 @@ function PacienteCardMedico({ paciente, selectedPaciente, handlePacienteClick })
           {tagContent === 'Nova' && <MDBIcon fas icon="plus-circle" className="me-1" />}
           {tagContent === 'Devolvido' && <MDBIcon fas icon="undo" className="me-1" />}
           {tagContent === 'Transferência' && <MDBIcon fas icon="exchange-alt" className="me-1" />}
-          {(tagContent.includes('dias') || tagContent === 'Amanhã' || tagContent === 'Atrasado') && <MDBIcon fas icon="clock" className="me-1" />}
+          {(tagContent.includes('dias') || tagContent === 'Amanhã' || tagContent === 'Hoje' || tagContent === 'Atrasado') && (
+            <MDBIcon fas icon="clock" className="me-1" />
+          )}          
           {tagContent === 'Internado' && <MDBIcon fas icon="bed" className="me-1" />}
           {tagContent}
         </span>

@@ -42,7 +42,7 @@ function EsqueceuSenha() {
           <MDBCard className='my-5 bg-glass max-width-card'>
           <MDBCardBody className="p-4 text-center">
           <h2 style={{ marginBottom: '10px', fontFamily: 'FiraSans-SemiBold, sans-serif' }}>
-          Esqueceu a senha
+          Esqueci minha senha
         </h2>
             <p style={{ marginBottom: "10px", fontSize: "0.9rem", color: "#6c757d" }}>
                 Informe o e-mail cadastrado no sistema, será enviado um link para que se possa alterar a senha.

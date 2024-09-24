@@ -195,14 +195,14 @@ function MinhaConta() {
       });
 
       if (response.status === 200) {
-        toast.success(response.data.message);
+        toast.success(response.data.OK);
         setTimeout(() => {
           window.location.reload();
         }, 2000);
       }
     } catch (error) {
       console.error("Erro ao salvar alterações:", error);
-      toast.error(error.response?.data?.erro || 'Erro desconhecido');
+      toast.error(error.response.data.Erro);
     }
   };
 
@@ -218,14 +218,14 @@ function MinhaConta() {
       });
 
       if (response.status === 200) {
-        toast.success(response.data.message);
+        toast.success(response.data.OK);
         setTimeout(() => {
           window.location.reload();
         }, 2000);
       }
     } catch (error) {
       console.error("Erro ao salvar alterações:", error);
-      toast.error(error.response?.data?.erro || 'Erro desconhecido');
+      toast.error(error.response.data.Erro);
     }
   };
 

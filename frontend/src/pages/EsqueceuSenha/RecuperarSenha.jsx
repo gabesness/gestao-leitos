@@ -51,7 +51,7 @@ function RecuperarSenha() {
       if (response.status === 200) {
         toast.success('Senha alterada com sucesso');
         setTimeout(() => {
-          window.location.reload();
+          window.location.href = '/';
         }, 2000);
       }
     } catch (error) {

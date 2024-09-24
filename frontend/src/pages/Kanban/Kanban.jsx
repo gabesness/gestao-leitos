@@ -205,7 +205,8 @@ function Monitoramento() {
                 {pacientes.filter(paciente => 
                     paciente.estagio_atual === 'PRESCRICAO_CRIADA' ||
                     paciente.estagio_atual === 'DEVOLVIDO_PELA_FARMACIA' ||
-                    paciente.estagio_atual === 'DEVOLVIDO_PELA_REGULACAO'
+                    paciente.estagio_atual === 'DEVOLVIDO_PELA_REGULACAO'||
+                    paciente.estagio_atual === 'DEVOLVIDO_PELA_REGULACAO_PARA_MEDICO'
                   ).map((paciente, index) => (
                     <div key={index} className="clickable">
                       <PacienteCard
