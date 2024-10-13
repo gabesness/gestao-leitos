@@ -9,7 +9,7 @@ def estagio_to_readable(estagio):
         "PRESCRICAO_CRIADA": "Prescrição criada",
         "DEVOLVIDO_PELA_FARMACIA": "Devolvido pela farmácia",
         "DEVOLVIDO_PELA_REGULACAO": "Transferência solicitada pela regulação",
-        "DEVOLVIDO_PELA_REGULACAO_PARA_MEDICO": "Devolvido pela regulação para alterações na prescrição",
+        "DEVOLVIDO_PELA_REGULACAO_PARA_MEDICO": "Devolvido pela regulação",
         "ENCAMINHADO_PARA_FARMACIA": "Encaminhado para a farmácia",
         "ENCAMINHADO_PARA_AGENDAMENTO": "Encaminhado para agendamento",
         "AUTORIZADO_PARA_TRANSFERENCIA": "Autorizado para transferência",

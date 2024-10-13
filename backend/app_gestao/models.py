@@ -301,11 +301,10 @@ class Estatisticas():
         """
         Retorna quantos novos pacientes entraram no sistema por tempo.
         1. Considere os dias informados. Se dias=None, considere todo o período.
-        2. Para cada dia dentro do intervalo, conte quantos Registros têm o status PRESCRICAO_CRIADA.
+        2. Para cada dia dentro do intervalo, conte quantos Pacientes foram cadastrados naquele dia.
         3. Para intervalos acima de 30 dias, envie de n em n dias em vez de dias individuais.
         """
-        
-        queryset = Registro.objects.filter(estagio_atual="PRESCRICAO_CRIADA").distinct()
+        queryset = Paciente.objects.all()
         if dias is not None:
             data_inicio = timezone.now() - timedelta(days=dias)
             queryset = queryset.filter(criado_em__gte=data_inicio)

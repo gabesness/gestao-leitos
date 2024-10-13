@@ -8,12 +8,8 @@ import {
   MDBCard,
   MDBCardBody,
   MDBInput,
-  MDBCheckbox,
   MDBIcon,
-  MDBBadge, 
   MDBListGroup, 
-  MDBListGroupItem,
-  MDBRipple,
   MDBTextArea,
   MDBModal,
   MDBModalHeader,
@@ -21,14 +17,7 @@ import {
   MDBModalFooter,
   MDBModalDialog,
   MDBModalContent,
-  MDBModalTitle,
-  MDBDropdown,
-  MDBDropdownMenu,
-  MDBDropdownItem,
-  MDBDropdownToggle,
-  MDBCardTitle,
-  MDBCardText,
-  UserListItem,
+  MDBModalTitle
 }
 from 'mdb-react-ui-kit';
 import './HomeMedico.css';
@@ -71,7 +60,7 @@ function ModalNovaPrescricao({ isOpen, onClose }) {
 
     } catch (error) {
       console.error('Erro ao criar prescrição:', error);
-      toast.error(error.response.data.erro);
+      toast.error(error.response.data.Erro);
     }
   };
 
@@ -962,7 +951,7 @@ function HomeMedico() {
         marginBottom: '-22px', 
         fontFamily: 'FiraSans-SemiBold, sans-serif' 
       }}>
-        Acompanhamento
+        Prescrições
       </h2>
       <MDBCardBody className='p-5'>
           <MDBRow>

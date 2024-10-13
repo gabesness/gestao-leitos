@@ -78,14 +78,14 @@ function ModalNovoUsuario({ isOpen, onClose }) {
         email: formData.email,
         groups: [cargoMap[selectedCargo]],
       });
-      if (response.status === 204) {
+      if (response.status === 200) {
       toast.success(response.data.OK);
 
       }
 
     } catch (error) {
       console.error('Erro ao criar usuário:', error);
-      toast.error(error.response.data.erro);
+      toast.error(error.response.data.Erro);
     }
   };
 
@@ -306,12 +306,26 @@ function QuadroFicha({ selectedUser }) {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
+  const [isModified, setIsModified] = useState(false);
+
+  const checkIfModified = (newFirstName, newLastName, newEmail) => {
+    const isModified =
+      newFirstName !== (selectedUser?.first_name || '') ||
+      newLastName !== (selectedUser?.last_name || '') ||
+      newEmail !== (selectedUser?.email || '');
+    setIsModified(isModified);
+  };
 
   useEffect(() => {
     if (selectedUser) {
-      setFirstName(selectedUser.first_name || '');
-      setLastName(selectedUser.last_name || '');
-      setEmail(selectedUser.email || '');
+      const initialFirstName = selectedUser.first_name || '';
+      const initialLastName = selectedUser.last_name || '';
+      const initialEmail = selectedUser.email || '';
+
+      setFirstName(initialFirstName);
+      setLastName(initialLastName);
+      setEmail(initialEmail);
+      setIsModified(false);
     }
   }, [selectedUser]);
 
@@ -414,7 +428,10 @@ function QuadroFicha({ selectedUser }) {
                   id="nome"
                   className="mb-3"
                   value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
+                  onChange={(e) => {
+                    setFirstName(e.target.value);
+                    checkIfModified(e.target.value, lastName, email);
+                  }}
                   maxLength="256"
                 />
                 <MDBInput
@@ -422,7 +439,10 @@ function QuadroFicha({ selectedUser }) {
                   id="sobrenome"
                   className="mb-3"
                   value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
+                  onChange={(e) => {
+                    setLastName(e.target.value);
+                    checkIfModified(firstName, e.target.value, email);
+                  }}
                   maxLength="256"
                 />
                 <MDBInput
@@ -430,7 +450,10 @@ function QuadroFicha({ selectedUser }) {
                   id="email"
                   className="mb-3"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    checkIfModified(firstName, lastName, e.target.value);
+                  }}
                   maxLength="256"
                 />
               </div>
@@ -469,6 +492,7 @@ function QuadroFicha({ selectedUser }) {
                   borderRadius: '8px',
                   padding: '10px 20px',
                 }}
+                disabled={!isModified}
                 color='secondary' 
                 onClick={EditarUsuario}>
                 <MDBIcon fas icon="check" className="me-2" />

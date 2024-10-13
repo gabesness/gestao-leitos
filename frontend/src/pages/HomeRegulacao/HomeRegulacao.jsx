@@ -323,7 +323,7 @@ function ModalTransferencia({ isOpen, onClose, selectedPaciente, formValue }) {
             borderRadius: '8px',
             padding: '10px 20px',
           }}
-          >Transferido</MDBBtn>
+          >Transferir</MDBBtn>
           </MDBModalFooter>
         </MDBModalContent>
       </MDBModalDialog>

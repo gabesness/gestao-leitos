@@ -150,18 +150,20 @@ export default function Navbar() {
               </MDBNavbarNav>
   
               <div className="ms-auto d-flex align-items-center">
-                <MDBNavbarNav right className="d-flex align-items-center">
-                <span style={{ fontSize: '1.2rem', marginRight: '5px', color: '#0000008C' }}>{nome}</span>
-                {rolesWithUserIcon.includes(localStorage.getItem('cargo')) && ( // Condição para exibir o ícone do usuário
+              <MDBNavbarNav right className="d-flex align-items-center">
+                {rolesWithUserIcon.includes(localStorage.getItem('cargo')) && (
+                  <>
+                    <span style={{ fontSize: '1.2rem', marginRight: '5px', color: '#0000008C' }}>{nome}</span>
                     <MDBNavbarLink
                       style={{ cursor: 'pointer' }}
                       onClick={handleMinhaContaClick}
                     >
                       <MDBIcon icon='user-circle' fas style={{ fontSize: '1.6rem' }} />
                     </MDBNavbarLink>
-                  )}
-                  
-                  <MDBNavbarLink
+                  </>
+                )}
+
+                <MDBNavbarLink
                     style={{ cursor: 'pointer' }}
                     onClick={handleSignOutClick}
                   >
