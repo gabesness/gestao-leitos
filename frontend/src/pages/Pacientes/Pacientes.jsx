@@ -420,11 +420,9 @@ function QuadroFicha({ selectedPaciente, historico }) {
   function baixarHistoricoComoPDF(historico, nomePaciente) {
     const doc = new jsPDF();
     
-    // Defina o título do PDF com o nome do paciente
     doc.setFontSize(18);
     doc.text(`Histórico do Paciente ${nomePaciente}`, 14, 16);
     
-    // Adicione a tabela
     const tableColumn = ['Data', 'Hora', 'Sessão', 'Estágio Atual', 'Mensagem', 'Usuário'];
     const tableRows = historico.map(registro => {
       const { dataFormatada, horaFormatada } = formatarData(registro.criado_em);
@@ -440,7 +438,6 @@ function QuadroFicha({ selectedPaciente, historico }) {
     
     doc.autoTable(tableColumn, tableRows, { startY: 30 });
     
-    // Salve o PDF
     doc.save(`historico_paciente_${nomePaciente}.pdf`);
   }
   

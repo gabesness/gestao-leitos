@@ -19,7 +19,6 @@ function RecuperarSenha() {
   const [uid, setUid] = useState('');
 
   useEffect(() => {
-    // Extrai token e uid da URL
     const urlParts = window.location.pathname.split('/');
     const tokenFromUrl = urlParts[urlParts.length - 2];
     const uidFromUrl = urlParts[urlParts.length - 1];
@@ -27,7 +26,6 @@ function RecuperarSenha() {
     setToken(tokenFromUrl);
     setUid(uidFromUrl);
 
-    // Console log para verificar token e uid
     console.log("Token:", tokenFromUrl);
     console.log("UID:", uidFromUrl);
   }, []);

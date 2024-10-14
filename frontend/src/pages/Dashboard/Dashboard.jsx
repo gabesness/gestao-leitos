@@ -45,9 +45,8 @@ function Dashboard() {
       try {
         let url = `${AxiosURL}/estatisticas/all/`;
 
-        // Se o dropdown não estiver em "Todo o Período", ajusta a URL para incluir os dias
         if (dropdownTitle !== 'Todo o Período') {
-          const dias = getDiasByDropdownTitle(dropdownTitle); // Função para obter os dias com base no dropdownTitle
+          const dias = getDiasByDropdownTitle(dropdownTitle);
           url = `${AxiosURL}/estatisticas/${dias}`;
         }
 
@@ -92,7 +91,7 @@ function Dashboard() {
     };
   
     fetchDados();
-  }, [dropdownTitle]); // Agora a requisição depende do dropdownTitle
+  }, [dropdownTitle]);
   
 
   const getDiasByDropdownTitle = (title) => {
@@ -128,7 +127,6 @@ function Dashboard() {
         const pageHeight = 295;
         const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-        // Se o conteúdo não couber em uma página, redimensiona
         const heightLeft = imgHeight - 20; // 20 para o cabeçalho
         if (heightLeft > pageHeight) {
             const scaleFactor = (pageHeight - 20) / imgHeight;

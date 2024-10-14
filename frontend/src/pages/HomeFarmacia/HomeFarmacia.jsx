@@ -39,7 +39,7 @@ function ModalDevolverMedico({ isOpen, onClose, selectedPaciente, formValue }) {
     try {
       const response = await axios.patch(`${AxiosURL}/prescricoes/${selectedPaciente.id}/devolver_farmacia/`, {
         id_usuario: localStorage.getItem('idUser'),
-        mensagem: formValue.mensagem  // Incluir a mensagem no corpo da requisição
+        mensagem: formValue.mensagem  
       });
       toast.success('Prescrição devolvida ao médico');
       setTimeout(() => {
@@ -101,7 +101,7 @@ function ModalEnviarRegulacao({ isOpen, onClose, selectedPaciente, formValue }) 
     try {
       const response = await axios.patch(`${AxiosURL}/prescricoes/${selectedPaciente.id}/encaminhar_agendamento/`, {
         id_usuario: localStorage.getItem('idUser'),
-        mensagem: formValue.mensagem  // Incluir a mensagem no corpo da requisição
+        mensagem: formValue.mensagem  
       });
       toast.success('Prescrição encaminhada à regulação');
       setTimeout(() => {
